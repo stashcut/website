@@ -1,0 +1,757 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stashcut: the Mac clipboard that remembers, protects and answers</title>
+<meta name="description" content="Stashcut keeps every copy, keeps your secrets out of it, and lets you or your coding agent ask your clipboard anything. Local first. 29 euro, once.">
+<meta property="og:title" content="Stashcut">
+<meta property="og:description" content="Your clipboard, with a memory and a brain. macOS. 29 euro, once.">
+<meta property="og:image" content="stashcut-icon-1024.png">
+<meta name="theme-color" content="#0B0A14">
+<link rel="icon" href="stashcut-icon.svg" type="image/svg+xml">
+<!--
+  Stashcut sales page. One file, no build step, no JavaScript, no tracking.
+  Copyright (c) 2026 Khalil Gharbaoui.
+
+  Before publishing:
+    * point every href="#buy" at the checkout link (see the pricing section)
+    * confirm the refund line in the pricing card and the FAQ
+    * drop stashcut-icon.svg and stashcut-icon-1024.png next to this file
+      (Branding/make-icons.sh produces both)
+-->
+<style>
+  :root {
+    --ink: #0B0A14;
+    --ink-2: #14122A;
+    --ink-3: #1D1A38;
+    --paper: #F6F5FF;
+    --muted: #A9A6C9;
+    --line: rgba(255, 255, 255, 0.08);
+    --violet: #6D4DFF;
+    --magenta: #FF4D8D;
+    --lime: #C6FF3D;
+    --cyan: #2BD9FF;
+    --grad: linear-gradient(135deg, #6D4DFF 0%, #B23CFF 55%, #FF4D8D 100%);
+    --radius: 28px;
+    --radius-s: 16px;
+    --font: "SF Pro Display", -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --mono: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: var(--font);
+    color: var(--paper);
+    background: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    background:
+      radial-gradient(900px 600px at 10% -10%, rgba(109, 77, 255, 0.35), transparent 60%),
+      radial-gradient(800px 600px at 100% 20%, rgba(255, 77, 141, 0.28), transparent 60%),
+      radial-gradient(700px 500px at 50% 110%, rgba(43, 217, 255, 0.16), transparent 60%);
+  }
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+    background-size: 28px 28px;
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.9), transparent 70%);
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.9), transparent 70%);
+  }
+
+  a { color: inherit; }
+  img, svg { display: block; }
+  .wrap { width: min(1120px, calc(100% - 48px)); margin: 0 auto; }
+
+  /* ---------- wordmark ---------- */
+  .wordmark {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+  }
+  .wordmark img { width: 34px; height: 34px; border-radius: 9px; }
+  .wordmark .cut { color: var(--lime); }
+
+  /* ---------- nav ---------- */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    background: rgba(11, 10, 20, 0.62);
+    border-bottom: 1px solid var(--line);
+  }
+  nav .wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 66px;
+    gap: 24px;
+  }
+  nav ul {
+    display: flex;
+    gap: 26px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: 15px;
+    color: var(--muted);
+  }
+  nav ul a { text-decoration: none; }
+  nav ul a:hover { color: var(--paper); }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 16px;
+    border-radius: 999px;
+    background: var(--lime);
+    color: #0B0A14;
+    font-weight: 700;
+    font-size: 14px;
+    text-decoration: none;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .pill:hover { transform: translateY(-1px); box-shadow: 0 8px 30px rgba(198, 255, 61, 0.35); }
+  .pill:focus-visible, .btn:focus-visible { outline: 3px solid var(--cyan); outline-offset: 3px; }
+
+  /* ---------- hero ---------- */
+  .hero {
+    padding: 96px 0 72px;
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: 56px;
+    align-items: center;
+  }
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 12px 6px 8px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-size: 13px;
+    color: var(--muted);
+    background: rgba(255, 255, 255, 0.03);
+  }
+  .eyebrow b {
+    background: var(--grad);
+    color: #fff;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 8px;
+    border-radius: 999px;
+  }
+  h1 {
+    margin: 22px 0 18px;
+    font-size: clamp(44px, 6.4vw, 84px);
+    line-height: 0.98;
+    letter-spacing: -0.04em;
+    font-weight: 800;
+  }
+  h1 .shine {
+    background: var(--grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .lede {
+    font-size: clamp(18px, 1.6vw, 22px);
+    color: var(--muted);
+    max-width: 34ch;
+    margin: 0 0 30px;
+  }
+  .lede strong { color: var(--paper); font-weight: 600; }
+  .cta { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 24px;
+    border-radius: 16px;
+    font-weight: 700;
+    font-size: 17px;
+    text-decoration: none;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  }
+  .btn-lime { background: var(--lime); color: #0B0A14; }
+  .btn-lime:hover { transform: translateY(-2px); box-shadow: 0 14px 40px rgba(198, 255, 61, 0.35); }
+  .btn-ghost { background: rgba(255, 255, 255, 0.06); border: 1px solid var(--line); color: var(--paper); }
+  .btn-ghost:hover { background: rgba(255, 255, 255, 0.1); }
+  .btn small { font-weight: 500; opacity: 0.75; font-size: 14px; }
+  .fine { margin-top: 16px; font-size: 14px; color: var(--muted); }
+  .fine code { font-family: var(--mono); font-size: 13px; background: rgba(255, 255, 255, 0.06); padding: 2px 7px; border-radius: 6px; }
+
+  /* ---------- the bezel mock ---------- */
+  .stage { position: relative; }
+  .stage::before {
+    content: "";
+    position: absolute;
+    inset: 12% 6%;
+    background: var(--grad);
+    filter: blur(70px);
+    opacity: 0.45;
+    z-index: -1;
+    border-radius: 50%;
+  }
+  .bezel {
+    background: linear-gradient(180deg, rgba(29, 26, 56, 0.92), rgba(20, 18, 42, 0.96));
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    transform: rotate(-1.5deg);
+  }
+  .bezel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2px 6px 14px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .bezel-head b { color: var(--paper); font-weight: 600; }
+  .keys { font-family: var(--mono); font-size: 12px; background: rgba(255, 255, 255, 0.06); padding: 3px 8px; border-radius: 6px; }
+  .feed { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  .feed li {
+    display: grid;
+    grid-template-columns: 26px 1fr auto;
+    gap: 12px;
+    align-items: center;
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 14px;
+    animation: pop 10s cubic-bezier(0.2, 0.8, 0.2, 1) infinite both;
+  }
+  .feed li:nth-child(1) { animation-delay: -1s; }
+  .feed li:nth-child(2) { animation-delay: -3s; }
+  .feed li:nth-child(3) { animation-delay: -5s; }
+  .feed li:nth-child(4) { animation-delay: -7s; }
+  .feed li:nth-child(5) { animation-delay: -9s; }
+  .feed li.hot { border-color: rgba(198, 255, 61, 0.55); background: rgba(198, 255, 61, 0.07); }
+  .feed li.secret { border-color: rgba(255, 77, 141, 0.55); background: rgba(255, 77, 141, 0.08); }
+  .n { font-family: var(--mono); font-size: 12px; color: var(--muted); text-align: center; }
+  .clip { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .clip code { font-family: var(--mono); font-size: 13px; }
+  .from { font-size: 12px; color: var(--muted); }
+  .tag { font-size: 11px; padding: 3px 8px; border-radius: 999px; font-weight: 600; letter-spacing: 0.02em; }
+  .tag-lime { background: var(--lime); color: #0B0A14; }
+  .tag-mag { background: var(--magenta); color: #fff; }
+  .ask {
+    margin-top: 14px;
+    padding: 14px 16px;
+    border-radius: 14px;
+    background: rgba(11, 10, 20, 0.6);
+    border: 1px dashed rgba(43, 217, 255, 0.45);
+    font-size: 14px;
+  }
+  .ask .q { color: var(--cyan); font-family: var(--mono); font-size: 13px; }
+  .ask .q::after { content: "▍"; animation: blink 1s steps(1) infinite; }
+  .ask .a { margin-top: 8px; color: var(--paper); }
+  .ask .a span { color: var(--muted); }
+  @keyframes pop {
+    0% { opacity: 0; transform: translateY(16px) scale(0.985); }
+    7% { opacity: 1; transform: none; }
+    88% { opacity: 1; transform: none; }
+    100% { opacity: 0; transform: translateY(-8px); }
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* ---------- sections ---------- */
+  section { padding: 84px 0; }
+  .kicker {
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--lime);
+    font-weight: 700;
+    margin: 0 0 14px;
+  }
+  h2 {
+    font-size: clamp(32px, 4vw, 52px);
+    letter-spacing: -0.035em;
+    line-height: 1.02;
+    margin: 0 0 18px;
+    font-weight: 800;
+    max-width: 22ch;
+  }
+  .sub { color: var(--muted); font-size: 18px; max-width: 58ch; margin: 0 0 44px; }
+
+  /* bento */
+  .bento {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 16px;
+  }
+  .card {
+    grid-column: span 2;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 28px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+  }
+  .card:hover { transform: translateY(-3px); border-color: rgba(255, 255, 255, 0.18); }
+  .card.wide { grid-column: span 3; }
+  .card.full { grid-column: span 6; display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: center; }
+  .card h3 { margin: 18px 0 8px; font-size: 22px; letter-spacing: -0.02em; }
+  .card p { margin: 0; color: var(--muted); font-size: 15.5px; }
+  .card p b { color: var(--paper); font-weight: 600; }
+  .glyph {
+    width: 46px; height: 46px; border-radius: 14px;
+    display: grid; place-items: center;
+    background: var(--ink-3);
+    border: 1px solid var(--line);
+  }
+  .glyph svg { width: 24px; height: 24px; }
+  .card.hi { background: var(--grad); border-color: transparent; }
+  .card.hi p, .card.hi h3 { color: #fff; }
+  .card.hi p b { color: var(--lime); }
+  .card.hi .glyph { background: rgba(255, 255, 255, 0.18); border-color: rgba(255, 255, 255, 0.25); }
+  .card.lime { background: var(--lime); border-color: transparent; color: #0B0A14; }
+  .card.lime p, .card.lime h3 { color: #0B0A14; }
+  .card.lime p b { color: #0B0A14; }
+  .card.lime .glyph { background: rgba(11, 10, 20, 0.1); border-color: rgba(11, 10, 20, 0.15); }
+  .card.lime .glyph svg { stroke: #0B0A14; }
+  .kbd {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    padding: 3px 8px;
+    border-radius: 7px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: var(--paper);
+  }
+  .card.lime .kbd { background: rgba(11, 10, 20, 0.08); border-color: rgba(11, 10, 20, 0.2); color: #0B0A14; }
+
+  /* terminal */
+  .term {
+    background: #07060E;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 18px 20px;
+    font-family: var(--mono);
+    font-size: 13.5px;
+    line-height: 1.7;
+    color: #D8D6F0;
+    overflow-x: auto;
+  }
+  .term .c { color: #6F6C90; }
+  .term .g { color: var(--lime); }
+  .term .m { color: var(--magenta); }
+  .term .b { color: var(--cyan); }
+
+  /* steps */
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; counter-reset: step; }
+  .step {
+    padding: 28px;
+    border-radius: var(--radius);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--line);
+  }
+  .step::before {
+    counter-increment: step;
+    content: "0" counter(step);
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--lime);
+    letter-spacing: 0.1em;
+  }
+  .step h3 { margin: 14px 0 8px; font-size: 24px; letter-spacing: -0.02em; }
+  .step p { margin: 0; color: var(--muted); }
+
+  /* pricing */
+  .price-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: stretch; }
+  .price {
+    position: relative;
+    border-radius: var(--radius);
+    padding: 3px;
+    background: var(--grad);
+  }
+  .price-in {
+    height: 100%;
+    border-radius: calc(var(--radius) - 3px);
+    background: var(--ink-2);
+    padding: 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .amount { display: flex; align-items: baseline; gap: 10px; }
+  .amount .num { font-size: 84px; font-weight: 800; letter-spacing: -0.05em; line-height: 1; }
+  .amount .cur { font-size: 28px; font-weight: 700; color: var(--muted); }
+  .amount .once { font-size: 16px; color: var(--muted); }
+  .checks { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; color: var(--paper); }
+  .checks li { display: flex; gap: 12px; align-items: flex-start; font-size: 16px; }
+  .checks li::before {
+    content: "";
+    flex: none;
+    width: 20px; height: 20px; margin-top: 2px;
+    border-radius: 6px;
+    background: var(--lime) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230B0A14' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5L20 7'/%3E%3C/svg%3E") center/13px no-repeat;
+  }
+  .compare {
+    border-radius: var(--radius);
+    padding: 36px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 22px;
+  }
+  .compare h3 { margin: 0; font-size: 26px; letter-spacing: -0.02em; }
+  .bars { display: grid; gap: 14px; }
+  .bar { display: grid; grid-template-columns: 1fr; gap: 6px; font-size: 14px; color: var(--muted); }
+  .bar .track { height: 12px; border-radius: 999px; background: rgba(255, 255, 255, 0.06); overflow: hidden; }
+  .bar .fill { height: 100%; border-radius: 999px; background: var(--magenta); }
+  .bar.you .fill { background: var(--lime); }
+  .bar.you { color: var(--paper); font-weight: 600; }
+
+  /* faq */
+  .faq { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 32px; }
+  details {
+    border: 1px solid var(--line);
+    border-radius: var(--radius-s);
+    background: rgba(255, 255, 255, 0.03);
+    padding: 0 20px;
+  }
+  summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 18px 0;
+    font-weight: 600;
+    font-size: 17px;
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; color: var(--lime); font-weight: 800; }
+  details[open] summary::after { content: "–"; }
+  details p { margin: 0 0 18px; color: var(--muted); }
+
+  /* footer */
+  footer { padding: 56px 0 40px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
+  footer .wrap { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 32px; }
+  footer h4 { margin: 0 0 10px; color: var(--paper); font-size: 14px; letter-spacing: 0.06em; text-transform: uppercase; }
+  footer ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+  footer a { text-decoration: none; }
+  footer a:hover { color: var(--paper); }
+  .lineage { grid-column: 1 / -1; padding-top: 24px; border-top: 1px solid var(--line); font-size: 13px; line-height: 1.7; }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 960px) {
+    .hero { grid-template-columns: 1fr; padding-top: 64px; }
+    .bezel { transform: none; }
+    .card, .card.wide { grid-column: span 3; }
+    .card.full { grid-column: span 6; grid-template-columns: 1fr; }
+    .price-wrap, .faq, .steps { grid-template-columns: 1fr; }
+    footer .wrap { grid-template-columns: 1fr 1fr; }
+    nav ul { display: none; }
+  }
+  @media (max-width: 600px) {
+    .card, .card.wide { grid-column: span 6; }
+    .amount .num { font-size: 64px; }
+    footer .wrap { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .feed li, .ask .q::after { animation: none !important; }
+    .btn, .pill, .card { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="wordmark" href="#top" aria-label="Stashcut home">
+      <img src="stashcut-icon.svg" alt="">
+      <span>stash<span class="cut">cut</span></span>
+    </a>
+    <ul>
+      <li><a href="#features">What it does</a></li>
+      <li><a href="#ask">Ask</a></li>
+      <li><a href="#agents">Agents</a></li>
+      <li><a href="#privacy">Privacy</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <a class="pill" href="#pricing">Get Stashcut <span aria-hidden="true">·</span> €29</a>
+  </div>
+</nav>
+
+<main id="top" class="wrap">
+
+  <!-- ======================= HERO ======================= -->
+  <header class="hero">
+    <div>
+      <span class="eyebrow"><b>macOS</b> Clipboard manager, 2026 edition</span>
+      <h1>Your clipboard,<br>with a <span class="shine">memory</span><br>and a brain.</h1>
+      <p class="lede">Every copy, kept and searchable. Secrets kept <strong>out</strong>. And a clipboard you can <strong>ask questions</strong>, yourself or through your coding agent, without a byte leaving your Mac.</p>
+      <div class="cta">
+        <a class="btn btn-lime" href="#pricing">Get Stashcut <small>€29, once</small></a>
+        <a class="btn btn-ghost" href="#features">See what it does</a>
+      </div>
+      <p class="fine">Paste anything you ever copied with <code>⇧⌘V</code>. Search all of it with <code>⇧⌘B</code>. No account. No subscription. No cloud of ours.</p>
+    </div>
+
+    <div class="stage" aria-hidden="true">
+      <div class="bezel">
+        <div class="bezel-head"><b>Stashcut</b><span class="keys">⇧⌘V</span></div>
+        <ul class="feed">
+          <li class="hot"><span class="n">0</span><span class="clip"><code>git rebase -i origin/main</code><br><span class="from">Terminal · just now</span></span><span class="tag tag-lime">paste</span></li>
+          <li><span class="n">1</span><span class="clip">Meeting moved to 14:00, room 4B<br><span class="from">Messages · 2 min</span></span><span></span></li>
+          <li class="secret"><span class="n">2</span><span class="clip"><code>sk-live-••••••••••••••••</code><br><span class="from">looked like an API key</span></span><span class="tag tag-mag">kept out · 1Password?</span></li>
+          <li><span class="n">3</span><span class="clip">https://stashcut.com/help#agents<br><span class="from">Safari · 9 min</span></span><span></span></li>
+          <li><span class="n">4</span><span class="clip">Dear Ms Alvarez, thank you for sending the revised invoice, the total now…<br><span class="from">Mail · 09:41</span></span><span></span></li>
+        </ul>
+        <div class="ask">
+          <div class="q">ask: what was the invoice number from this morning?</div>
+          <div class="a">INV-2026-0917 <span>· copied 09:41 from Mail · answered by the model on this Mac</span></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ======================= FEATURES ======================= -->
+  <section id="features">
+    <p class="kicker">What it does</p>
+    <h2>Copy like nobody is counting. Stashcut is.</h2>
+    <p class="sub">A clipboard manager first: fast, keyboard driven, out of the way. Then everything a clipboard should have learned to do by 2026.</p>
+
+    <div class="bento">
+      <article class="card hi wide">
+        <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="7" width="14" height="13" rx="2.5"/><path d="M8 4h11a2 2 0 0 1 2 2v10"/><path d="M8 12h6M8 16h4"/></svg></div>
+        <h3>Nothing you copy is ever gone</h3>
+        <p>Hundreds of clippings, in order, with where they came from. Paste the third-last thing with <span class="kbd">⇧⌘V</span> and a couple of arrow keys, even when something else is on the clipboard now. <b>Sticky bezel</b> stays up while you pick.</p>
+      </article>
+
+      <article class="card lime wide">
+        <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="#0B0A14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></div>
+        <h3>Find it in a keystroke</h3>
+        <p><span class="kbd">⇧⌘B</span> opens search over the whole history. Ignores case, ignores accents, understands Arabic, Japanese and emoji, and shows you what <b>meant</b> the same thing, not only what spelled the same.</p>
+      </article>
+
+      <article class="card">
+        <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="#FF4D8D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 4.5 3.4 8 8 9 4.6-1 8-4.5 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg></div>
+        <h3>Secrets never land in history</h3>
+        <p>API keys, passwords, card and bank numbers are recognised the moment you copy them and <b>kept out</b>. You get told, once, and can hand the secret to 1Password instead of the clipboard.</p>
+      </article>
+
+      <article class="card">
+        <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="#C6FF3D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 2.6 17.2A2 2 0 0 0 4.3 20h15.4a2 2 0 0 0 1.7-2.8L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg></div>
+        <h3>A guard before a risky paste</h3>
+        <p>About to paste something that looks like a credential into a chat, a terminal, or a browser? Stashcut asks first. <b>You choose which apps</b> count as risky.</p>
+      </article>
+
+      <article class="card">
+        <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="#2BD9FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-9 9"/></svg></div>
+        <h3>Screenshots too</h3>
+        <p>Copy an image and it is kept alongside your text, saved to a folder you can open, and pastes back like it never left.</p>
+      </article>
+
+      <article class="card wide">
+        <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="#B23CFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 7v10l8 4 8-4V7z"/><path d="M4 7l8 4 8-4M12 11v10"/></svg></div>
+        <h3>Send it to Obsidian</h3>
+        <p>One key files the clipping, text or picture, into <b>today's daily note</b> in your vault, under a heading Stashcut keeps for itself. Your notes stay yours; nothing is synced anywhere.</p>
+      </article>
+
+      <article class="card wide">
+        <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="#FF4D8D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18"/><path d="M8 8h.01M15 9h.01M9 15h.01M15.5 15.5h.01"/></svg></div>
+        <h3>Looks the way you want</h3>
+        <p>Solid colour, gradient, or your own image behind the bezel, on every screen. Menu bar icon, hotkeys, bezel size, how long the panel stays: <b>all yours to set</b>.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ======================= ASK ======================= -->
+  <section id="ask">
+    <p class="kicker">Ask your clipboard</p>
+    <h2>The thing you copied at 09:41 is the answer. Ask.</h2>
+    <p class="sub">Point Stashcut at a model running on your Mac (Ollama works out of the box) or at any endpoint you trust. Then ask, in plain words, and it answers from the clippings that are actually about your question, and only those.</p>
+
+    <div class="bento">
+      <article class="card full">
+        <div>
+          <h3 style="margin-top:0">Local by default, honest about context</h3>
+          <p>Stashcut picks the handful of clippings that relate to your question, keeps them inside a budget it shows you, and never sends the rest. Credentials are excluded before anything is assembled. <b>Nothing leaves the machine</b> unless the endpoint you chose is somewhere else, and the Preferences pane says so in one sentence.</p>
+        </div>
+        <div class="term">
+          <div><span class="c">›</span> <span class="b">ask</span> what did the client want changed on the proposal?</div>
+          <div>&nbsp;</div>
+          <div><span class="g">Three things, from the clipping you copied from Mail at 16:12:</span></div>
+          <div>&nbsp;&nbsp;1. move delivery to the week of the 5th</div>
+          <div>&nbsp;&nbsp;2. drop the onboarding workshop, they will do it in-house</div>
+          <div>&nbsp;&nbsp;3. invoice in two parts, 40 / 60</div>
+          <div>&nbsp;</div>
+          <div><span class="c">used 2 of 4 related clippings · 1 credential withheld · model: local</span></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ======================= AGENTS ======================= -->
+  <section id="agents">
+    <p class="kicker">For coding agents</p>
+    <h2>Your agent forgot what you pasted. Stashcut did not.</h2>
+    <p class="sub">Stashcut ships a tiny read-only Model Context Protocol server. opencode, Claude Code, or anything that speaks MCP can search your history, fetch one clipping, or see the newest ones. Off by default. One button to set up.</p>
+
+    <div class="bento">
+      <article class="card wide">
+        <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="#C6FF3D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 9-4 3 4 3M16 9l4 3-4 3M14 5l-4 14"/></svg></div>
+        <h3>Three tools, zero writes</h3>
+        <p><span class="kbd">search</span> <span class="kbd">get</span> <span class="kbd">recent</span>. That is the whole surface. An agent cannot add to your history, delete from it, or paste. It runs as a child of the agent you started, so there is <b>no port, no token, no daemon</b>.</p>
+      </article>
+      <article class="card wide">
+        <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="#2BD9FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/></svg></div>
+        <h3>Set up without touching a config file</h3>
+        <p>Press <b>Configure opencode</b> or <b>Configure Claude</b>. Stashcut shows you the exact commands, runs that tool's own CLI, checks for a duplicate first and verifies afterwards. It never opens or rewrites your configuration file. Ever.</p>
+      </article>
+      <article class="card full">
+        <div>
+          <h3 style="margin-top:0">Credentials stay invisible to agents, in every form</h3>
+          <p>Not the value, not the 1Password reference, not even the item's title. They are reported as a count so the agent knows something was withheld and does not reason around a gap it cannot see. Clippings that look like card numbers, bank accounts, keys or bulk email lists come back with their text replaced by a plain notice.</p>
+        </div>
+        <div class="term">
+          <div><span class="c">$</span> <span class="b">claude</span> mcp list</div>
+          <div>&nbsp;&nbsp;stashcut &nbsp;<span class="g">✓ Connected</span> (user)</div>
+          <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/Applications/Stashcut.app/Contents/MacOS/stashcut-mcp</div>
+          <div>&nbsp;</div>
+          <div><span class="c">› agent:</span> stashcut.search("invoice")</div>
+          <div><span class="g">2 clippings</span> · <span class="m">1 credential withheld</span></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ======================= HOW ======================= -->
+  <section>
+    <p class="kicker">How it feels</p>
+    <h2>Copy. Stash. Ask.</h2>
+    <div class="steps">
+      <div class="step"><h3>Copy like always</h3><p>Nothing to learn. ⌘C in any app. Stashcut notices, keeps it, and notes where it came from.</p></div>
+      <div class="step"><h3>Paste from anywhere in time</h3><p>⇧⌘V shows the stack. Arrow to the one you mean, or type to search. Pin the bezel with a space when you are picking several.</p></div>
+      <div class="step"><h3>Ask when you cannot remember</h3><p>“the tracking number from Tuesday”, “that colour I copied from Figma”. Stashcut finds the clipping and hands you the answer.</p></div>
+    </div>
+  </section>
+
+  <!-- ======================= PRIVACY ======================= -->
+  <section id="privacy">
+    <p class="kicker">Privacy, the boring kind</p>
+    <h2>Your clipboard is the most private thing on your Mac. We treat it that way.</h2>
+    <div class="bento">
+      <article class="card"><h3 style="margin-top:0">No account</h3><p>Buy it, download it, use it. There is nothing to sign in to.</p></article>
+      <article class="card"><h3 style="margin-top:0">No analytics</h3><p>Stashcut contains no telemetry, no crash reporter that phones home, no “anonymous usage data”.</p></article>
+      <article class="card"><h3 style="margin-top:0">No cloud of ours</h3><p>History lives in your Library folder. The only network calls are the ones you configure, to the model endpoint you chose.</p></article>
+    </div>
+  </section>
+
+  <!-- ======================= PRICING ======================= -->
+  <section id="pricing">
+    <p class="kicker">Pricing</p>
+    <h2>€29. Once. Not per month, not per seat, not per question.</h2>
+    <p class="sub">Bang for the buck is the whole idea. Pay once, use it on the Macs you own, get every 1.x update.</p>
+
+    <div class="price-wrap">
+      <div class="price">
+        <div class="price-in">
+          <div class="amount"><span class="cur">€</span><span class="num">29</span><span class="once">one-time, VAT included</span></div>
+          <ul class="checks">
+            <li>Clipboard history, search, sticky bezel, hotkeys</li>
+            <li>Secret detection, paste guard, 1Password hand-off</li>
+            <li>Ask your clipboard, with the model of your choice</li>
+            <li>Obsidian, image capture, backdrops</li>
+            <li>The MCP server and one-button agent setup</li>
+            <li>All 1.x updates, on every Mac you own</li>
+            <li>14-day refund, no questions asked</li>
+          </ul>
+          <!-- Replace #buy with the checkout URL. A merchant of record (Paddle, Lemon Squeezy)
+               handles EU VAT for you; Stripe Checkout leaves VAT to you. -->
+          <a id="buy" class="btn btn-lime" href="#buy" style="justify-content:center">Buy Stashcut for €29</a>
+          <p class="fine" style="margin:0;text-align:center">Requires macOS 10.13 or later. Best on the current macOS.</p>
+        </div>
+      </div>
+
+      <div class="compare">
+        <h3>What €29 buys elsewhere</h3>
+        <div class="bars">
+          <div class="bar"><span>A subscription clipboard app, one year</span><div class="track"><div class="fill" style="width:100%"></div></div></div>
+          <div class="bar"><span>A month of a hosted AI assistant</span><div class="track"><div class="fill" style="width:70%"></div></div></div>
+          <div class="bar"><span>Two lunches in the city</span><div class="track"><div class="fill" style="width:60%"></div></div></div>
+          <div class="bar you"><span>Stashcut, forever, on all your Macs</span><div class="track"><div class="fill" style="width:60%"></div></div></div>
+        </div>
+        <p style="margin:0;color:var(--muted);font-size:14px">Ask your clipboard uses a model you already run or already pay for. Stashcut adds no per-question cost of its own.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= FAQ ======================= -->
+  <section id="faq">
+    <p class="kicker">Questions</p>
+    <h2>Asked before you asked</h2>
+    <div class="faq">
+      <details><summary>Does it need an internet connection?</summary><p>No. History, search, secret detection and the agent server all work offline. Ask your clipboard talks to whatever model endpoint you set, which can be a model on this very Mac.</p></details>
+      <details><summary>Which AI does it use?</summary><p>Yours. Point it at Ollama or any OpenAI-compatible endpoint. Stashcut ships no model, keeps no key of its own, and never routes your text through a server of ours.</p></details>
+      <details><summary>Where is my history stored?</summary><p>In macOS preferences under <code>com.stashcut.app</code> and in <code>~/Library/Application Support/Stashcut</code> for images, backdrops and the search index. Delete the app and the folder, and it is gone.</p></details>
+      <details><summary>Is the agent server safe to turn on?</summary><p>It is off until you switch it on. It is read-only, it runs only while an agent you started is running, it never returns credentials in any form, and it withholds anything that looks like a card, an account, a key or a bulk mailing list.</p></details>
+      <details><summary>Is Stashcut open source?</summary><p>Stashcut is built on Flycut and Jumpcut, both MIT licensed, and their notices ship in the app's Credits tab. The additions that make Stashcut what it is are proprietary. You are paying for those, and for the person keeping them working.</p></details>
+      <details><summary>Can I use it on more than one Mac?</summary><p>Yes. One licence covers the Macs you personally use.</p></details>
+      <details><summary>What about iCloud sync and an iPhone app?</summary><p>Not yet. Sync will arrive as an opt-in, off by default, once the plumbing meets the same standard as everything else here. An iOS companion is on the list after that.</p></details>
+      <details><summary>Refunds?</summary><p>Fourteen days, no questions. If Stashcut does not earn its place in your menu bar, write and get your €29 back.</p></details>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <a class="wordmark" href="#top" style="font-size:20px"><img src="stashcut-icon.svg" alt=""><span>stash<span class="cut">cut</span></span></a>
+      <p style="margin:14px 0 0;max-width:36ch">A clipboard manager for the Mac, made in 2026 by Khalil Gharbaoui.</p>
+    </div>
+    <div>
+      <h4>Product</h4>
+      <ul>
+        <li><a href="#features">What it does</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="help.html">Help</a></li>
+        <li><a href="changelog.html">Changelog</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#privacy">Privacy</a></li>
+        <li><a href="mailto:hello@stashcut.com">Contact</a></li>
+        <li><a href="terms.html">Terms</a></li>
+      </ul>
+    </div>
+    <p class="lineage">Copyright © 2026 Khalil Gharbaoui. Stashcut is built on <a href="https://github.com/TermiT/Flycut">Flycut</a>, copyright General Arcade (Gennadiy Potapov), 2011 to 2020, which is built on Jumpcut, copyright Steve Cook, 2002 to 2008. Both are released under the MIT License, reproduced in full in the app's Credits tab. Apple, Mac and macOS are trademarks of Apple Inc. 1Password, Obsidian, Ollama, opencode and Claude are trademarks of their respective owners; Stashcut is not affiliated with any of them.</p>
+  </div>
+</footer>
+
+</body>
+</html>
