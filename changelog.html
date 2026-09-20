@@ -1,0 +1,648 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Changelog · Stashcut</title>
+<meta name="description" content="What changed in Stashcut, release by release.">
+<link rel="canonical" href="https://stashcut.com/changelog.html">
+<link rel="icon" href="stashcut-icon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#0B0A14">
+<style>
+  :root { --ink:#0B0A14; --paper:#F6F5FF; --muted:#A9A6C9; --line:rgba(255,255,255,0.09); --violet:#6D4DFF; --magenta:#FF4D8D; --lime:#C6FF3D; --cyan:#2BD9FF;
+          --font:"SF Pro Display",-apple-system,BlinkMacSystemFont,"Inter","Helvetica Neue",Helvetica,Arial,sans-serif; --mono:"SF Mono",ui-monospace,Menlo,Consolas,monospace; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--ink); color:var(--paper); font-family:var(--font); line-height:1.6; -webkit-font-smoothing:antialiased; }
+  body::before { content:""; position:fixed; inset:0; z-index:-1; background:radial-gradient(900px 500px at 10% -10%, rgba(109,77,255,.30), transparent 60%), radial-gradient(700px 500px at 100% 10%, rgba(255,77,141,.22), transparent 60%); }
+  nav { position:sticky; top:0; z-index:10; backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); background:rgba(11,10,20,.62); border-bottom:1px solid var(--line); }
+  nav .wrap { display:flex; align-items:center; justify-content:space-between; height:66px; }
+  .wrap { width:min(1120px, calc(100% - 48px)); margin:0 auto; }
+  .wordmark { display:inline-flex; align-items:center; gap:12px; text-decoration:none; color:inherit; font-weight:800; font-size:22px; letter-spacing:-.02em; }
+  .wordmark img { width:34px; height:34px; border-radius:9px; } .wordmark .cut { color:var(--lime); }
+  nav ul { display:flex; gap:26px; list-style:none; margin:0; padding:0; font-size:15px; color:var(--muted); }
+  nav a { color:inherit; text-decoration:none; } nav ul a:hover { color:var(--paper); }
+  .pill { padding:9px 16px; border-radius:999px; background:var(--lime); color:#0B0A14 !important; font-weight:700; font-size:14px; }
+  main { width:min(780px, calc(100% - 48px)); margin:0 auto; padding:64px 0 96px; }
+  main h1 { font-size:clamp(36px,5vw,56px); letter-spacing:-.04em; line-height:1.02; margin:0 0 20px; font-weight:800; }
+  main h2 { font-size:30px; letter-spacing:-.03em; margin:56px 0 14px; padding-top:24px; border-top:1px solid var(--line); font-weight:800; }
+  main h3 { font-size:21px; letter-spacing:-.02em; margin:32px 0 8px; }
+  main h4 { font-size:17px; margin:24px 0 6px; color:var(--lime); }
+  main p, main li { font-size:17px; color:#D8D6F0; } main li { margin:6px 0; }
+  main a { color:var(--cyan); text-decoration:none; border-bottom:1px solid rgba(43,217,255,.35); } main a:hover { border-bottom-color:var(--cyan); }
+  main strong { color:var(--paper); }
+  main code { font-family:var(--mono); font-size:.88em; background:rgba(255,255,255,.07); border:1px solid var(--line); padding:2px 7px; border-radius:6px; }
+  main pre { background:#07060E; border:1px solid var(--line); border-radius:14px; padding:16px 18px; overflow-x:auto; }
+  main pre code { background:none; border:0; padding:0; font-size:13.5px; line-height:1.6; color:#D8D6F0; }
+  main blockquote { margin:20px 0; padding:14px 20px; border-left:3px solid var(--magenta); background:rgba(255,77,141,.06); border-radius:0 12px 12px 0; }
+  main table { width:100%; border-collapse:collapse; font-size:15px; margin:20px 0; } main th, main td { text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top; } main th { color:var(--muted); font-weight:600; }
+  main hr { border:0; border-top:1px solid var(--line); margin:40px 0; }
+  main img { max-width:100%; border-radius:12px; }
+  .lede { color:var(--muted); font-size:19px; margin-bottom:36px; }
+  footer { border-top:1px solid var(--line); color:var(--muted); font-size:13px; padding:32px 0 40px; }
+  footer a { color:inherit; }
+  @media (max-width:800px) { nav ul { display:none; } }
+</style>
+</head>
+<body>
+<nav><div class="wrap">
+  <a class="wordmark" href="index.html"><img src="stashcut-icon.svg" alt=""><span>stash<span class="cut">cut</span></span></a>
+  <ul><li><a href="index.html#features">What it does</a></li><li><a href="help.html">Help</a></li><li><a href="changelog.html">Changelog</a></li><li><a href="terms.html">Terms</a></li></ul>
+  <a class="pill" href="index.html#pricing">Get Stashcut · €29</a>
+</div></nav>
+<main>
+<h1>Changelog</h1><p class="lede">What changed, and why.</p><h2>1.0.0, unreleased</h2>
+<p>Stashcut, a commercial macOS fork of Flycut.</p>
+<ul>
+<li>Renamed the Mac app to Stashcut (<code>com.stashcut.app</code>) on 2026-09-20. It was Flycut AI (<code>com.flycutai.flycut</code>) from 2026-09-12 until then.</li>
+<li>Version numbering restarts at 1.0.0. Upstream stopped at 1.9.6 and this is a
+different product.</li>
+<li>Menu bar mark: Stashcut&#39;s own carousel glyph, a template image that follows
+the menu bar&#39;s light or dark appearance, with a colour variant in Preferences<blockquote>
+<p>Appearance. General Arcade&#39;s scissors icons are no longer used.</p>
+</blockquote>
+</li>
+<li>Added a Search clipboard hotkey (Shift-Command-B by default) and a search window.</li>
+<li>Sticky bezel is on by default. Space or right-click pins the bezel.</li>
+<li>Dropped the iOS app, iCloud / CloudKit sync, InAppSettingsKit, MGSwipeTableCell, and MJCloudKitUserDefaultsSync.</li>
+<li>Shift-S save-and-delete no longer deletes from the main list after saving a favorite.</li>
+<li>Saving while favorites are selected no longer overwrites clipping history with the favorites list.</li>
+<li>Debounced bezel paste so Return plus modifier-release does not paste twice.</li>
+<li>Menu clicks paste the clicked clipping even if the menu rebuilds mid-click.</li>
+<li>Idle CPU: pasteboard polling now reads only the change count off the main thread.</li>
+<li>Bezel: cache the background pattern and release CGColors.</li>
+<li>Launch no longer wipes the system clipboard.</li>
+<li>Concealed / password pasteboard types are skipped even when Skip Password Fields is off. Reveal types logs instead of stuffing type names into history.</li>
+<li>Menu search field selects its text on open; Escape clears the filter.</li>
+<li>Escape from the bezel restores the main list if favorites were selected.</li>
+<li>Menu titles truncate on grapheme boundaries so emoji and combining marks are not split.</li>
+<li>Images that land on the pasteboard are captured and read on device with
+Apple&#39;s Vision framework. The recognised text becomes the clipping&#39;s contents,
+so a screenshot appears in the menu and the bezel by what it says, substring
+search finds it, related search indexes it, and the secret detector reads it,
+all with no change anywhere downstream. An image with no readable text is kept
+and described by its size, for example <strong>Image, 1280 by 720</strong>, because a
+clipping with no contents is invisible in the menu and in the bezel.
+Recognition is local: no model, no network, no Ollama.</li>
+<li>Pasting an image clipping puts both the picture and the text on the
+pasteboard, so an image editor gets the screenshot and a text field gets the
+words. If the picture has gone, the paste still delivers the text.</li>
+<li>Pictures are written to <code>~/Library/Application Support/Stashcut/Clipboard Images</code> and only the file name is kept in the store (new <code>ImageFile</code> key).
+Stores written before this load unchanged. Anything no clipping refers to is
+deleted at launch and the folder is held to roughly 200 MB, oldest first.</li>
+<li>Text recognition needs macOS 10.15, so Vision is linked weakly and gated at
+runtime. On 10.13 and 10.14 an image is still captured and described by its
+size.</li>
+<li>On by default. Off with <code>defaults write com.stashcut.app captureImages -bool NO</code>; there is no checkbox, because the General pane has no room for one.</li>
+<li>RTF capture is still open; it is the same store change in a different lane.</li>
+</ul>
+<h3>Security</h3>
+<ul>
+<li>Added content-based secret detection, on by default, as <strong>Don&#39;t copy keys and
+passwords found in text</strong> under Preferences &gt; General &gt; Passwords. A password
+manager marks what it copies so Stashcut can skip it, but a key pasted out of a
+terminal, a config file, or a chat message carries no marker and would
+otherwise sit in the clipping store in plain text.</li>
+<li>Recognises private key blocks, JSON web tokens, URLs with embedded passwords,
+<code>KEY=value</code> assignments for password / secret / token / api_key names, bearer
+tokens, and issuer-prefixed keys for AWS, GitHub, GitLab, Google, OpenAI,
+Anthropic, Slack, Stripe, npm, SendGrid, Hugging Face, PyPI and Notion.</li>
+<li>Matching is by issuer prefix and length rather than by entropy, so prose and
+source code are not affected. Values that read as documentation
+(<code>your_password_here</code>, <code>process.env.TOKEN</code>, anything containing <code>example</code> or
+<code>test</code>) are deliberately kept, because a silently discarded clipping is worse
+for the user than a stored placeholder.</li>
+<li>A skipped copy now says so. A small notice appears under the menu bar icon
+naming what the copy looked like, for example <strong>Not saved: Anthropic API key</strong>,
+holds for four seconds and fades. Skipping silently was the worst part of the
+feature: a copy that never appears in the history is indistinguishable from a
+bug, and this is also the only time the detection makes itself visible at all.
+The notice never takes focus and never takes a click, the same as the bezel.
+Only content detection is announced, not the copies a password manager marked
+as concealed, since those are both expected and constant.</li>
+<li>A screenshot of a credential is caught the same way a copied one is: the text
+Vision reads out of an image goes through the same check before the clipping
+is added and before the picture is written to disk. Vision returns opaque
+tokens with Cyrillic and Greek lookalikes and typographic dashes mixed in
+(a key read off a screen came back with Cyrillic a and p inside <code>sk-ant-api03</code>
+and a U+2014 dash where the ASCII hyphen was), which matched nothing at all,
+so the text is folded back to ASCII before the check. The recognised text is
+folded for the clipping as well, word by word, keeping the fold only where it
+leaves a word entirely ASCII: a key folds cleanly and is plainly what was
+meant, while a word genuinely in Cyrillic or Greek still holds letters outside
+the lookalike table and is left exactly as Vision read it, as is a Latin word
+with an accent in it. Without that, a key or a path read off a screenshot
+looked right in the history and did not work when pasted.</li>
+<li>Detection needs no model and is independent of the AI settings.</li>
+<li>Known limits: a credential with no digits (<code>password=correcthorsebatterystaple</code>)
+is not recognised, and only the first 128 KB of a clipping is scanned.</li>
+</ul>
+<h3>1Password as the store for credentials</h3>
+<ul>
+<li>A detected credential can now be kept instead of only refused. With
+<strong>Preferences &gt; 1Password &gt; Offer to save detected credentials to 1Password</strong>
+on and a vault chosen, the &quot;Not saved&quot; notice gains a <strong>Save to 1Password</strong>
+button. Taking it files the credential into 1Password as a Password item and
+puts a clipping in the history that points at that item, so it can still be
+pasted from the bezel like anything else. Skipping it and losing it was the
+part of secret detection that sent the user back to wherever they copied it
+from.</li>
+<li><strong>How long the offer waits is now yours to set</strong>, in
+<strong>Preferences &gt; 1Password &gt; Panel stays for</strong>: 5 to 90 seconds, 20 by default,
+where it used to be a fixed nine. Nine was long enough to notice and not long
+enough to finish the sentence you were typing and come back to. The value is
+clamped to the range on every read, so a hand-edited preferences file cannot
+produce an offer that never goes away or one that is gone before it is seen.</li>
+<li><strong>The offer can be a real macOS notification instead of Stashcut&#39;s own panel</strong>,
+under <strong>Preferences &gt; 1Password &gt; Show offer as</strong>. The notification says the
+same two things the panel does, including which vault and account saving would
+use, and carries a <strong>Save to 1Password</strong> action, so it is an offer rather than
+an announcement. Permission is asked for only when the notification style is
+actually chosen, never at launch.</li>
+<li>How long a notification stays is macOS&#39;s decision, not Stashcut&#39;s, so the slider
+is disabled and says so when the notification style is chosen. Under
+<strong>System Settings &gt; Notifications &gt; Stashcut</strong>, Banners hide themselves after
+about five seconds and Alerts wait until you dismiss them; there is a
+<strong>Notification Settings…</strong> button in the pane that opens it. If permission is
+denied, or has never been given, or macOS refuses to deliver, the offer falls
+back to the Stashcut panel and the pane says why. A selected option that quietly
+does nothing is indistinguishable from a bug.</li>
+<li>The copied credential is now held with a deadline of its own, separate from
+whatever is on screen: the panel&#39;s timeout for the panel, and two minutes for
+a notification, which can otherwise sit in Notification Center until tomorrow.
+When the deadline passes the credential is released, and a <strong>Save</strong> pressed
+after that says the offer has expired and to copy it again, rather than filing
+an empty item. The credential also comes out of the hold at most once, so a
+double press cannot file it twice.</li>
+<li>Stashcut&#39;s store holds an <code>op://&lt;vault&gt;/&lt;item&gt;/&lt;field&gt;</code> reference and the item
+title, never the secret. Someone reading the preferences file learns which
+items exist, not what is in them. The credential goes to <code>op item create</code> on
+standard input, which is what <code>op</code> itself recommends, since assignment
+statements given as command arguments can be read by other processes.</li>
+<li>Off by default, and with it off, or with no vault chosen, or with <code>op</code> not
+installed, a detected credential behaves exactly as it did before: skipped,
+announced, nothing stored. This is not a dependency and never becomes one.</li>
+<li>Nothing is chosen for you in the vault popup. Both configured accounts are
+listed and every vault is named with the account it belongs to, because a
+private credential landing in a work vault is the one mistake here with a real
+cost.</li>
+<li>A credential clipping draws as a card in the clipping text&#39;s place: what the
+credential is (<strong>GitHub token</strong>) as a headline, the value masked to a fixed
+width in a large monospaced line with real room above and below it, one line
+of status, and <strong>In 1Password · vault (account)</strong> beside 1Password&#39;s own icon,
+taken from the installed application, with a lock in its place when
+1Password is not installed. The icon of the application the credential was
+copied from is in the bezel&#39;s source row above, where it is for every
+clipping, so the two icons have two places and two meanings. Arrowing onto
+the card and past it runs nothing and prompts nothing. That is the constraint
+the whole design is built on: every <code>op</code> call costs about a second, warm or
+cold, so the bezel never makes one, and opening the bezel can never raise a
+Touch ID sheet because a credential happened to be two cards away.</li>
+<li>The card is the same height masked, waiting, failed and shown, so pressing r
+never moves anything: the mask stays in place and dims while 1Password is
+being asked, with a spinner and <strong>Waiting for 1Password…</strong> under it, and the
+value replaces the mask when it arrives. Only a shown value that wraps, a key
+block say, makes the card taller, and it grows by whole lines. A credential on
+a carousel side card is masked, carries no status, and never reveals.</li>
+<li><strong>r</strong> shows the value, and r again puts it away. That single keystroke is the
+only thing that talks to 1Password, and the answer is held in memory for the
+life of that bezel so showing and then pasting pays for one call rather than
+two. Hiding is only visual and deliberately so: the bezel was always going to
+hold the value until it closed, so dropping it on hide would buy nothing and
+would cost another second every time. It is never written to disk and is
+released when the bezel hides. The bezel&#39;s key hint line lists <strong>r show/hide</strong>
+while a credential is on the card and does not while an ordinary clipping is,
+so the hint never advertises a key that would do nothing. The card itself says
+nothing about r while that line is on, since it was being read twice; with
+<strong>Show key hints along the bottom of the bezel</strong> off, the card carries the one
+short hint instead.</li>
+<li>The application a credential was copied from is now read when the pasteboard
+is, and travels with the credential through the offer and into the clipping,
+name and bundle path both. It used to be worked out again from whatever was
+frontmost when the offer appeared, which named the wrong application at
+times, and the bundle path was never carried at all, so the source row drew
+no icon for a credential.</li>
+<li>Pasting a credential fetches it if needed, puts it on the pasteboard also
+declaring <code>org.nspasteboard.ConcealedType</code> so other clipboard managers skip it,
+pastes through the existing <code>pbBlockCount</code> path so Stashcut does not re-capture
+what it just wrote, and clears the pasteboard about twelve seconds later if
+nothing else has replaced it. Return does this whether or not the card has been
+revealed, the same as it does for every other clipping; the card says so. The
+keypad Enter puts the credential on the clipboard without pasting it, which is
+what it does for an ordinary clipping too. Neither hides the bezel or fakes
+Command-V until the value has actually arrived, so a fetch still in flight
+cannot paste an empty string or paste into whatever the user switched to while
+waiting.</li>
+<li>Any failure, including 1Password being locked, is one line of text on the card.
+Never a dialog, never a dead end, and the arrows always still work. The message
+is deliberately the same whatever went wrong: telling locked from denied from
+broken means parsing an error message, and a card that guessed wrong would be
+worse than one that says less.</li>
+<li>The offer is a notice with a button rather than a dialog. Detection fires while
+the user is in the middle of pasting a key somewhere, and a panel that took the
+keyboard at that moment would be worse than the silence it replaces, so it
+refuses the keyboard by default and its buttons take the first click without
+bringing Stashcut forward.</li>
+<li><strong>Return</strong> saves and <strong>Escape</strong> dismisses the offer, but only while the pointer
+is over it. A non-activating panel that becomes key does not activate its
+application, but it does take key status away from whatever is being typed
+into, and a Return swallowed out of a login form is worse than having no
+keyboard shortcut at all. So the panel takes the keyboard when the pointer is
+moved onto it, says so with a <strong>return save  esc dismiss</strong> line while it holds
+it, and gives it straight back when the pointer leaves. A pointer that was
+already resting where the panel opened does not count. Ignoring the offer still
+fades it away, and that silence still means no.</li>
+<li>The <strong>Preferences &gt; 1Password</strong> checkbox now reflects and writes the
+preference. It was bound with the <code>values.</code> key path that belongs to an
+<code>NSUserDefaultsController</code> against plain user defaults, so it always drew as
+off and turning it on wrote nowhere; the feature could only be enabled with
+<code>defaults write</code>.</li>
+<li>The 1Password pane no longer opens with a band of empty window below its text.</li>
+<li>Every stored reference is checked on the way back out of the preferences file
+before anything is done with it: strings only, an <code>op://</code> reference of the
+right shape with no control characters, a length cap, and identifiers that must
+start with an alphanumeric so a hand-edited plist cannot turn an account id
+into <code>--account</code> and have <code>op</code> read it as a flag. A reference that does not
+survive that is dropped and the clipping loads as an ordinary one showing its
+title. <code>op</code> is always run with an absolute path and an argument array, never
+through a shell.</li>
+<li>1Password authorises the calling binary rather than the user, so it raises its
+own approval prompt for Stashcut the first time. That is correct, it is asked
+once, and the Preferences pane says so rather than trying to hide it.</li>
+</ul>
+<h3>A coding agent can read the clipboard history</h3>
+<ul>
+<li>Stashcut ships <code>stashcut-mcp</code> inside the application bundle, a Model Context
+Protocol server over stdio that an agent such as opencode or Claude Code can
+call. Three read-only tools: <strong>search</strong> the history for a piece of text,
+<strong>get</strong> one clipping by its position, <strong>recent</strong> for the newest ones. Nothing
+writes to the history, deletes from it, or pastes.</li>
+<li><strong>Off by default</strong>, registered NO, with a <strong>Let coding agents read the
+clipboard history</strong> checkbox in the new Preferences &gt; Agents pane. While it is
+off, every tool call is refused with a message naming the preference, rather
+than answered emptily: an agent has to be able to tell &quot;not allowed&quot; from
+&quot;nothing matched&quot;, and a user has to be able to tell why.</li>
+<li><strong>Credential clippings are never returned</strong>, in any form. Not the value, not
+the <code>op://</code> reference, not the item&#39;s title. They are reported as a count, so
+the gap they leave in the numbering has an explanation rather than looking
+like a bug.</li>
+<li><strong>Everything else goes through the paste guard&#39;s wider tier first.</strong> A
+clipping that looks like a payment card number, a bank account number, an API
+key, an international phone number or a list of email addresses keeps its
+position and its timestamp, and its text is replaced by
+<strong>[Stashcut withheld this clipping: it looks like a payment card number]</strong>.
+Withholding it silently would be worse: an agent that cannot see a gap reasons
+around it confidently and wrongly.</li>
+<li>Those clippings are also left out of searching entirely, which is stricter
+than only masking them. A search that could match hidden text is an oracle: ask
+for <code>4111</code>, then <code>41111</code>, and a card number falls out a character at a time.
+The number of clippings skipped comes back with the results, so the gap stays
+visible without being answerable.</li>
+<li>Two caps, so one call cannot drain the history into a context window: 2000
+characters per clipping and 20000 characters per answer, with the answer
+saying when the second one stopped it. The per-clipping cap is deliberately
+the same 2000 characters the paste guard scans, so no text is ever returned
+that the guard has not read.</li>
+<li><strong>No token and no socket.</strong> The server runs as a child process of the agent
+you started, so the process boundary is the authorisation. A token would be
+theatre you have to manage and a socket would turn a private thing into a
+listening one.</li>
+<li>The history is read through the preferences daemon rather than by parsing the
+plist, fresh on every request, so it works whether or not Stashcut is running and
+picks up something you copy while the agent is working. <code>FLYCUT_DEFAULTS_DOMAIN</code>
+points it at another domain, which is how a sandbox build reaches its own
+history.</li>
+<li>Preferences &gt; Agents shows the exact path of the executable and has
+<strong>Configure opencode</strong> and <strong>Configure Claude</strong> beside it. A feature that
+needs hand-written JSON to switch on is a feature nobody switches on.</li>
+<li><strong>Stashcut never opens or rewrites your configuration file.</strong> Each button runs
+that product&#39;s own command-line tool, <code>opencode mcp add</code> or <code>claude mcp add</code>,
+and nothing else. The exact commands are shown first and can be cancelled.
+Stashcut lists the tool&#39;s MCP servers before adding, so it cannot create a
+duplicate, and lists them again afterwards rather than trusting an exit
+status. If it cannot find the CLI, the command fails, or the entry cannot be
+verified, it says so and offers to copy the JSON block for you to merge
+yourself. It will not guess at another executable and it will not claim a
+configuration worked when it could not confirm it. The tool&#39;s own output is
+shown verbatim in every case.</li>
+<li>Deliberately not exposed in this version: semantic search and Ask Your
+Clipboard, both of which need the app running and an embedding endpoint, and
+the favourites list.</li>
+<li>Preferences window widened to 800pt. The toolbar has room for a fixed number
+of tabs and pushes the rest into an overflow chevron where nobody finds them,
+and at 700 the eighth tab did not fit. Credits was already in that chevron
+before this change. Panes laid out in the nib are now centred in the window
+the way the ones built in code already were.</li>
+</ul>
+<h3>Send to Obsidian</h3>
+<ul>
+<li><strong>o</strong> in the bezel files the clipping you are looking at into an Obsidian
+vault as plain markdown, and there is a <strong>Send to Obsidian</strong> item in the menu
+that does the same. A notice under the menu bar icon says which note it went
+to. The key hint line lists <code>o obsidian</code> only once a folder has been chosen,
+so an install that never goes near Obsidian sees the line it always had.</li>
+<li>Plain file writes and nothing else: no plugin, no URL scheme, no talking to a
+running Obsidian. It works with Obsidian closed and does not care which
+version is installed, because Obsidian watches the filesystem itself.</li>
+<li><strong>Nothing is guessed and the feature is off until you pick a folder.</strong> The
+destination is registered empty and chosen with a folder picker in
+Preferences &gt; Obsidian. A vault holds work notes beside private ones, and
+filing a private clipping into an employer&#39;s folder by accident is the one
+thing this must never do, so there is no default to fall back on. Clearing the
+folder is how it is turned off again, which is why there is no separate
+checkbox.</li>
+<li>Entries are appended to the daily note <code>YYYY-MM-DD.md</code> inside that folder,
+created when it is not there, which is the convention a vault already has. One
+note per clipping would fill a vault with fragments. The day and the time are
+the clipping&#39;s own: file something copied three days ago and it lands in that
+day&#39;s note, which is the provenance a plain paste loses.</li>
+<li>An entry is a heading of the time and the source application, then the
+clipping itself inside a fenced code block. The fence is one backtick longer
+than the longest run of backticks anywhere in the clipping, so a clipping
+holding triple backticks, a line starting with <code>#</code>, or a line of three hyphens
+cannot close the block it is in, change the note&#39;s structure, or swallow what
+follows. The clipping is written through byte for byte, and Obsidian&#39;s own copy
+button on a code block hands it straight back. Only line endings are touched:
+CRLF and a lone CR become LF, because a lone CR renders a whole clipping as one
+line.</li>
+<li>The heading is unique within a note and therefore linkable, as
+<code>[[2026-09-20#14:32:07 Safari]]</code>. An application name is stripped of the
+characters that mean something structural in a heading (<code>[</code>, <code>]</code>, <code>|</code>, <code>#</code>,
+<code>^</code>) so it cannot turn one into a link or a tag.</li>
+<li><strong>An image clipping writes its picture too.</strong> The PNG is copied into an
+<code>attachments</code> subfolder under a stamped name, embedded with <code>![[name.png]]</code>,
+and the text Vision read out of it goes underneath, so your vault&#39;s own search
+finds the note by what is in the screenshot. A name already taken is counted
+on rather than overwritten, compared without case because a vault is usually on
+a case insensitive volume. Change the subfolder with <code>defaults write com.stashcut.app obsidianAttachmentsFolder Files</code>; a value with a path
+separator, a leading dot or <code>..</code> in it falls back to <code>attachments</code>.</li>
+<li>If the picture has already been cleared by Stashcut&#39;s own housekeeping, the
+recognised text is still filed on its own and the notice says so, rather than
+losing the words to a missing picture.</li>
+<li><strong>Credentials are never sent.</strong> A credential clipping is a reference to a
+1Password item, and the whole point of that is that the secret is not in a file
+Stashcut wrote. <code>o</code> on one refuses in a line and writes nothing.</li>
+<li>Failure is legible and leaves nothing behind. A folder that is gone, renamed,
+on an unmounted volume, read-only, or momentarily unavailable in iCloud Drive
+gets one sentence naming it. The note is opened <code>O_APPEND</code> and locked with
+<code>flock</code>, so two clippings filed a second apart cannot interleave and neither
+can clobber the other; anything that fails part way through, including the
+<code>fsync</code>, truncates back to the size before the write, and a note that did not
+exist is removed rather than left behind empty. A picture already copied is
+removed too, so a failed filing leaves the vault as it was found.</li>
+</ul>
+<h3>Paste guard</h3>
+<ul>
+<li>Stashcut now asks before pasting personal, financial or credential-shaped
+content into a browser, a chat client or an AI chat application. The alert
+names what was found and where it is going (&quot;Paste a payment card number into
+Google Chrome?&quot;) and offers <strong>Paste Anyway</strong>, <strong>Cancel</strong>, and <strong>Don&#39;t Warn for
+<application></strong>. Cancel is the default button, and cancelling leaves the
+clipboard and the history exactly as they were.</li>
+<li>This is a second, wider detection tier, not the store-time one reused. The
+store-time detector refuses to save credentials in the first place, so a guard
+keyed on it would have almost nothing left to guard. What the history actually
+holds, and what this looks for, is: payment card numbers, IBANs, international
+phone numbers, bulk lists of email addresses, credentials the store-time tier
+kept for reading as documentation, and, for anyone who turned <strong>Don&#39;t copy
+keys and passwords found in text</strong> off, everything it would have caught.</li>
+<li>Card numbers are validated with the Luhn check and IBANs with the mod-97
+check, so order numbers, invoice references and long integers do not trip the
+guard. A card number additionally has to open with a major industry identifier
+of 3 to 6, which is where every payment network lives, and which is what keeps
+millisecond Unix timestamps (thirteen digits, one in ten of them Luhn-valid by
+chance) out.</li>
+<li>Email addresses only count in bulk, at five distinct addresses. One address,
+or a handful, is an ordinary thing to paste, and warning about it would train
+people to click the alert away without reading it.</li>
+<li>Phone numbers are recognised in international form only (a leading <code>+</code> and 8
+to 15 digits). A national-format number is a shape ordinary text is full of.</li>
+<li>Stashcut can see which application the paste is going to, not which page is
+loaded in it. Reading the browser&#39;s front tab means automating the browser,
+which is a much larger permission than a clipboard manager should ask for, so
+the guard works at the level of the application and the alert says so.</li>
+<li>Code editors and terminals are deliberately not on the list. Pasting a key
+into the file that needs it is the ordinary case there.</li>
+<li>On by default. Off with <code>defaults write com.stashcut.app warnBeforeRiskyPaste -bool NO</code>. The list of applications is
+<code>riskyPasteBundleIdentifiers</code>, a comma-separated string of bundle identifiers
+that can be edited by hand; an entry also covers anything extending it by a
+dot, so <code>com.google.Chrome</code> covers Canary and Beta.</li>
+<li>Measured at 642 microseconds for one check on a 2000 character clipping that
+matches nothing, which is the worst case, against a paste that already waits
+200 milliseconds for the application switch. Clippings are scanned to 2000
+characters; beyond that the user pasted a document, not a value.</li>
+</ul>
+<h3>AI</h3>
+<ul>
+<li>Added a Preferences &gt; AI tab: master switch (off by default), backend, endpoint,
+model picker with live connection status, and per-feature switches.</li>
+<li>Added an AI Actions submenu to the status menu: Summarize, Rewrite Clearly,
+Fix Spelling &amp; Grammar, Explain, Translate to English. Each acts on the current
+clipboard text; the result is stored as a new clipping and put on the clipboard.</li>
+<li>Runs against a local Ollama-compatible endpoint (<code>http://localhost:11434</code> by
+default). Clipping text goes to that endpoint and nowhere else; there is no
+cloud service and no API key.</li>
+<li>Added <strong>Ask Your Clipboard</strong> to the AI Actions submenu. Ask a question in
+plain language and Stashcut finds the clippings that bear on it by meaning,
+hands those to the local model, and streams an answer back citing the
+clippings it used by number. Every clipping it retrieved is listed under the
+answer with the cited ones ticked, so the basis of the answer is visible and
+checkable rather than taken on trust, and clicking one copies it.</li>
+<li>Asking is refused outright when nothing in the history is related, rather than
+answering from the best of a bad lot. Retrieval has to clear both the relative
+cut-off semantic search uses and an absolute floor, because a question the
+history has no answer to still produces a spread of scores and the top of a
+spread of noise is still noise. Measured before the floor was added: the
+question &quot;How much does the company pay for parental leave?&quot; against a history
+with nothing of the sort retrieved three clippings in the low 0.4s and the
+model invented a figure. With the floor, nothing is retrieved and no request
+reaches the model at all.</li>
+<li>Each clipping is truncated to 600 characters and the whole context to 6000, so
+the feature works on the smallest model, which is the one a first run gets.</li>
+<li>Added semantic search to the search window (Shift-Command-B): typing now also
+turns up clippings that match by meaning, marked with <code>≈</code> and listed under the
+exact substring matches. &quot;pastry ingredients&quot; finds &quot;Recipe: 200g flour, 2
+eggs, 100ml milk&quot; with no word in common.</li>
+<li>Embeddings come from the same local endpoint, using a separate embedding model
+(<code>nomic-embed-text</code> by default) because a chat model cannot embed. One vector
+per clipping is cached under Application Support, keyed by a hash of the
+content, so repeated clippings cost nothing and reordering the history costs
+nothing. Changing the embedding model discards the cache, since vectors from
+two models are not comparable.</li>
+<li>Whether a clipping counts as related is decided from the shape of the score
+distribution, not a fixed similarity threshold. A fixed cut-off does not
+survive a change of model and does not even hold across queries for one
+model: measured, a correct match for one query scored 0.47 while an incorrect
+match for another scored 0.43. Instead the best score has to rise clearly
+above the lower quartile of the history, or nothing is offered at all, and
+the clippings offered are the ones close behind the best.</li>
+<li>The baseline is the lower quartile rather than the mean because a history
+usually holds clusters of near-identical clippings. Measured on a history of
+seven near-identical car listings plus seven unrelated clippings, queried for
+the listings, the mean was 0.538 with a standard deviation of 0.178, so a
+mean-plus-deviations rule came to 0.805, above the best score of 0.715, and
+found nothing at all. The lower quartile ignores a top-heavy cluster.</li>
+<li>Clippings without at least two words, such as a licence plate or a part
+number, are left out of semantic matching. Short opaque tokens embed near each
+other and surfaced as confident matches for unrelated queries. Substring
+search still finds them, exactly.</li>
+<li>The search window now searches the whole history. It was using the &quot;display in
+menu&quot; count, which capped it at ten results regardless of how much history was
+kept.</li>
+<li>AI actions stream. The answer is now asked for a piece at a time and shown as
+it arrives, in a small panel at the top right of the screen with the name of
+the action, the text so far, how long it has been running, and a Cancel
+button. Before this the only sign anything was happening was an ellipsis in
+the menu bar, for a wait measured at 35 to 80 seconds, with no way out of it.
+The panel never takes focus, the same as the bezel, because an action is
+usually run to paste the result straight back into whatever you were typing
+in. The result is still added to the history and put on the clipboard only
+when it is complete, so a half-finished answer never becomes a clipping.</li>
+<li>Actions can be cancelled: the Cancel button, Escape while the panel has focus,
+or <strong>Cancel AI Action</strong> in the AI Actions submenu, which is the only item
+enabled while an action is running. Cancelling says nothing and stores
+nothing.</li>
+<li>A model is now asked to stay in memory for thirty minutes between actions.
+Ollama unloads after five minutes idle by default, so most actions were paying
+to load the weights again: measured at 160 seconds for a 27B model against 52
+seconds once it was resident, and 13 seconds against 2 for a 1B one.</li>
+<li>The model picker lists what the choice costs. Models are shown smallest first,
+with their size (<code>llama3.2:1b (1.3 GB)</code>), and when nothing has been chosen yet
+the smallest one is picked rather than whichever name happened to sort first
+alphabetically. Measured on the same 200-word summarize prompt with both
+models resident: 1.3 GB answered in 0.3 to 2 seconds, 17.7 GB in 52.</li>
+<li>Models that can only produce embeddings are no longer offered as the chat
+model. They were sorting to the top of the list, being small, and picking one
+could only ever return an error, since the embedding model is configured
+separately further down the same pane.</li>
+<li>A reasoning model streams its deliberation before a word of the answer, which
+shows as &quot;Working…&quot; with the seconds counting up rather than as a panel that
+looks stuck. Measured on a 27B reasoning model: first bytes after 0.6 seconds,
+first word of the actual answer after 30.</li>
+<li>Reasoning models are no longer asked to reason. AI Actions and Ask Your
+Clipboard are short transforms and retrieval-grounded answers, and thinking
+tokens arrive with an empty <code>response</code>, so they were most of the wait and none
+of what appeared on screen. Stashcut now sends <code>&quot;think&quot;: false</code> on these
+requests. Measured on a warm <code>qwen3.8:latest</code> through the app, Summarize on the
+same paragraph: first visible word 15.2 seconds before, 1.8 after; total 22.9
+before, 14.5 after. Ask Your Clipboard over the same 99-clipping history: first
+words 65.4 seconds before, 0.3 after; total 68.4 before, 3.3 after. The two
+answers were equivalent.</li>
+<li>That flag is only sent to a model that reports <code>thinking</code> among its
+capabilities, which is one <code>/api/show</code> per model name rather than one per
+action. A model without it, <code>llama3.2:1b</code>, is unaffected: 0.6 seconds to the
+first word and 1.3 in total, warm, exactly as before. If a runtime rejects the
+flag anyway, the request is repeated once without it and that model is never
+sent it again.</li>
+<li><code>defaults write com.stashcut.app aiAllowThinking -bool YES</code> turns the
+suppression off for anyone who would rather have the reasoning than the speed.
+There is no checkbox.</li>
+<li>When a model does think, the wait now shows it. The deliberation streams into
+the panel and the Ask window in a dimmer colour with the status reading
+&quot;Thinking…&quot;, instead of a blank box counting seconds. It is never stored as a
+clipping, never put on the clipboard, and never copied by <strong>Copy Answer</strong>.</li>
+<li>An empty <code>aiModel</code> is now resolved to the smallest installed chat model and
+written to defaults, so Preferences shows what the actions are running. It
+happens the first time the AI feature is used or enabled rather than on every
+launch, and a model the user has chosen is never touched. Before this, only
+opening the preference pane filled it in, and a first run could land on a 17 GB
+reasoning model where a 1.3 GB one answers the same question in under two
+seconds.</li>
+<li>A request that has run twenty seconds with nothing to show now says why, once:
+that the model is large, or that it is reasoning before it answers, and that
+Preferences &gt; AI lists smaller ones with their sizes. It disappears as soon as
+the first word of the answer arrives.</li>
+</ul>
+<h3>Bezel</h3>
+<ul>
+<li>The bezel is now a carousel. The two clippings either side of the current one
+appear as full bezels of their own beside it, two on the left and two on the
+right, all one size and each step out fainter, so the history reads as a row
+of cards you move through rather than one card whose text keeps changing. Left
+is the more recent clipping and right the older one, matching the arrow keys.
+Stepping slides the whole row one slot; jumping (a digit, Home, End, PgUp)
+fades instead, since sliding five slots would be a blur. Cards past either
+end of the history are not drawn, which is how you can see you have reached
+the start or the end. The cards are the size you set for the bezel scaled
+down, all shrinking together if the row would not fit the screen, and they
+never take focus, so the app you are pasting into keeps its focus. Clicking a
+side card brings that clipping to the middle, and a card brightens under the
+mouse to say so. Turn the carousel off with <strong>Show neighbouring clippings
+beside the bezel</strong> in Preferences &gt; Appearance.</li>
+<li>The screen behind the bezel is dimmed while it is open, so the clipping you
+are choosing is the only lit thing in front of you. How dark is a slider,
+<strong>Dim behind bezel</strong> in Preferences &gt; Appearance, from off to 90%; the default
+is 65%. The backdrop covers every attached display, follows you between
+spaces, and never takes a click, because Stashcut deliberately leaves focus
+with the application you are about to paste into.</li>
+<li>That backdrop no longer has to be black. <strong>Backdrop</strong> in Preferences &gt;
+Appearance chooses what it is filled with: <strong>Dim</strong> (the plain black it was,
+and still the default), <strong>Solid colour</strong> from a colour well, <strong>Gradient</strong>
+between two of them, or <strong>Image</strong>, a picture of your own drawn <strong>Fill</strong>,
+<strong>Fit</strong> or <strong>Tile</strong>. Tile repeats the picture at its own size from the top
+left corner, which is the case for a pattern rather than a photograph; Fit
+shows all of the picture and fills what is left of the screen with the
+backdrop colour, so there is never a see-through band. <strong>Dim behind bezel</strong>
+keeps its one meaning throughout: it is the backdrop&#39;s opacity, so a colour or
+a picture is as translucent as the dim was and the desktop still reads
+through. Each fill is drawn into each display&#39;s own rectangle rather than
+across the union of them all, so a second monitor gets its own complete
+picture instead of the right-hand half of one. A chosen picture is copied into
+<code>~/Library/Application Support/Stashcut/Backdrops</code> and only its file name is
+kept, so tidying the folder it came from does not blank the backdrop; if the
+copy does go missing, the backdrop falls back to plain dim rather than to
+nothing. The scaled result is prepared once per display and held, and warmed
+shortly after launch: a 6000 by 4000 wallpaper costs about 125 ms on the first
+bezel of a session and nothing measurable after that.</li>
+<li>The bezel is only as tall as the clipping it is showing. A short clipping used
+to sit in the top corner of a panel that was mostly empty space; it is now a
+single bar, and stepping to a longer clipping grows the bezel into it over the
+same moment as the row slides. <strong>Bezel height</strong> in Preferences &gt; Appearance is
+therefore now a limit, and says so: <strong>Bezel height limit</strong>. The width is still
+fixed, since the width decides where the carousel&#39;s cards sit and a row that
+changed shape sideways on every arrow press would be a mess. The cards beside
+it are sized to their own clipping the same way, but from a floor rather than
+from nothing: a card is never smaller than the full bezel scaled down, and
+never taller than the same limit the bezel grows to. A clipping that does not
+fill a card sits in the middle of it rather than at its top.</li>
+<li>The bezel pops in, growing from 94% and fading up over the same moment as the
+backdrop, rather than appearing on top of a darkening screen. Hiding is not
+animated, since by then the paste is what you are waiting on.</li>
+<li>The keys that work in the bezel are now written along its bottom edge, either
+side of the counter: arrows, Return, Delete, Escape on the left, s, f and
+space on the right. Everything but the arrows and Return was undiscoverable.
+Turn it off with <strong>Show key hints along the bottom of the bezel</strong>.</li>
+<li>Fixed the Appearance preference pane clipping its bottom row. Rows are laid
+out downward from the top of a fixed-height box, and they had outgrown it, so
+<strong>Show clipping source app and time</strong> was positioned outside the box and
+never drawn. The box is now sized to its rows and centred.</li>
+<li>Rebuilding the bezel, which happens when a preference changes its layout, now
+releases the previous one instead of leaving it alive on screen with the
+controller still installed as its delegate.</li>
+<li>The bezel now unhides the application (without activating it) before it
+appears. Escape hides the whole application, and the bezel used to be shown
+while it stayed hidden. Windows of a hidden application do draw, but the
+first click into one is spent unhiding it, and that click was delivered
+late, twice, or not at all. Clicking a carousel card was unreliable because
+of this; measured afterwards at 16 clicks sent, 16 received, 16 picks.</li>
+<li>Whether the bezel is showing no longer depends on whether Stashcut is the
+active application. Launch no longer asks to activate the app, and the app
+losing focus no longer hides the bezel. The bezel and its cards are
+non-activating panels, so activation never had anything to do with them, and
+the old hide-on-resign could close a bezel that had just been opened if
+Stashcut happened to be frontmost when the hotkey was pressed.</li>
+<li>Fixed the AI preference pane showing only its lower half. The preference panel
+resized the window only for panes that wrap their content in an NSBox, which
+every original pane does and the AI pane does not, so arriving from a shorter
+pane left the window too short and the rows above Features fell outside it.
+Enable, Backend, Endpoint and the model picker all looked as though they had
+been removed. Panes without a box are now sized to their own content.</li>
+<li>Preferences window widened to 700pt. With five tabs the trailing ones were
+pushed into the toolbar overflow menu, which also hid Acknowledgements before
+the AI tab existed. Removed the flexible-space item that caused it and renamed
+the Acknowledgements tab to Credits.</li>
+</ul>
+
+</main>
+<footer><div class="wrap">Copyright © 2026 Khalil Gharbaoui. Built on <a href="https://github.com/TermiT/Flycut">Flycut</a> and Jumpcut, both MIT licensed. <a href="index.html">Home</a> · <a href="help.html">Help</a> · <a href="changelog.html">Changelog</a> · <a href="terms.html">Terms</a> · <a href="mailto:hello@stashcut.com">Contact</a></div></footer>
+</body>
+</html>

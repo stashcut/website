@@ -1,0 +1,538 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Help · Stashcut</title>
+<meta name="description" content="Everything Stashcut does and how to use it, from hotkeys to the agent server.">
+<link rel="canonical" href="https://stashcut.com/help.html">
+<link rel="icon" href="stashcut-icon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#0B0A14">
+<style>
+  :root { --ink:#0B0A14; --paper:#F6F5FF; --muted:#A9A6C9; --line:rgba(255,255,255,0.09); --violet:#6D4DFF; --magenta:#FF4D8D; --lime:#C6FF3D; --cyan:#2BD9FF;
+          --font:"SF Pro Display",-apple-system,BlinkMacSystemFont,"Inter","Helvetica Neue",Helvetica,Arial,sans-serif; --mono:"SF Mono",ui-monospace,Menlo,Consolas,monospace; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--ink); color:var(--paper); font-family:var(--font); line-height:1.6; -webkit-font-smoothing:antialiased; }
+  body::before { content:""; position:fixed; inset:0; z-index:-1; background:radial-gradient(900px 500px at 10% -10%, rgba(109,77,255,.30), transparent 60%), radial-gradient(700px 500px at 100% 10%, rgba(255,77,141,.22), transparent 60%); }
+  nav { position:sticky; top:0; z-index:10; backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); background:rgba(11,10,20,.62); border-bottom:1px solid var(--line); }
+  nav .wrap { display:flex; align-items:center; justify-content:space-between; height:66px; }
+  .wrap { width:min(1120px, calc(100% - 48px)); margin:0 auto; }
+  .wordmark { display:inline-flex; align-items:center; gap:12px; text-decoration:none; color:inherit; font-weight:800; font-size:22px; letter-spacing:-.02em; }
+  .wordmark img { width:34px; height:34px; border-radius:9px; } .wordmark .cut { color:var(--lime); }
+  nav ul { display:flex; gap:26px; list-style:none; margin:0; padding:0; font-size:15px; color:var(--muted); }
+  nav a { color:inherit; text-decoration:none; } nav ul a:hover { color:var(--paper); }
+  .pill { padding:9px 16px; border-radius:999px; background:var(--lime); color:#0B0A14 !important; font-weight:700; font-size:14px; }
+  main { width:min(780px, calc(100% - 48px)); margin:0 auto; padding:64px 0 96px; }
+  main h1 { font-size:clamp(36px,5vw,56px); letter-spacing:-.04em; line-height:1.02; margin:0 0 20px; font-weight:800; }
+  main h2 { font-size:30px; letter-spacing:-.03em; margin:56px 0 14px; padding-top:24px; border-top:1px solid var(--line); font-weight:800; }
+  main h3 { font-size:21px; letter-spacing:-.02em; margin:32px 0 8px; }
+  main h4 { font-size:17px; margin:24px 0 6px; color:var(--lime); }
+  main p, main li { font-size:17px; color:#D8D6F0; } main li { margin:6px 0; }
+  main a { color:var(--cyan); text-decoration:none; border-bottom:1px solid rgba(43,217,255,.35); } main a:hover { border-bottom-color:var(--cyan); }
+  main strong { color:var(--paper); }
+  main code { font-family:var(--mono); font-size:.88em; background:rgba(255,255,255,.07); border:1px solid var(--line); padding:2px 7px; border-radius:6px; }
+  main pre { background:#07060E; border:1px solid var(--line); border-radius:14px; padding:16px 18px; overflow-x:auto; }
+  main pre code { background:none; border:0; padding:0; font-size:13.5px; line-height:1.6; color:#D8D6F0; }
+  main blockquote { margin:20px 0; padding:14px 20px; border-left:3px solid var(--magenta); background:rgba(255,77,141,.06); border-radius:0 12px 12px 0; }
+  main table { width:100%; border-collapse:collapse; font-size:15px; margin:20px 0; } main th, main td { text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top; } main th { color:var(--muted); font-weight:600; }
+  main hr { border:0; border-top:1px solid var(--line); margin:40px 0; }
+  main img { max-width:100%; border-radius:12px; }
+  .lede { color:var(--muted); font-size:19px; margin-bottom:36px; }
+  footer { border-top:1px solid var(--line); color:var(--muted); font-size:13px; padding:32px 0 40px; }
+  footer a { color:inherit; }
+  @media (max-width:800px) { nav ul { display:none; } }
+</style>
+</head>
+<body>
+<nav><div class="wrap">
+  <a class="wordmark" href="index.html"><img src="stashcut-icon.svg" alt=""><span>stash<span class="cut">cut</span></span></a>
+  <ul><li><a href="index.html#features">What it does</a></li><li><a href="help.html">Help</a></li><li><a href="changelog.html">Changelog</a></li><li><a href="terms.html">Terms</a></li></ul>
+  <a class="pill" href="index.html#pricing">Get Stashcut · €29</a>
+</div></nav>
+<main>
+<h1>Help</h1><p class="lede">Everything Stashcut does, in the order you will meet it.</p><h3>Stashcut Help</h3>
+<p><a href="http://itunes.apple.com/us/app/flycut-clipboard-manager/id442160987?mt=12"><img src="http://a3.mzstatic.com/us/r1000/047/Purple/fb/53/f2/mzi.mcaxwyjm.175x175-75.png" /></a><br />
+<strong>Basics</strong></p>
+<p>Copy the same way as always. Launching Stashcut does not clear the system clipboard.</p>
+<p>Paste the same way as always.</p>
+<p>Press the Main Hotkey (Shift-Command-V, by default) to access your clipboard history.  Press the Search hotkey (Shift-Command-B, by default) to search it.  Or just use the Stashcut menu (that little red locker, like the one you see above).</p>
+<p><strong>The Bezel</strong></p>
+<p>The Bezel is what you see when you press the Main Hotkey.  It&#39;s the semi-transparent box that appears in the middle of your screen, showing you your clipboard history.  To get started, just use the up and down arrow keys while holding the command key to step through your history. </p>
+<p>Sticky bezel is on by default, so there is no need to hold the command key. When you find something you want to paste, press Return and it is pasted while the Bezel closes automatically.  If you don&#39;t want to paste, just press the Esc key.  Space or right-click pins the Bezel so it stays until you paste, Esc, or click away.</p>
+<p><strong>Bezel Keystrokes</strong></p>
+<p>Here&#39;s a complete list of keys you can use in the Bezel.</p>
+<p><strong>Down Arrow</strong> or <strong>Right Arrow</strong>: Move backward in your clipboard history.</p>
+<p><strong>Up Arrow</strong> or <strong>Left Arrow</strong>: Move forward in your clipboard history.</p>
+<p><strong>Return</strong>: Paste the clipboard history item currently displayed, closing the Bezel.</p>
+<p><strong>Esc</strong>: Close the bezel without pasting. If favorites were selected, returns to the main list.</p>
+<p><strong>Enter</strong> (Fn-Return): Move the clipboard history item currently displayed to the front of the history, closing the Bezel.</p>
+<p><strong>Command-,</strong>: Display the Stashcut preferences panel.</p>
+<p><strong>Home</strong>: Move to the most recent item in your clipboard history.</p>
+<p><strong>End</strong>: Move to the least recent item in your clipboard history.</p>
+<p><strong>PgDn</strong>: Move backward ten positions in your clipboard history.</p>
+<p><strong>PgUp</strong>: Move forward ten positions in your clipboard history.</p>
+<p><strong>Backspace</strong> or <strong>Delete</strong>: Delete the clipboard history item currently displayed, closing the Bezel.</p>
+<p><strong>1</strong> through <strong>9</strong> and <strong>0</strong>: Move to the clipboard history position indicated by the number, or position 10 for zero.</p>
+<p><strong>s</strong> or <strong>S</strong>: Save the clipboard history item currently displayed to a file, closing the Bezel.  Delete the item from the clipboard history if capital S was pressed.  Clipping is saved to a file on the Desktop, akin to how Screen Shots are saved by OS X.  e.g.  &quot;Desktop/Clipping 2015-07-15 at 08.35.10.txt&quot;</p>
+<p><strong>f</strong>: Switch between the main clipboard history store and the favorites store.  The favorites store appears in the Bezel and works in the same way as the main clipboard history store, aside from having a yellow tint to the Bezel.</p>
+<p><strong>F</strong>: Save the clipboard history item currently displayed to the favorites store, deleting it from the main clipboard history store and closing the Bezel.</p>
+<p><strong>r</strong>: Reveal the value behind a 1Password credential card. Does nothing on any other clipping, which is why the bezel&#39;s key hint line only lists it while you are on a credential. See <strong>Keeping credentials in 1Password instead</strong> below.</p>
+<p><strong>o</strong>: Send the clipping currently displayed to your Obsidian vault, closing the Bezel. Does nothing until you choose a folder in Preferences &gt; Obsidian, which is why the key hint line only lists it once you have. See <strong>Sending a clipping to Obsidian</strong> below.</p>
+<p><strong>Menu Features</strong></p>
+<p>The Stashcut menu allows you to select from the most recent items in the main clipboard history store, clear all of them, merge them all into one entry, or access the preferences panel.  You can also Option-Click the menu icon to disable or reenable clipboard tracking, in case you are copying sensitive information such as passwords.</p>
+<p><strong>Reading the bezel</strong></p>
+<p>The bezel in the middle is the clipping you are on. Either side of it are the
+clippings next to it in your history, two on the left and two on the right, all
+the same size and fainter the further out they are. Left is more recent and
+right is older, the same direction the arrow keys move, and pressing an arrow
+slides the whole row along by one. When there is no card on one side there is
+nothing further that way: you are at the start or the end of your history.</p>
+<p>Only the middle bezel takes your keys, so the application you are about to paste
+into keeps its focus. You can click a side card, though: it comes to the middle,
+the same as arrowing to it. Cards brighten under the mouse to show they will.</p>
+<p>The bezel is as tall as the clipping it is showing and no taller, so a one-line
+clipping is a single bar rather than a line of text in the corner of a large
+empty panel. Stepping to a longer clipping grows it, in step with the row
+sliding. <strong>Bezel height limit</strong> in Preferences &gt; Appearance is as far as it will
+grow; <strong>Bezel width</strong> is a fixed width, because the width is what decides where
+the cards beside it sit. Each card is sized to its own clipping in the same way,
+from a floor: a card never gets smaller than that floor, so the row keeps its
+shape, and a long clipping gets a taller card to hold it.</p>
+<p>While the bezel is open the rest of the screen is dimmed, so the clipping you
+are choosing is the only lit thing in front of you. The dimming never takes a
+click either. How dark it goes is the <strong>Dim behind bezel</strong> slider in
+Preferences &gt; Appearance; all the way left turns it off.</p>
+<p>That dimming does not have to be plain black. <strong>Backdrop</strong>, just below the
+slider, is what the screen behind the bezel is filled with:</p>
+<ul>
+<li><strong>Dim</strong> is the plain black it has always been, and is what you get if you
+never touch this.</li>
+<li><strong>Solid colour</strong> uses the first <strong>Backdrop colour</strong> well.</li>
+<li><strong>Gradient</strong> runs from the first well to the second, top to bottom.</li>
+<li><strong>Image</strong> shows a picture of your own, chosen with <strong>Choose Image...</strong>.
+<strong>Image scaling</strong> decides how it meets your screen: <strong>Fill</strong> covers the whole
+screen and crops what does not fit, <strong>Fit</strong> shows all of the picture and fills
+what is left over with the backdrop colour, and <strong>Tile</strong> repeats it at its own
+size from the top left, which is what to use for a pattern.</li>
+</ul>
+<p>The <strong>Dim behind bezel</strong> slider still means the same thing whichever you pick:
+it is how solid the backdrop is, so a colour or a picture is still see-through
+at 65% and your desktop still reads through it. On more than one display each
+screen gets its own complete copy of the picture rather than a slice of one
+stretched across both.</p>
+<p>A picture you choose is copied into <code>~/Library/Application Support/Stashcut/ Backdrops</code>, so moving or deleting the original afterwards does not break it. If
+that copy ever goes missing, the backdrop quietly falls back to plain dim.</p>
+<p>Along the bottom of the bezel, either side of the counter, are the keys that
+work while it is open. Turn them off with <strong>Show key hints along the bottom of
+the bezel</strong> once you know them. The carousel is <strong>Show neighbouring clippings
+beside the bezel</strong>, on by default.</p>
+<p><strong>Keeping credentials out of your history</strong></p>
+<p>Stashcut skips anything a password manager marks as concealed. It also reads the
+content of what you copy and skips text that has the shape of a credential:
+private keys, JSON web tokens, database URLs with a password in them, lines like
+<code>DB_PASSWORD=...</code>, and API keys from the common issuers. This is what catches a
+key pasted out of a terminal, which no password manager ever marked.</p>
+<p>This is on by default, as <strong>Don&#39;t copy keys and passwords found in text</strong> under
+Preferences &gt; General. Turn it off there if you want every copy kept.</p>
+<p>Matching is deliberately cautious. It keys on issuer prefixes and lengths rather
+than on how random a string looks, so ordinary writing and source code are
+unaffected, and values that read as documentation are kept rather than
+discarded. The trade is that a credential of pure letters, with no digit in it,
+is not recognised.</p>
+<p>When a copy is skipped this way, a notice appears under the menu bar icon naming
+what it looked like, for example <strong>Not saved: Anthropic API key</strong>, and fades
+after a few seconds. That is there so a missing clipping is never a mystery. If
+you would rather not see it, run this in Terminal and restart Stashcut:</p>
+<pre><code>defaults write com.stashcut.app notifySkippedSecrets -bool NO
+</code></pre>
+<p>Skipped content is not stored, so it will not appear in the menu or the bezel.
+Your system clipboard still holds it, so you can paste it as normal.</p>
+<p><strong>Keeping credentials in 1Password instead</strong></p>
+<p>Skipping a credential keeps it safe and loses it. If you want it back you have to
+go to wherever you copied it from. Preferences &gt; 1Password offers the other half:
+the credential goes into 1Password as a proper item, and Stashcut keeps a clipping
+that points at that item, so it is still in your history and can still be pasted
+from the bezel.</p>
+<p>The switch is <strong>Offer to save detected credentials to 1Password</strong> and it is off
+by default. Turn it on, press <strong>Refresh</strong>, and pick a vault. Nothing is chosen
+for you, deliberately: if you have a work account and a personal one configured,
+both appear, each vault named with the account it belongs to, and a private
+credential landing in a work vault is exactly the mistake worth making
+impossible.</p>
+<p>With it off, or with no vault chosen, or with the 1Password command line tool not
+installed, a detected credential behaves exactly as described above: skipped,
+announced, nothing stored.</p>
+<p>With it on, the notice under the menu bar icon gains a <strong>Save to 1Password</strong>
+button. Press it and the credential is filed; ignore it and it fades after a
+while, which means no, which is the old behaviour.</p>
+<p><strong>How long it waits.</strong> <strong>Panel stays for</strong> sets that: anywhere from 5 to 90
+seconds, and 20 unless you change it. Twenty is long enough to finish the
+sentence you were typing and come back to it, and short enough not to become
+furniture.</p>
+<p><strong>Where it appears.</strong> <strong>Show offer as</strong> has two settings. <strong>Stashcut panel</strong> is the
+notice under the menu bar icon described here. <strong>macOS notification</strong> puts the
+same offer in a real notification instead, with the same <strong>Save to 1Password</strong>
+button on it, which is worth having if you keep missing the panel.</p>
+<p><strong>Banners or Alerts, which is the setting that actually matters.</strong> macOS decides
+how long one of its notifications stays on screen, not Stashcut, so the <strong>Panel
+stays for</strong> slider does not apply to it and goes grey when you choose the
+notification. The setting that does apply is in <strong>System Settings &gt;
+Notifications &gt; Stashcut</strong>, and there is a <strong>Notification Settings…</strong> button in
+Stashcut&#39;s pane that opens it:</p>
+<ul>
+<li><strong>Banners</strong> appear in the corner and take themselves away after about five
+seconds. If the thing you disliked was the offer vanishing before you could
+answer it, this will do the same.</li>
+<li><strong>Alerts</strong> stay until you dismiss them. The offer waits for you, which is
+almost certainly what you want here.</li>
+</ul>
+<p>The <strong>Save to 1Password</strong> button is not drawn on a banner until you move the
+pointer over it or expand it, which is how macOS draws every notification with
+an action. An alert shows it straight away.</p>
+<p>If notifications are turned off for Stashcut, or you have never answered the
+permission prompt, or macOS refuses to deliver one, the offer appears as the
+Stashcut panel instead and the 1Password pane says so. It is never silently
+dropped. Stashcut asks for permission to send notifications only when you pick the
+notification style, and never at launch.</p>
+<p><strong>How long the credential is kept while you decide.</strong> Only until the offer is
+answered or runs out. That is the slider&#39;s setting for the panel, and two
+minutes for a notification, because a notification can sit in Notification
+Center indefinitely and something has to bound it. After that Stashcut lets go of
+it: pressing <strong>Save</strong> on an offer that has expired tells you so and asks you to
+copy it again, rather than saving an empty item.</p>
+<p>The notice will not interrupt what you are typing. It does not take the keyboard
+on its own, because detection fires exactly when you are in the middle of putting
+a key into a terminal or a form, and a panel that swallowed your next Return at
+that moment would be worse than the silence it replaces. <strong>Move the pointer onto
+it and it takes the keyboard</strong>, showing a <strong>return save  esc dismiss</strong> line to
+say that it has; <strong>Return</strong> then saves and <strong>Escape</strong> dismisses. Move the pointer
+off it and the keyboard goes straight back to whatever you were typing into. A
+pointer that happened to be resting where the notice opened does not count as
+having been moved onto it: move it away and back.</p>
+<p><strong>What is actually stored.</strong> The clipping holds the 1Password item&#39;s title and an
+<code>op://</code> reference. Neither is a secret: someone reading Stashcut&#39;s preferences file
+learns which items exist, not what is in them. Stashcut never writes the credential
+to its own store, not even briefly.</p>
+<p><strong>Reading one back.</strong> A credential clipping shows as a card with a lock, the item
+title, the vault and account it lives in, and the value masked. Arrowing onto it
+and past it costs nothing and asks 1Password nothing, which is the point: opening
+the bezel must never raise a Touch ID sheet because a credential happened to be
+two cards away.</p>
+<p><strong>Press r</strong> on that card to show the value, and <strong>r again</strong> to put it away. That
+is the one keystroke that talks to 1Password, and the first press takes about a
+second, so the card says <strong>Revealing…</strong> while it waits. Showing it again after
+hiding it is instant: the value is held in memory for as long as that bezel is
+open and is gone when it closes, so hiding it is about what is on your screen
+rather than about what Stashcut is holding. It is never written anywhere. The key
+hint line along the bottom of the bezel lists <strong>r show/hide</strong> while a credential
+is on the card, and does not while an ordinary clipping is.</p>
+<p><strong>Return</strong> pastes it, the same as on every other clipping, fetching it from
+1Password first if you have not revealed it. When it has to fetch, the card shows
+<strong>Revealing…</strong> for about a second and the paste happens when the value arrives,
+so nothing is pasted early and nothing empty is pasted. The keypad <strong>Enter</strong> puts
+the credential on the clipboard and closes the bezel without pasting it, which is
+what Enter does for an ordinary clipping too.</p>
+<p>A pasted credential is put on the clipboard marked <code>org.nspasteboard.ConcealedType</code>,
+which other clipboard managers watch for and skip, and it is cleared from the
+clipboard about twelve seconds later if nothing else has replaced it by then.</p>
+<p>If anything goes wrong at any point, including 1Password being locked, the card
+says so in one line and you can still arrow straight past it. There is never a
+dialog and never a dead end.</p>
+<p><strong>The first time.</strong> 1Password authorises the application that is calling it, not
+you, so the first time Stashcut runs <code>op</code> 1Password will show its own approval
+prompt for Stashcut. That is correct and it is asked once. Stashcut also needs
+1Password&#39;s <strong>Settings &gt; Developer &gt; Integrate with 1Password CLI</strong> switched on,
+which is what lets <code>op</code> use the desktop app instead of asking for a session
+token.</p>
+<p>Stashcut looks for <code>op</code> in <code>/opt/homebrew/bin</code>, <code>/usr/local/bin</code> and <code>/usr/bin</code>. If
+yours is somewhere else:</p>
+<pre><code>defaults write com.stashcut.app onePasswordCommandPath /path/to/op
+</code></pre>
+<p><strong>Sending a clipping to Obsidian</strong></p>
+<p>Press <strong>o</strong> in the bezel and the clipping you are looking at is filed into your
+Obsidian vault as plain markdown. <strong>Send to Obsidian</strong> in the menu files the same
+clipping, which is the most recent one unless you left the bezel somewhere else.
+A notice appears under the menu bar icon naming the note it went to.</p>
+<p>This is plain file writing and nothing else. No plugin, no URL scheme, nothing
+talking to a running Obsidian, so it works with Obsidian closed and does not care
+which version you have. Obsidian notices the new file itself.</p>
+<p><strong>Nothing is guessed, and nothing happens until you pick a folder.</strong> Go to
+Preferences &gt; Obsidian and press <strong>Choose…</strong>. Everything you send goes into that
+one folder, so pick one you would be happy to find anything in: a vault usually
+holds work notes beside private ones, and a clipping filed into the wrong one
+cannot be unfiled. <strong>Clear</strong> puts it back to nothing, which is how you turn this
+off again. Until a folder is chosen, <strong>o</strong> says so and writes nothing, and the
+bezel&#39;s key hint line does not mention it.</p>
+<p><strong>Where it goes.</strong> Entries are appended to the daily note for the day the
+clipping was copied, <code>2026-09-20.md</code>, inside the folder you picked, and the note
+is created if it is not there. Appending rather than one note per clipping is
+deliberate: a vault full of one-line fragments is a vault nobody reads. Filing
+something you copied three days ago puts it in that day&#39;s note, because the day
+and the time it was copied are the provenance that makes this worth more than a
+paste.</p>
+<p><strong>What an entry looks like.</strong> A heading of the time and the application, then the
+clipping itself inside a fenced code block:</p>
+<pre><code>## 14:32:07 Safari
+
+```text
+Meeting at four in the small room.
+```
+</code></pre>
+<p>The heading is unique within the note, so you can link straight to it as
+<code>[[2026-09-20#14:32:07 Safari]]</code>.</p>
+<p>The fence is what makes this safe. A clipping is arbitrary text: it can hold
+triple backticks, a line starting with <code>#</code>, a line of three hyphens, or all
+three. The fence is always one backtick longer than the longest run of backticks
+anywhere in the clipping, so the clipping cannot close the block it is in, cannot
+change the note&#39;s structure, and cannot swallow whatever comes after it. Your
+text is written through exactly as it was copied, and Obsidian&#39;s copy button on
+a code block hands it straight back. The one exception is line endings: Windows
+CRLF and lone CR become LF, because a lone CR would render the whole clipping as
+a single line.</p>
+<p><strong>Screenshots are the reason to use this.</strong> An image clipping already carries the
+picture and the text Stashcut read out of it. Filing one copies the PNG into an
+<code>attachments</code> subfolder, embeds it, and writes the recognised text underneath, so
+your vault&#39;s own search finds the note by what the screenshot says. To put the
+pictures somewhere else:</p>
+<pre><code>defaults write com.stashcut.app obsidianAttachmentsFolder Files
+</code></pre>
+<p>That has to be one plain folder name. Anything with a slash, a colon, a leading
+dot or <code>..</code> in it is ignored and <code>attachments</code> is used, so a hand-edited
+preference cannot write outside the folder you picked.</p>
+<p><strong>Credentials are never sent.</strong> A credential kept in 1Password is a reference,
+and the point of that is that the secret is not in a file Stashcut wrote. Pressing
+<strong>o</strong> on one says so and writes nothing.</p>
+<p><strong>When it cannot be written.</strong> A folder that has been renamed, deleted, left on a
+drive that is not connected, made read-only, or is momentarily unavailable in
+iCloud Drive gets one sentence naming it, and nothing is written at all. Nothing
+is ever half-written either: two clippings filed a second apart cannot land
+inside one another, and a write that fails part way through takes itself back out
+again, including removing a note it had just created.</p>
+<p><strong>Letting a coding agent read your history</strong></p>
+<p>Stashcut can be a tool that a coding agent calls. An agent such as opencode or
+Claude Code that can see what you copied in the last hour needs far less
+explaining to: the error message, the ticket number, the schema you pasted into a
+scratch file half an hour ago are all already in your history.</p>
+<p><strong>Off until you turn it on.</strong> Go to <strong>Preferences &gt; Agents</strong> and tick <strong>Let
+coding agents read the clipboard history</strong>. Until you do, every request is
+refused with a message saying the feature is switched off, rather than an empty
+answer, so an agent can tell the difference between &quot;nothing matched&quot; and &quot;not
+allowed&quot;.</p>
+<p><strong>Setting it up is one button.</strong> The same pane shows the exact path of the small
+program an agent runs, and has <strong>Configure opencode</strong> and <strong>Configure Claude</strong>
+beside it. Stashcut never opens or rewrites your configuration file. It runs that
+product&#39;s own command-line tool, the same <code>opencode mcp add</code> or <code>claude mcp add</code>
+you would type yourself, and nothing else.</p>
+<p>Before anything runs you are shown the exact commands and can cancel. Stashcut
+first asks the tool to list its MCP servers; if <code>stashcut</code> is already there,
+nothing is changed and it says so. Otherwise it adds the entry, then lists again
+to confirm. If that second listing does not show <code>stashcut</code>, Stashcut says the
+configuration could not be verified rather than claiming it worked. In every
+case the tool&#39;s own output is shown to you verbatim.</p>
+<p><strong>When the CLI is not there.</strong> If the <code>opencode</code> or <code>claude</code> command cannot be
+found in its usual install locations or in the PATH Stashcut inherited, Stashcut
+does not guess at another executable and does not edit the file. It offers to
+copy a JSON block for you to merge yourself into the <code>mcp</code> section of
+<code>~/.config/opencode/opencode.json</code>, or the <code>mcpServers</code> section of
+<code>~/.claude.json</code>. The same offer appears if the command fails or the result
+cannot be verified. The block looks like this:</p>
+<pre><code>{
+  &quot;mcpServers&quot;: {
+    &quot;stashcut&quot;: {
+      &quot;args&quot;: [],
+      &quot;command&quot;: &quot;/Applications/Stashcut.app/Contents/MacOS/stashcut-mcp&quot;
+    }
+  }
+}
+</code></pre>
+<p>Running Claude Code performs Claude&#39;s own migrations on <code>~/.claude.json</code>. Those
+are Claude&#39;s, not Stashcut&#39;s, and Stashcut does not control them.</p>
+<p><strong>Three tools, all read-only.</strong> <code>search</code> finds clippings containing a piece of
+text, ignoring case and accents. <code>get</code> fetches one clipping by its position,
+where 0 is the most recent, the same numbering the bezel shows. <code>recent</code> lists
+the newest ones. There is nothing that writes to your history, deletes from it,
+or pastes.</p>
+<p><strong>What an agent is not given.</strong> Credentials you keep in 1Password are never
+handed over: not the value, not the <code>op://</code> reference, not even the item&#39;s title.
+They are reported only as a count, so a gap in the numbering has an explanation.
+A clipping that trips the same check that asks before a risky paste, above, keeps
+its position and its time but its text is replaced by a line saying what was held
+back, for example <strong>[Stashcut withheld this clipping: it looks like a payment card
+number]</strong>. That is deliberate: an agent that cannot see a gap reasons around it
+and tells you something confident and wrong. Those clippings are also left out of
+searching altogether, so a query cannot be used to guess at their contents one
+character at a time. Favourites are not shared at all, and only the first 2000
+characters of any clipping are searched or returned.</p>
+<p><strong>No port, no token.</strong> The program runs as a child process of the agent you
+started, reading its requests on a pipe. There is nothing listening on the
+network and nothing to manage. It works whether or not Stashcut itself is running,
+and it reads the history fresh on every request, so something you copy while the
+agent is working is there the next time it asks.</p>
+<p>If Stashcut and the agent disagree about whether sharing is on, the agent is
+reading the preference at the moment of the request, so turning the switch off
+stops the next call rather than the one after a restart.</p>
+<p><strong>Asking before a risky paste</strong></p>
+<p>Stashcut asks before pasting something personal into an application whose job is
+sending things elsewhere. If the clipping looks like it holds a payment card
+number, a bank account number, a phone number, a long list of email addresses or
+a credential, and the paste is going to a web browser, a chat client or an AI
+chat application, a question appears first:</p>
+<blockquote>
+<p><strong>Paste a payment card number into Google Chrome?</strong></p>
+<p>Paste Anyway · Cancel · Don&#39;t Warn for Google Chrome</p>
+</blockquote>
+<p>Cancel is the default, so a stray Return is the safe answer. Cancelling leaves
+your clipboard and your history exactly as they were. <strong>Don&#39;t Warn for ...</strong>
+pastes, and takes that application off the list for good.</p>
+<p>This is a wider check than the one above. The check above decides what is worth
+storing; this one decides what is worth asking about before it leaves the
+machine, and it looks for things the other one never does: card numbers
+(validated with the Luhn check, so order numbers and long integers do not trip
+it), IBANs (validated with the mod-97 check), phone numbers in international
+form, and email addresses when there are five or more distinct ones. A single
+address never warns, because pasting one is an ordinary thing to do. It also
+warns about anything the store-time check would have caught, which matters if
+you turned that check off.</p>
+<p><strong>What Stashcut can and cannot see here.</strong> It knows which application you are
+pasting into. It does not know which site is loaded in it, and does not try to
+find out: reading the browser&#39;s current page means driving the browser, which is
+a much larger permission than a clipboard manager has any business asking for.
+So the guard works at the level of the application. It will ask about a card
+number going into Chrome whether the page in front of you is your bank or a
+forum.</p>
+<p>Code editors and terminals are deliberately not on the list. Pasting a key into
+the file that needs it is the normal case there, and asking every time is how a
+warning becomes something you click through without reading.</p>
+<p>On by default. To turn it off, or to change which applications it covers, run
+one of these in Terminal and restart Stashcut:</p>
+<pre><code>defaults write com.stashcut.app warnBeforeRiskyPaste -bool NO
+
+defaults write com.stashcut.app riskyPasteBundleIdentifiers \
+    &quot;com.apple.Safari,com.google.Chrome,com.tinyspeck.slackmacgap&quot;
+</code></pre>
+<p>The list is bundle identifiers separated by commas. An entry also covers
+anything extending it by a dot, so <code>com.google.Chrome</code> covers Chrome Canary and
+Chrome Beta without listing them. Using <strong>Don&#39;t Warn for ...</strong> writes the whole
+list into your preferences, which means applications added to the built-in list
+by a later version will not appear; <code>defaults delete com.stashcut.app riskyPasteBundleIdentifiers</code> puts the built-in list back.</p>
+<p><strong>Images, and reading the text in them</strong></p>
+<p>Copy a screenshot and Stashcut keeps it like any other clipping. It reads the text
+out of the image first, on this Mac, with Apple&#39;s Vision framework: no model, no
+network, no Ollama. That recognised text <em>is</em> the clipping, so the screenshot
+shows up in the menu and the bezel by what it says, substring search finds it,
+and related search indexes it alongside everything else.</p>
+<p>An image with no readable text is kept too, described by its size, for example
+<strong>Image, 1280 by 720</strong>, so it is still something you can find and paste.</p>
+<p>Pasting an image clipping puts both things on the clipboard: the picture and the
+text. Whichever you paste into takes what it can use, so an image editor or a
+chat window gets the screenshot and a text field gets the words out of it.</p>
+<p>The pictures live in <code>~/Library/Application Support/Stashcut/Clipboard Images</code>.
+Only the file name is kept in your history, not the picture itself. Stashcut
+deletes any picture no clipping refers to when it starts, and keeps the folder
+under about 200 MB by dropping the oldest first. If a picture has gone, pasting
+that clipping still gives you its text.</p>
+<p>A screenshot goes through the same credential check as copied text, so a picture
+of a terminal with an API key in it is left out of your history exactly as the
+key itself would be. Text recognition needs macOS 10.15 or later; on anything
+older the screenshot is still kept, described by its size.</p>
+<p>To turn image capture off, run this in Terminal and restart Stashcut:</p>
+<pre><code>defaults write com.stashcut.app captureImages -bool NO
+</code></pre>
+<p><strong>Finding a clipping by what it meant</strong></p>
+<p>Press Shift-Command-B to open the search window. Typing filters your history by
+substring as it always has. With semantic search on, it also lists clippings that
+are about what you typed even when they share no words with it, marked with <code>≈</code>
+and placed under the exact matches. Searching &quot;pastry ingredients&quot; will turn up
+&quot;Recipe: 200g flour, 2 eggs, 100ml milk&quot; that way.</p>
+<p>This needs an embedding model, which is a different thing from a chat model. Run
+<code>ollama pull nomic-embed-text</code>, then tick <strong>Find related clippings when
+searching</strong> in Preferences &gt; AI. The first search after that indexes your
+history, which takes a few seconds and shows its progress under the search box.
+After that only new clippings need indexing.</p>
+<p>One vector per clipping is kept in
+<code>~/Library/Application Support/Stashcut/embeddings.plist</code>. Clipping text goes to
+your endpoint and nowhere else, the same as the other AI features. Changing the
+embedding model throws the cache away, because vectors made by two different
+models cannot be compared.</p>
+<p>Clippings shorter than two words, such as a licence plate, are skipped for
+related search: there is not enough text for the meaning to be measurable, and
+substring search finds them exactly anyway.</p>
+<p><strong>AI Actions</strong></p>
+<p>AI features are off until you turn them on in Preferences &gt; AI. They run against a
+local model, so nothing is sent to a cloud service and there is no API key.</p>
+<p>Install <a href="https://ollama.com">Ollama</a> and pull a model, for example <code>ollama pull llama3.2</code>.
+Then open Preferences &gt; AI, tick <strong>Enable AI features</strong>, and press <strong>Refresh</strong> to list
+the models installed on this Mac. The status line tells you whether the endpoint was
+reachable and how many models it found.</p>
+<p>If you never pick one, Stashcut chooses the smallest chat model you have installed the
+first time AI is actually used, and writes that choice into Preferences &gt; AI so you
+can see and change it. Smallest, because it is the one that answers soonest, and a
+first run should not land on a 17 GB model by accident. A model you have chosen
+yourself is never replaced.</p>
+<p>Once enabled, the menu gains an <strong>AI Actions</strong> submenu: Summarize, Rewrite Clearly,
+Fix Spelling &amp; Grammar, Explain, and Translate to English. Each one acts on whatever
+is currently on the clipboard, so copy something (or pick a clipping from the menu
+first), then choose an action. The result is placed on the clipboard and added to
+your history as a new clipping.</p>
+<p>A small ellipsis appears in the menu bar while a request is running, and a panel opens
+at the top right showing the answer as the model writes it, with the seconds counting
+up beside it. The panel does not take focus, so you can keep typing where you were.
+Nothing is added to your history until the answer is finished.</p>
+<p>Press <strong>Cancel</strong> in the panel, Escape while the panel has focus, or <strong>Cancel AI
+Action</strong> in the AI Actions submenu to stop a running action; nothing is stored and
+nothing is said about it. Local models are not instant: the first run after a pause
+pays for loading the weights, and a large model can take a minute. Smaller models are
+listed first in Preferences &gt; AI with their size, and one under about 5 GB usually
+answers in a few seconds.</p>
+<p>If a request has run for twenty seconds with nothing to show yet, the status line
+adds a sentence saying why, either that the model is large or that it is reasoning
+before it answers, and points at the smaller models in Preferences &gt; AI. It is said
+once and disappears the moment the answer starts arriving.</p>
+<p><strong>Reasoning models</strong></p>
+<p>A reasoning model, such as <code>qwen3</code>, thinks in writing before it answers. Those
+thinking tokens are most of the wait and none of the answer, so Stashcut asks such a
+model not to produce them for AI Actions and for Ask Your Clipboard: both are short
+transforms or retrieval-grounded answers that gain nothing from deliberation.
+Measured here on a warm <code>qwen3.8</code>, a Summarize went from 15.2 seconds before the
+first visible word to 1.8, and from 22.9 seconds in total to 8.6. An Ask Your
+Clipboard question over a 99-clipping history went from 65.4 seconds to the first
+words and 68.4 in total, to 0.3 and 3.3.</p>
+<p>Stashcut only asks this of a model that says it can think, so nothing changes for a
+model that cannot, and if the runtime objects to the request Stashcut repeats it
+without and remembers not to ask that model again.</p>
+<p>To have the reasoning instead of the speed:</p>
+<pre><code>defaults write com.stashcut.app aiAllowThinking -bool YES
+</code></pre>
+<p>There is no checkbox for it. With it on, and on any model whose runtime rejected the
+request, the thinking appears in the panel as it streams, in a dimmer colour with the
+status reading <strong>Thinking…</strong>, so it cannot be mistaken for the answer. It is only
+something to watch while you wait: it is never stored as a clipping, never put on the
+clipboard, and never copied by <strong>Copy Answer</strong>.</p>
+<p><strong>Ask Your Clipboard</strong></p>
+<p>The last item in the AI Actions submenu opens a question box over your whole
+history. Ask something in plain language and Stashcut looks for the clippings that
+bear on it by meaning, gives those to the model, and writes an answer as the
+model produces it.</p>
+<p>Under the answer is the list of clippings the question actually turned up, with
+a tick beside each one the answer drew on and a number matching the numbers in
+brackets in the answer itself. Click any of them to copy that clipping. The list
+is there so you can check the answer against what it was built from rather than
+take it on trust, which matters: a small local model will occasionally cite the
+wrong number or embellish, even when the right clippings were found.</p>
+<p>When nothing in your history is related to the question, it says so and stops.
+It does not answer from whatever happened to score highest, because an answer
+assembled from unrelated clippings is confidently wrong and there is no way to
+tell from looking at it.</p>
+<p>This needs both the AI switch and related-clipping search switched on in
+Preferences &gt; AI, and it needs your clippings indexed. If they are not, the
+window indexes them first and then answers, so there is nothing to set up
+elsewhere.</p>
+<p>Clipping text is sent only to the endpoint configured in Preferences. Point it at
+something other than this machine and that is where your clipboard text will go.</p>
+<p><strong>Preferences Panel</strong></p>
+<p>The preferences panel allows you to customize a large number of settings, several of which should be documented here but will have to wait for another day.</p>
+
+</main>
+<footer><div class="wrap">Copyright © 2026 Khalil Gharbaoui. Built on <a href="https://github.com/TermiT/Flycut">Flycut</a> and Jumpcut, both MIT licensed. <a href="index.html">Home</a> · <a href="help.html">Help</a> · <a href="changelog.html">Changelog</a> · <a href="terms.html">Terms</a> · <a href="mailto:hello@stashcut.com">Contact</a></div></footer>
+</body>
+</html>
