@@ -235,7 +235,9 @@
   .card:nth-child(7) { animation-delay: -15.6s; }
   .card .src { display: flex; align-items: center; gap: 8px; font-size: 12px; color: rgba(255, 255, 255, 0.6); }
   .card .src i { width: 14px; height: 14px; border-radius: 4px; background: var(--cyan); display: inline-block; }
-  .card .src i.term { background: #fff; }
+  /* Not .term: that class is the terminal block further down the page, and its
+     padding would inflate this 14px square into a white slab. */
+  .card .src i.shell { background: #fff; }
   .card .src i.mail { background: var(--violet); }
   .card .src i.safari { background: var(--cyan); }
   .card .src i.figma { background: var(--raspberry); }
@@ -677,7 +679,7 @@
             <div class="meta"><span><b>4</b> of 212</span><span>61 chars</span></div>
           </article>
           <article class="card">
-            <div class="src"><i class="term"></i><b>Terminal</b> · just now</div>
+            <div class="src"><i class="shell"></i><b>Terminal</b> · just now</div>
             <div class="body"><code>git rebase -i origin/main</code><br>then <code>git push --force-with-lease</code></div>
             <div class="meta"><span><b>3</b> of 212</span><span>52 chars</span></div>
           </article>
