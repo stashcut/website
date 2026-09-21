@@ -7,34 +7,54 @@
 <meta name="description" content="The Stashcut licence, refund policy and privacy terms, in plain words.">
 <link rel="canonical" href="https://stashcut.com/terms.html">
 <link rel="icon" href="stashcut-icon.svg" type="image/svg+xml">
-<meta name="theme-color" content="#6D4DFF">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#6D4DFF">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#6D4DFF">
+<script>
+  /* Apply a saved theme before the first paint so there is no flash. The toggle itself is wired at the end of the body. */
+  try {
+    let savedTheme = localStorage.getItem("stashcut-theme");
+    if (savedTheme === "light" || savedTheme === "dark") document.documentElement.dataset.theme = savedTheme;
+  } catch (e) {}
+</script>
 <style>
   /* Tokens: Branding/design.md in the app repository. Same system as index.html. */
-  :root { --violet:#6D4DFF; --violet-soft:#ECE8FF; --ink:#14122A; --ink-2:#1B1930; --paper:#FBFAFF; --paper-2:#F3F1FF; --muted:#5F5B85; --lime:#C6FF3D; --raspberry:#FF4D8D; --cyan:#2BD9FF; --line:rgba(20,18,42,0.10);
+  :root { color-scheme:light; --violet:#6D4DFF; --violet-soft:#ECE8FF; --violet-ink:#6D4DFF; --ink:#14122A; --ink-2:#1B1930; --ink-soft:#2E2B4A; --paper:#FBFAFF; --paper-2:#F3F1FF; --surface:#fff; --dark:#14122A; --on-accent:#14122A; --muted:#5F5B85; --lime:#C6FF3D; --raspberry:#FF4D8D; --cyan:#2BD9FF; --line:rgba(20,18,42,0.10); --glass:rgba(251,250,255,.86); --sun:none; --moon:block;
           --font:"SF Pro Display",-apple-system,BlinkMacSystemFont,"Inter","Helvetica Neue",Helvetica,Arial,sans-serif; --mono:"SF Mono",ui-monospace,Menlo,Consolas,monospace; }
+  /* Dark theme. Keep the two blocks identical: an explicit choice first, then the system preference when nothing was chosen. */
+  :root[data-theme="dark"] { color-scheme:dark; --violet-soft:#2A2350; --violet-ink:#8F7BFF; --ink:#F3F1FF; --ink-soft:#D6D3EA; --paper:#0F0E1C; --paper-2:#14122A; --surface:#1B1930; --muted:#9B97BF; --line:rgba(243,241,255,0.12); --glass:rgba(15,14,28,.86); --sun:block; --moon:none; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { color-scheme:dark; --violet-soft:#2A2350; --violet-ink:#8F7BFF; --ink:#F3F1FF; --ink-soft:#D6D3EA; --paper:#0F0E1C; --paper-2:#14122A; --surface:#1B1930; --muted:#9B97BF; --line:rgba(243,241,255,0.12); --glass:rgba(15,14,28,.86); --sun:block; --moon:none; }
+  }
   * { box-sizing:border-box; }
   body { margin:0; background:var(--paper); color:var(--ink); font-family:var(--font); line-height:1.6; -webkit-font-smoothing:antialiased; }
-  nav { position:sticky; top:0; z-index:10; backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); background:rgba(251,250,255,.86); border-bottom:2px solid var(--ink); }
+  nav { position:sticky; top:0; z-index:10; backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); background:var(--glass); border-bottom:2px solid var(--ink); }
   nav .wrap { display:flex; align-items:center; justify-content:space-between; height:66px; }
   .wrap { width:min(1140px, calc(100% - 48px)); margin:0 auto; }
   .wordmark { display:inline-flex; align-items:center; gap:10px; text-decoration:none; color:inherit; font-weight:800; font-size:22px; letter-spacing:-.03em; }
-  .wordmark img { width:34px; height:34px; border-radius:9px; } .wordmark .cut { color:var(--violet); }
+  .wordmark img { width:34px; height:34px; border-radius:9px; } .wordmark .cut { color:var(--violet-ink); }
   nav ul { display:flex; gap:26px; list-style:none; margin:0; padding:0; font-size:15px; font-weight:600; color:var(--muted); }
   nav a { color:inherit; text-decoration:none; } nav ul a:hover { color:var(--ink); }
-  .pill { display:inline-flex; align-items:center; gap:8px; padding:9px 16px; border:2px solid var(--ink); border-radius:999px; background:var(--lime); color:var(--ink) !important; font-weight:700; font-size:14px; box-shadow:3px 3px 0 var(--ink); transition:transform .12s ease, box-shadow .12s ease; }
+  .pill { display:inline-flex; align-items:center; gap:8px; padding:9px 16px; border:2px solid var(--ink); border-radius:999px; background:var(--lime); color:var(--on-accent) !important; font-weight:700; font-size:14px; box-shadow:3px 3px 0 var(--ink); transition:transform .12s ease, box-shadow .12s ease; }
   .pill:hover { transform:translate(-1px,-1px); box-shadow:4px 4px 0 var(--ink); }
+  .nav-end { display:flex; align-items:center; gap:14px; }
+  .theme-toggle { position:relative; flex:none; width:36px; height:36px; padding:0; display:inline-grid; place-items:center; border:2px solid var(--ink); border-radius:999px; background:var(--surface); color:var(--ink); cursor:pointer; box-shadow:3px 3px 0 var(--ink); transition:transform .12s ease, box-shadow .12s ease; }
+  .theme-toggle::before { content:""; position:absolute; inset:-6px; border-radius:inherit; } /* 48px hit area, 36px sticker */
+  .theme-toggle:hover { transform:translate(-1px,-1px); box-shadow:4px 4px 0 var(--ink); }
+  .theme-toggle:active { transform:translate(1px,1px); box-shadow:1px 1px 0 var(--ink); }
+  .theme-toggle svg { width:18px; height:18px; display:block; } .theme-toggle .sun { display:var(--sun); } .theme-toggle .moon { display:var(--moon); }
+  .theme-toggle:focus-visible, .pill:focus-visible, a:focus-visible { outline:3px solid var(--violet); outline-offset:3px; }
   main { width:min(780px, calc(100% - 48px)); margin:0 auto; padding:64px 0 96px; }
   main h1 { font-size:clamp(36px,5vw,60px); letter-spacing:-.045em; line-height:1.0; margin:0 0 20px; font-weight:800; }
   main h2 { font-size:30px; letter-spacing:-.035em; margin:56px 0 14px; padding-top:24px; border-top:2px solid var(--ink); font-weight:800; }
   main h3 { font-size:21px; letter-spacing:-.025em; margin:32px 0 8px; }
-  main h4 { font-size:14px; margin:24px 0 6px; color:var(--violet); letter-spacing:.1em; text-transform:uppercase; font-weight:800; }
-  main p, main li { font-size:17px; color:#2E2B4A; } main li { margin:6px 0; }
-  main a { color:var(--violet); text-decoration:none; border-bottom:2px solid var(--violet-soft); } main a:hover { border-bottom-color:var(--violet); }
+  main h4 { font-size:14px; margin:24px 0 6px; color:var(--violet-ink); letter-spacing:.1em; text-transform:uppercase; font-weight:800; }
+  main p, main li { font-size:17px; color:var(--ink-soft); } main li { margin:6px 0; }
+  main a { color:var(--violet-ink); text-decoration:none; border-bottom:2px solid var(--violet-soft); } main a:hover { border-bottom-color:var(--violet-ink); }
   main strong { color:var(--ink); }
   main code { font-family:var(--mono); font-size:.88em; background:var(--paper-2); border:1px solid var(--line); padding:2px 7px; border-radius:6px; }
-  main pre { background:var(--ink-2); color:#E6E4F5; border-radius:16px; padding:16px 18px; overflow-x:auto; box-shadow:inset 0 1px 0 rgba(255,255,255,.08); }
+  main pre { background:var(--dark); color:#E6E4F5; border-radius:16px; padding:16px 18px; overflow-x:auto; box-shadow:inset 0 0 0 1px var(--line), inset 0 1px 0 rgba(255,255,255,.08); }
   main pre code { background:none; border:0; padding:0; font-size:13.5px; line-height:1.6; color:inherit; }
-  main blockquote { margin:20px 0; padding:14px 20px; border-left:4px solid var(--raspberry); background:#fff; border:2px solid var(--ink); border-left-width:6px; border-radius:14px; }
+  main blockquote { margin:20px 0; padding:14px 20px; border-left:4px solid var(--raspberry); background:var(--surface); border:2px solid var(--ink); border-left-width:6px; border-radius:14px; }
   main table { width:100%; border-collapse:collapse; font-size:15px; margin:20px 0; } main th, main td { text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top; } main th { color:var(--muted); font-weight:700; }
   main hr { border:0; border-top:2px solid var(--ink); margin:40px 0; }
   main img { max-width:100%; border-radius:12px; }
@@ -42,13 +62,21 @@
   footer { background:var(--paper-2); border-top:2px solid var(--ink); color:var(--muted); font-size:13px; padding:32px 0 40px; }
   footer a { color:inherit; }
   @media (max-width:800px) { nav ul { display:none; } }
+  @media (max-width:600px) { nav .pill { display:none; } } /* as index.html does; the toggle and the wordmark are what fit beside each other at phone width */
+  @media (prefers-reduced-motion: reduce) { .pill, .theme-toggle { transition:none; } }
 </style>
 </head>
 <body>
 <nav><div class="wrap">
   <a class="wordmark" href="index.html"><img src="stashcut-icon.svg" alt=""><span>stash<span class="cut">cut</span></span></a>
   <ul><li><a href="index.html#features">What it does</a></li><li><a href="help.html">Help</a></li><li><a href="changelog.html">Changelog</a></li><li><a href="terms.html">Terms</a></li></ul>
-  <a class="pill" href="index.html#pricing">Get Stashcut · €29</a>
+  <div class="nav-end">
+    <button class="theme-toggle" type="button" aria-label="Switch to dark theme" aria-pressed="false">
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+    <a class="pill" href="index.html#pricing">Get Stashcut · €29</a>
+  </div>
 </div></nav>
 <main>
 <h1>Terms, licence and privacy</h1>
@@ -74,5 +102,25 @@
 
 </main>
 <footer><div class="wrap">Copyright © 2026 Khalil Gharbaoui. Built on <a href="https://github.com/TermiT/Flycut">Flycut</a> and Jumpcut, both MIT licensed. <a href="index.html">Home</a> · <a href="help.html">Help</a> · <a href="changelog.html">Changelog</a> · <a href="terms.html">Terms</a> · <a href="mailto:hello@stashcut.com">Contact</a></div></footer>
+<script>
+  /* The theme toggle. A click stores an explicit choice; with none stored the page follows the system. */
+  (function () {
+    var root = document.documentElement;
+    var button = document.querySelector(".theme-toggle");
+    var system = matchMedia("(prefers-color-scheme: dark)");
+    function isDark() { return root.dataset.theme ? root.dataset.theme === "dark" : system.matches; }
+    function reflect() {
+      button.setAttribute("aria-pressed", String(isDark()));
+      button.setAttribute("aria-label", isDark() ? "Switch to light theme" : "Switch to dark theme");
+    }
+    button.addEventListener("click", function () {
+      root.dataset.theme = isDark() ? "light" : "dark";
+      try { localStorage.setItem("stashcut-theme", root.dataset.theme); } catch (e) {}
+      reflect();
+    });
+    system.addEventListener("change", reflect);
+    reflect();
+  })();
+</script>
 </body>
 </html>
