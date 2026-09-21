@@ -7,38 +7,39 @@
 <meta name="description" content="Everything Stashcut does and how to use it, from hotkeys to the agent server.">
 <link rel="canonical" href="https://stashcut.com/help.html">
 <link rel="icon" href="stashcut-icon.svg" type="image/svg+xml">
-<meta name="theme-color" content="#0B0A14">
+<meta name="theme-color" content="#6D4DFF">
 <style>
-  :root { --ink:#0B0A14; --paper:#F6F5FF; --muted:#A9A6C9; --line:rgba(255,255,255,0.09); --violet:#6D4DFF; --magenta:#FF4D8D; --lime:#C6FF3D; --cyan:#2BD9FF;
+  /* Tokens: Branding/design.md in the app repository. Same system as index.html. */
+  :root { --violet:#6D4DFF; --violet-soft:#ECE8FF; --ink:#14122A; --ink-2:#1B1930; --paper:#FBFAFF; --paper-2:#F3F1FF; --muted:#5F5B85; --lime:#C6FF3D; --raspberry:#FF4D8D; --cyan:#2BD9FF; --line:rgba(20,18,42,0.10);
           --font:"SF Pro Display",-apple-system,BlinkMacSystemFont,"Inter","Helvetica Neue",Helvetica,Arial,sans-serif; --mono:"SF Mono",ui-monospace,Menlo,Consolas,monospace; }
   * { box-sizing:border-box; }
-  body { margin:0; background:var(--ink); color:var(--paper); font-family:var(--font); line-height:1.6; -webkit-font-smoothing:antialiased; }
-  body::before { content:""; position:fixed; inset:0; z-index:-1; background:radial-gradient(900px 500px at 10% -10%, rgba(109,77,255,.30), transparent 60%), radial-gradient(700px 500px at 100% 10%, rgba(255,77,141,.22), transparent 60%); }
-  nav { position:sticky; top:0; z-index:10; backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); background:rgba(11,10,20,.62); border-bottom:1px solid var(--line); }
+  body { margin:0; background:var(--paper); color:var(--ink); font-family:var(--font); line-height:1.6; -webkit-font-smoothing:antialiased; }
+  nav { position:sticky; top:0; z-index:10; backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); background:rgba(251,250,255,.86); border-bottom:2px solid var(--ink); }
   nav .wrap { display:flex; align-items:center; justify-content:space-between; height:66px; }
-  .wrap { width:min(1120px, calc(100% - 48px)); margin:0 auto; }
-  .wordmark { display:inline-flex; align-items:center; gap:12px; text-decoration:none; color:inherit; font-weight:800; font-size:22px; letter-spacing:-.02em; }
-  .wordmark img { width:34px; height:34px; border-radius:9px; } .wordmark .cut { color:var(--lime); }
-  nav ul { display:flex; gap:26px; list-style:none; margin:0; padding:0; font-size:15px; color:var(--muted); }
-  nav a { color:inherit; text-decoration:none; } nav ul a:hover { color:var(--paper); }
-  .pill { padding:9px 16px; border-radius:999px; background:var(--lime); color:#0B0A14 !important; font-weight:700; font-size:14px; }
+  .wrap { width:min(1140px, calc(100% - 48px)); margin:0 auto; }
+  .wordmark { display:inline-flex; align-items:center; gap:10px; text-decoration:none; color:inherit; font-weight:800; font-size:22px; letter-spacing:-.03em; }
+  .wordmark img { width:34px; height:34px; border-radius:9px; } .wordmark .cut { color:var(--violet); }
+  nav ul { display:flex; gap:26px; list-style:none; margin:0; padding:0; font-size:15px; font-weight:600; color:var(--muted); }
+  nav a { color:inherit; text-decoration:none; } nav ul a:hover { color:var(--ink); }
+  .pill { display:inline-flex; align-items:center; gap:8px; padding:9px 16px; border:2px solid var(--ink); border-radius:999px; background:var(--lime); color:var(--ink) !important; font-weight:700; font-size:14px; box-shadow:3px 3px 0 var(--ink); transition:transform .12s ease, box-shadow .12s ease; }
+  .pill:hover { transform:translate(-1px,-1px); box-shadow:4px 4px 0 var(--ink); }
   main { width:min(780px, calc(100% - 48px)); margin:0 auto; padding:64px 0 96px; }
-  main h1 { font-size:clamp(36px,5vw,56px); letter-spacing:-.04em; line-height:1.02; margin:0 0 20px; font-weight:800; }
-  main h2 { font-size:30px; letter-spacing:-.03em; margin:56px 0 14px; padding-top:24px; border-top:1px solid var(--line); font-weight:800; }
-  main h3 { font-size:21px; letter-spacing:-.02em; margin:32px 0 8px; }
-  main h4 { font-size:17px; margin:24px 0 6px; color:var(--lime); }
-  main p, main li { font-size:17px; color:#D8D6F0; } main li { margin:6px 0; }
-  main a { color:var(--cyan); text-decoration:none; border-bottom:1px solid rgba(43,217,255,.35); } main a:hover { border-bottom-color:var(--cyan); }
-  main strong { color:var(--paper); }
-  main code { font-family:var(--mono); font-size:.88em; background:rgba(255,255,255,.07); border:1px solid var(--line); padding:2px 7px; border-radius:6px; }
-  main pre { background:#07060E; border:1px solid var(--line); border-radius:14px; padding:16px 18px; overflow-x:auto; }
-  main pre code { background:none; border:0; padding:0; font-size:13.5px; line-height:1.6; color:#D8D6F0; }
-  main blockquote { margin:20px 0; padding:14px 20px; border-left:3px solid var(--magenta); background:rgba(255,77,141,.06); border-radius:0 12px 12px 0; }
-  main table { width:100%; border-collapse:collapse; font-size:15px; margin:20px 0; } main th, main td { text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top; } main th { color:var(--muted); font-weight:600; }
-  main hr { border:0; border-top:1px solid var(--line); margin:40px 0; }
+  main h1 { font-size:clamp(36px,5vw,60px); letter-spacing:-.045em; line-height:1.0; margin:0 0 20px; font-weight:800; }
+  main h2 { font-size:30px; letter-spacing:-.035em; margin:56px 0 14px; padding-top:24px; border-top:2px solid var(--ink); font-weight:800; }
+  main h3 { font-size:21px; letter-spacing:-.025em; margin:32px 0 8px; }
+  main h4 { font-size:14px; margin:24px 0 6px; color:var(--violet); letter-spacing:.1em; text-transform:uppercase; font-weight:800; }
+  main p, main li { font-size:17px; color:#2E2B4A; } main li { margin:6px 0; }
+  main a { color:var(--violet); text-decoration:none; border-bottom:2px solid var(--violet-soft); } main a:hover { border-bottom-color:var(--violet); }
+  main strong { color:var(--ink); }
+  main code { font-family:var(--mono); font-size:.88em; background:var(--paper-2); border:1px solid var(--line); padding:2px 7px; border-radius:6px; }
+  main pre { background:var(--ink-2); color:#E6E4F5; border-radius:16px; padding:16px 18px; overflow-x:auto; box-shadow:inset 0 1px 0 rgba(255,255,255,.08); }
+  main pre code { background:none; border:0; padding:0; font-size:13.5px; line-height:1.6; color:inherit; }
+  main blockquote { margin:20px 0; padding:14px 20px; border-left:4px solid var(--raspberry); background:#fff; border:2px solid var(--ink); border-left-width:6px; border-radius:14px; }
+  main table { width:100%; border-collapse:collapse; font-size:15px; margin:20px 0; } main th, main td { text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top; } main th { color:var(--muted); font-weight:700; }
+  main hr { border:0; border-top:2px solid var(--ink); margin:40px 0; }
   main img { max-width:100%; border-radius:12px; }
   .lede { color:var(--muted); font-size:19px; margin-bottom:36px; }
-  footer { border-top:1px solid var(--line); color:var(--muted); font-size:13px; padding:32px 0 40px; }
+  footer { background:var(--paper-2); border-top:2px solid var(--ink); color:var(--muted); font-size:13px; padding:32px 0 40px; }
   footer a { color:inherit; }
   @media (max-width:800px) { nav ul { display:none; } }
 </style>
@@ -51,11 +52,10 @@
 </div></nav>
 <main>
 <h1>Help</h1><p class="lede">Everything Stashcut does, in the order you will meet it.</p><h3>Stashcut Help</h3>
-<p><a href="http://itunes.apple.com/us/app/stashcut-clipboard-manager/id442160987?mt=12"><img src="http://a3.mzstatic.com/us/r1000/047/Purple/fb/53/f2/mzi.mcaxwyjm.175x175-75.png" /></a><br />
-<strong>Basics</strong></p>
+<p><strong>Basics</strong></p>
 <p>Copy the same way as always. Launching Stashcut does not clear the system clipboard.</p>
 <p>Paste the same way as always.</p>
-<p>Press the Main Hotkey (Shift-Command-V, by default) to access your clipboard history.  Press the Search hotkey (Shift-Command-B, by default) to search it.  Or just use the Stashcut menu (that little red locker, like the one you see above).</p>
+<p>Press the Main Hotkey (Shift-Command-V, by default) to access your clipboard history.  Press the Search hotkey (Shift-Command-B, by default) to search it.  Or click the Stashcut mark in the menu bar, the little card between two side bars.</p>
 <p><strong>The Bezel</strong></p>
 <p>The Bezel is what you see when you press the Main Hotkey.  It&#39;s the semi-transparent box that appears in the middle of your screen, showing you your clipboard history.  To get started, just use the up and down arrow keys while holding the command key to step through your history. </p>
 <p>Sticky bezel is on by default, so there is no need to hold the command key. When you find something you want to paste, press Return and it is pasted while the Bezel closes automatically.  If you don&#39;t want to paste, just press the Esc key.  Space or right-click pins the Bezel so it stays until you paste, Esc, or click away.</p>
