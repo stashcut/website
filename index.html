@@ -392,11 +392,21 @@
   section.dark { background: var(--dark); color: var(--on-dark); }
   section.dark .kicker { color: var(--cyan); }
   section.dark .sub, section.dark .card-p p { color: rgba(255, 255, 255, 0.7); }
+  /* Every section label opens with a raspberry dot: the second accent, a thread
+     of it down the page rather than a block of it anywhere. The dot keeps its
+     colour in the dark section, where the label itself turns cyan. */
   .kicker {
-    display: inline-block;
+    display: inline-flex; align-items: center; gap: 9px;
     font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase;
     color: var(--violet-ink); font-weight: 800;
     margin: 0 0 16px;
+  }
+  .kicker::before {
+    content: "";
+    flex: none;
+    width: 7px; height: 7px;
+    border-radius: 999px;
+    background: var(--raspberry);
   }
   h2 {
     font-size: clamp(32px, 4vw, 54px);
@@ -477,7 +487,9 @@
   .integ .state { display: inline-block; margin-top: 10px; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 8px; border-radius: 999px; background: var(--violet-soft); border: 1.5px solid var(--ink); }
   .integ.next { background: var(--paper-2); border-style: dashed; box-shadow: none; }
   .integ.next .logo { border-style: dashed; background: var(--surface); color: var(--violet-ink); }
-  .integ.next .state { background: var(--surface); }
+  /* "Coming" is the other thing that is not true yet, so it wears the same
+     colour as the launch price. */
+  .integ.next .state { background: var(--raspberry); color: var(--on-accent); }
   .integ.next:hover { transform: none; box-shadow: none; }
 
   /* terminal */
@@ -585,10 +597,14 @@
     box-shadow: 6px 6px 0 var(--violet);
     position: relative;
   }
+  /* The one thing on the page that is true today rather than forever, so it is
+     the one raspberry label: it catches the eye on the way to the lime button
+     without competing with it. */
   .price .ribbon {
     position: absolute; top: -16px; right: 24px;
     padding: 5px 12px;
-    background: var(--surface); border: 2px solid var(--ink); border-radius: 999px;
+    background: var(--raspberry); color: var(--on-accent);
+    border: 2px solid var(--ink); border-radius: 999px;
     font-size: 12px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase;
     transform: rotate(2deg);
   }

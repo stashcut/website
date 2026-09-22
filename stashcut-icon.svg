@@ -20,8 +20,9 @@
     </g>
     <!-- The front card. -->
     <rect x="292" y="344" width="440" height="320" rx="48" fill="#FFFFFF" clip-path="url(#cut)"/>
-    <!-- Three lines of clipping. -->
-    <rect x="352" y="418" width="210" height="28" rx="14" fill="#6D4DFF"/>
+    <!-- Three lines of clipping. The first is raspberry: the mark's second
+         accent, one dash of it against all that violet. -->
+    <rect x="352" y="418" width="210" height="28" rx="14" fill="#FF4D8D"/>
     <rect x="352" y="480" width="320" height="28" rx="14" fill="#6D4DFF" opacity="0.38"/>
     <rect x="352" y="542" width="260" height="28" rx="14" fill="#6D4DFF" opacity="0.38"/>
     <!-- The snipped corner, caught mid-fall. -->
