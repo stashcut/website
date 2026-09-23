@@ -105,6 +105,9 @@
   }
 
   * { box-sizing: border-box; }
+  /* Selecting text is the one thing every visitor to a clipboard manager's
+     page does without being asked, so it is worth a colour of its own. */
+  ::selection { background: var(--raspberry); color: var(--on-accent); }
   html { scroll-behavior: smooth; }
   body {
     margin: 0;
@@ -568,7 +571,9 @@
     transition: transform 0.12s ease, box-shadow 0.12s ease;
   }
   .demo:hover .play { transform: translate(-2px, -2px); box-shadow: var(--shadow-hover); }
-  .demo .play i { width: 44px; height: 44px; border-radius: 50%; background: var(--cyan); color: var(--on-accent); border: 2px solid var(--ink); display: grid; place-items: center; }
+  /* Raspberry, not cyan: cyan on this page means a model answered, and a play
+     button is neither that nor the thing to buy. */
+  .demo .play i { width: 44px; height: 44px; border-radius: 50%; background: var(--raspberry); color: var(--on-accent); border: 2px solid var(--ink); display: grid; place-items: center; }
   .demo .play i svg { width: 18px; height: 18px; margin-left: 3px; }
   .demo .soon { position: absolute; right: 16px; top: 14px; font-family: var(--mono); font-size: 12px; font-weight: 700; padding: 4px 10px; background: var(--surface); border: 2px solid var(--ink); border-radius: 999px; }
   .demo .ghost {
@@ -594,7 +599,10 @@
     background: var(--surface);
     padding: 36px;
     display: flex; flex-direction: column; gap: 20px;
-    box-shadow: 6px 6px 0 var(--violet);
+    /* Raspberry rather than violet, because this is the one card on the page
+       that is asking for something. Every other card's shadow is ink, so the
+       eye goes here first and then to the lime button inside it. */
+    box-shadow: 6px 6px 0 var(--raspberry);
     position: relative;
   }
   /* The one thing on the page that is true today rather than forever, so it is
@@ -661,7 +669,10 @@
   /* footer */
   footer { padding: 56px 0 40px; color: var(--muted); font-size: 14px; background: var(--paper-2); border-top: 2px solid var(--ink); }
   footer .wrap { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 32px; }
-  footer h4 { margin: 0 0 10px; color: var(--ink); font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; }
+  /* The same dot the section labels open with, so the thread runs to the
+     bottom of the page instead of stopping at the last section. */
+  footer h4 { margin: 0 0 10px; color: var(--ink); font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
+  footer h4::before { content: ""; flex: none; width: 6px; height: 6px; border-radius: 999px; background: var(--raspberry); }
   footer ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
   footer a { text-decoration: none; }
   footer a:hover { color: var(--ink); }

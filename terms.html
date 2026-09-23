@@ -26,6 +26,7 @@
     :root:not([data-theme="light"]) { color-scheme:dark; --violet-soft:#2A2350; --violet-ink:#8F7BFF; --ink:#F3F1FF; --ink-soft:#D6D3EA; --paper:#0F0E1C; --paper-2:#14122A; --surface:#1B1930; --muted:#9B97BF; --line:rgba(243,241,255,0.12); --glass:rgba(15,14,28,.86); --sun:block; --moon:none; }
   }
   * { box-sizing:border-box; }
+  ::selection { background:var(--raspberry); color:var(--on-accent); }
   body { margin:0; background:var(--paper); color:var(--ink); font-family:var(--font); line-height:1.6; -webkit-font-smoothing:antialiased; }
   nav { position:sticky; top:0; z-index:10; backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); background:var(--glass); border-bottom:2px solid var(--ink); }
   nav .wrap { display:flex; align-items:center; justify-content:space-between; height:66px; }
