@@ -778,7 +778,7 @@
           <a class="btn btn-lime" href="#pricing">Get Stashcut <small>€29, once</small></a>
           <a class="btn btn-ghost" href="#features">See what it does</a>
         </div>
-        <p class="fine"><span class="kbd">⇧⌘V</span> pastes anything you ever copied. <span class="kbd">⇧⌘B</span> searches all of it. Works offline. Yours forever.</p>
+        <p class="fine"><span class="kbd">⇧⌘V</span> pastes anything you ever copied. <span class="kbd">⇧⌘?</span> searches all of it. Works offline. Yours forever.</p>
       </div>
 
       <div class="stage" aria-hidden="true">
@@ -824,7 +824,7 @@
             <div class="meta"><span><b>1</b> of 212</span><span>1440 × 900</span></div>
           </article>
         </div>
-        <div class="hint"><span><span class="kbd">←</span> <span class="kbd">→</span> move</span><span><span class="kbd">↩</span> paste</span><span><span class="kbd">space</span> pin</span><span><span class="kbd">⇧⌘B</span> search</span></div>
+        <div class="hint"><span><span class="kbd">←</span> <span class="kbd">→</span> move</span><span><span class="kbd">↩</span> paste</span><span><span class="kbd">space</span> pin</span><span><span class="kbd">⇧⌘?</span> search</span></div>
       </div>
     </div>
   </header>
@@ -861,7 +861,7 @@
         <article class="card-p soft2 wide">
           <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></div>
           <h3>Find it in a keystroke</h3>
-          <p><span class="kbd">⇧⌘B</span> searches the whole history. Ignores case, ignores accents, understands Arabic, Japanese and emoji, and finds what <b>meant</b> the same thing, not only what spelled the same.</p>
+          <p><span class="kbd">⇧⌘?</span> searches the whole history. Every word, in any order, with a typo forgiven. Ignores case and accents, understands Arabic, Japanese and emoji, and finds what <b>meant</b> the same thing, with a model that ships inside Stashcut and never goes online.</p>
         </article>
 
         <article class="card-p raspberry">
@@ -892,6 +892,18 @@
           <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18"/><path d="M8 8h.01M15 9h.01M9 15h.01M15.5 15.5h.01"/></svg></div>
           <h3>Looks the way you want</h3>
           <p>Solid colour, gradient or your own image behind the bezel, on every screen. Menu bar icon, hotkeys, bezel size, how long the panel stays: <b>all yours to set</b>.</p>
+        </article>
+
+        <article class="card-p soft2 wide">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 7-5 5 5 5M16 7l5 5-5 5M13.5 4l-3 16"/></svg></div>
+          <h3>Code looks like code</h3>
+          <p>Copy a snippet and the bezel colours it in its own language: <b>sixteen of them</b>, from Python and TypeScript to Shell, SQL and YAML. A small model on your Mac tells code from prose, so a plain sentence stays plain.</p>
+        </article>
+
+        <article class="card-p cyan wide">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18"/></svg></div>
+          <h3>Copy, press, paste</h3>
+          <p>Summarize, rewrite clearly, fix spelling, explain, or translate to English: <span class="kbd">⌃⌥⌘</span> and the first letter works on whatever you copied, <b>without opening anything</b>. Runs on the model you already use for Ask.</p>
         </article>
       </div>
     </div>
@@ -969,10 +981,10 @@
           <span class="ribbon">Launch price</span>
           <div class="amount"><span class="cur">€</span><span class="num">29</span><span class="once">one-time, VAT included</span></div>
           <ul class="checks">
-            <li>Clipboard history, search, the carousel, hotkeys</li>
+            <li>Clipboard history, search by meaning, the carousel, hotkeys</li>
             <li>Secret detection, paste guard, 1Password hand-off</li>
-            <li>Ask your clipboard, with Ollama or your own endpoint</li>
-            <li>Obsidian, image capture, backdrops</li>
+            <li>Ask your clipboard and five one-key transforms, with Ollama, LM Studio or llama.cpp</li>
+            <li>Obsidian, image capture, code colouring, backdrops</li>
             <li>The MCP server and one-button agent setup</li>
             <li>All 1.x updates, on every Mac you own</li>
             <li>14-day refund, no questions asked</li>
@@ -980,7 +992,7 @@
           <!-- Replace #buy with the checkout URL. A merchant of record (Paddle, Lemon Squeezy)
                handles EU VAT for you; Stripe Checkout leaves VAT to you. -->
           <a id="buy" class="btn btn-lime" href="#buy">Buy Stashcut for €29</a>
-          <p class="fine" style="margin:0;text-align:center">Requires macOS 10.13 or later. Best on the current macOS.</p>
+          <p class="fine" style="margin:0;text-align:center">Requires macOS 10.13 or later. The built-in search model needs macOS 12.</p>
         </div>
 
         <div class="compare">
@@ -1013,7 +1025,7 @@
         </div>
         <div>
           <h3 style="margin:0 0 10px;font-size:26px;letter-spacing:-0.025em">Bring your own brain</h3>
-          <p style="margin:0;color:rgba(255,255,255,0.7)">Stashcut ships no model and keeps no key. Point it at a model on this Mac, or at any endpoint you already trust. The Preferences pane says in one sentence whether your text stays on the machine.</p>
+          <p style="margin:0;color:rgba(255,255,255,0.7)">Search by meaning runs on a model that ships inside Stashcut. Answers come from a model you already run, and Stashcut keeps no key for it. Point it at one on this Mac, or on another machine of yours. The Preferences pane says in one sentence whether your text stays on the machine.</p>
           <div class="models">
             <div class="model">
               <div class="logo"><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="9.5" y="1" width="4" height="12" rx="2" fill="#14122A"/><rect x="18.5" y="1" width="4" height="12" rx="2" fill="#14122A"/><rect x="7" y="7.5" width="18" height="23" rx="8" fill="#14122A"/><circle cx="12.5" cy="15" r="2" fill="#fff"/><circle cx="19.5" cy="15" r="2" fill="#fff"/><circle cx="13" cy="15.4" r=".9" fill="#14122A"/><circle cx="20" cy="15.4" r=".9" fill="#14122A"/><rect x="12" y="21" width="8" height="5.5" rx="2.75" fill="#fff" opacity=".9"/><path d="M14.5 23.8h3" stroke="#14122A" stroke-width="1.2" stroke-linecap="round"/></svg></div>
@@ -1022,12 +1034,11 @@
             </div>
             <div class="model">
               <div class="logo"><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="4" y="6" width="24" height="20" rx="5" fill="#14122A"/><path d="M9 13h14M9 17h9M9 21h11" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
-              <div><b>Any OpenAI-compatible endpoint</b><span>Your own server, a provider you pay for, a model on your LAN.</span></div>
+              <div><b>LM Studio or llama.cpp</b><span>Start its local server and pick a loaded model. On this Mac, or one on your network.</span></div>
               <span class="state">you choose</span>
             </div>
           </div>
           <p class="note">Credentials are excluded before the question is even assembled. The answer says how many were withheld.</p>
-        </div>
         </div>
       </div>
     </div>
@@ -1112,8 +1123,8 @@
       <p class="kicker">Questions</p>
       <h2>Asked before you asked</h2>
       <div class="faq">
-        <details><summary>Does it need an internet connection?</summary><p>No. History, search, secret detection and the agent server all work offline. Ask your clipboard talks to whatever model endpoint you set, which can be a model on this very Mac.</p></details>
-        <details><summary>Which AI does it use?</summary><p>Yours. Point it at Ollama or any OpenAI-compatible endpoint. Stashcut ships no model, keeps no key of its own, and never routes your text through a server of ours.</p></details>
+        <details><summary>Does it need an internet connection?</summary><p>No. History, search by meaning, secret detection and the agent server all work offline. Larger search models are an optional download. Ask your clipboard talks to whatever model you set, which can be one on this very Mac.</p></details>
+        <details><summary>Which AI does it use?</summary><p>For search, a small model that ships inside Stashcut, or e5-small, an optional download that reads many languages and code. For answers, yours: Ollama, LM Studio or llama.cpp. Stashcut keeps no key of its own and never routes your text through a server of ours.</p></details>
         <details><summary>Where is my history stored?</summary><p>In macOS preferences under <code>com.stashcut.app</code> and in <code>~/Library/Application Support/Stashcut</code> for images, backdrops and the search index. Delete the app and the folder, and it is gone.</p></details>
         <details><summary>Is the agent server safe to turn on?</summary><p>It is off until you switch it on. It is read-only, it runs only while an agent you started is running, it never returns credentials in any form, and it withholds anything that looks like a card, an account, a key or a bulk mailing list.</p></details>
         <details><summary>Is Stashcut open source?</summary><p>Stashcut is built on Flycut and Jumpcut, both MIT licensed, and their notices ship in the app's Credits tab. The additions that make Stashcut what it is are proprietary. You are paying for those, and for the person keeping them working.</p></details>
