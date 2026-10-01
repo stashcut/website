@@ -79,18 +79,214 @@
     <a class="pill" href="index.html#pricing">Get Stashcut · €29</a>
   </div>
 </div></nav>
+<!-- Everything inside <main> is CHANGELOG.md rendered by `npx marked@18.0.14 -i CHANGELOG.md`, with the lede paragraph joined onto the h1. Regenerate rather than edit by hand. -->
 <main>
 <h1>Changelog</h1><p class="lede">What changed, and why.</p><h2>1.0.0, unreleased</h2>
 <p>Stashcut, a commercial macOS clipboard manager. Lineage and licences: <code>license.txt</code>.</p>
 <ul>
 <li>Renamed the Mac app to Stashcut (<code>com.stashcut.app</code>) on 2026-09-20, dropping the fork&#39;s working name and bundle id.</li>
+<li>Preferences is a Settings window: a sidebar with an icon per pane and the
+pane&#39;s name as a title, in place of the toolbar that pushed panes into an
+overflow menu. Panes are unchanged.</li>
+<li>App icon is flat: solid violet, white cards, a lime cut, a raspberry first
+line, one solid shadow. The design rules for icon, app and website are in
+<code>Branding/design.md</code>.</li>
+<li>Raspberry threads through the website as the second accent: the dot that
+opens every section label and every footer heading, the two labels that say
+&quot;not forever&quot; (the launch price and the integration still to come), the
+shadow under the pricing card, the play button and selected text. In the app
+it is the dot in front of each Settings pane&#39;s description, the same mark
+the website&#39;s section labels wear.</li>
+<li>The website describes the app as it is now: search on Shift Command ?, a
+search model inside the app and e5-small to download, LM Studio and
+llama.cpp beside Ollama, and cards for code colouring and the five Control
+Option Command transforms. It no longer says Stashcut ships no model, or
+offers paid providers the assistant has no way to send a key to.</li>
+<li>The shipping build is no longer sandboxed, which is what the direct download
+always needed to be. Sandboxed, Stashcut could not see <code>op</code> on a Mac that had
+it, could not start or even reach a local model, and <code>~</code> meant a folder
+inside its own container. The 1Password, AI, Obsidian and Agents panes all
+did less than they said. The first run after this adopts whatever the
+container held, so the history and every setting come with it.</li>
+<li>Nine global hotkeys instead of two, every one of them changeable in
+Settings. Shift Command V opens the bezel, Shift Command ? searches, Shift
+Command A asks. The five AI transforms and Send to Obsidian sit on Control
+Option Command with the first letter of what they do, a chord macOS and the
+applications people keep open barely touch, so six more shortcuts cost
+nothing anybody was using.</li>
+<li>A transform hotkey works on whatever is on the clipboard without opening
+anything: copy, press, paste. Reaching one through a menu is what the menu
+is for.</li>
+<li>The five exist only while AI is on. Somebody who never turns it on has three
+global shortcuts taken rather than nine, and they appear and disappear with
+the setting rather than at the next launch.</li>
+<li>Every one of them is shown in the menu beside what it does, so the menu is
+where they get learned.</li>
+<li>Settings refuses a combination another Stashcut action already answers to
+and says which one. Two of ours on one combination is not an error macOS
+reports: the second registration silently loses, and the row looks set while
+doing nothing.</li>
+<li>Search moved from Shift Command B to Shift Command ?. It moves once, and
+only for people who never changed it.</li>
+<li>The AI pane says each thing once. Where things run is said in its subtitle,
+&quot;both entirely on this Mac&quot;, and nowhere else; every row under Search by
+meaning is one line on how good and one on what it costs, listed best first
+and in the same order whatever is chosen; the Assistant&#39;s rows run in the
+order they are used: the switch, what it does, what runs it, how that is
+doing, which model, where. The Ollama row&#39;s menu is called Embedding model.
+The Model row no longer repeats what the Status row above it just said.</li>
+<li>The search engines are in three groups, by what they ask of you: nothing
+else to install (the bundled model, downloads, Apple&#39;s), an app you run
+(Ollama, LM Studio, llama.cpp), and no model (words only). Best first
+inside each.</li>
+<li>Search by meaning can use an embedding model served by LM Studio or
+llama.cpp, as well as Ollama. Each gets a menu of the models its server has
+loaded, remembers its own choice, and picks the one embedding model by
+itself when a server has exactly one.</li>
+<li>The assistant runs with LM Studio or llama.cpp as well as Ollama, chosen in
+the AI pane. Both run on this Mac, so nothing leaves it. Each keeps its own
+address and remembers its own model, so trying one and going back changes
+nothing. Search&#39;s Ollama engine keeps talking to Ollama whatever the
+assistant uses.</li>
+<li>Every engine shows what it is underneath and which build, in grey after its
+name. A downloaded model says &quot;(downloaded)&quot; in green and has a Remove button.</li>
+<li>A better search model, bge-small, can be downloaded from the AI pane: choose
+it and it is fetched, 30MB, while search carries on with the engine you had.
+It is checked against its published fingerprint before it is ever used, and
+it understands code as well as prose, which the bundled model does not.
+Models come from Stashcut&#39;s own server, models.stashcut.com.</li>
+<li>The best search model is now e5-small, downloaded the same way, 69MB. It
+reads English, Dutch, German, French and many more, finds a clipping in one
+language from a search in another, and was trained on thousands of commands
+so &quot;undo the last commit&quot; finds <code>git reset --soft HEAD~1</code>. bge-small stays
+as the smaller, English-only choice.</li>
+<li>e5-small finds things. Its scores sit in a narrow band, and the rule that
+decides what counts as related was measured on the bundled model, so most
+searches showed nothing; its scores are now read on the same scale.</li>
+<li>Search by meaning&#39;s apps are one choice, &quot;Ollama, LM Studio or llama.cpp&quot;,
+with a Runs with menu under it that is always there and shows which of the
+three is answering. Chosen, it adds the app&#39;s status, its model and its
+address, laid out the way the assistant&#39;s are and sharing its address.</li>
+<li>Code is coloured by its own language. Stashcut tells code from text and names
+the language, from sixteen, on this Mac; the bezel colours it by that
+language&#39;s rules and says which before the size, &quot;Python · 105 chars&quot;.
+Text is never coloured any more. The switch in Appearance is now &quot;Colour
+code by its language&quot;, and it is on.</li>
+<li>The AI pane is two sections instead of one long list. Search by meaning comes
+first, because it works with nothing set up: the four engines are shown as
+choices you can read, each saying what it is good at and what it costs, and
+the bundled model is the default. The assistant comes second, with its switch
+at the top and everything it needs greyed until it is on. Picking Ollama for
+search shows a menu of the embedding models you have installed, in place of
+a box you had to type a model&#39;s name into.</li>
+<li>Ollama for search no longer waits on the assistant being switched on.</li>
+<li>Related search no longer needs Ollama. Settings offers two engines that run
+entirely on this Mac with nothing to install: a small model shipped inside
+Stashcut (all-MiniLM-L6-v2, 22MB), and Apple&#39;s own on-device model. Text
+search stays the default and the floor under all of them.</li>
+<li>A history is indexed for the chosen engine at launch, rather than only once
+the next clipping arrives.</li>
+<li>Related results in the menu no longer show Command-0 beside them.</li>
+<li>The menu bar&#39;s search field finds clippings by meaning as well as by
+spelling. It still matches text first and instantly, and those results never
+move; when what you typed turns up little, the model is asked as well and
+whatever it finds is added underneath, under &quot;Related&quot;. With AI off, no
+model, or Ollama not running, you get exactly the text search you had, which
+is the fallback rather than an error.</li>
+<li>Clippings are indexed for related search as they arrive, instead of only
+while the search window happens to be open. That window was the only thing
+that ever built the index, so everything copied since the last time it was
+opened could not be found by meaning at all.</li>
+<li>Launch builds the menu bar menu once for the restored history instead of
+once per clipping: for a history of 99, 4 rebuilds instead of 200. A
+clipping you copy still shows up in it straight away.</li>
+<li>The menu bar menu is in the order it gets used: the search field at the top,
+the last ten clippings under a &quot;Recent&quot; heading with the icon of the
+application each came from and Command-1 to Command-9 on them, and then the
+commands in groups. &quot;Open Stashcut&quot; is in it at last, wearing your own
+hotkey, so the menu teaches it. Preferences is called Settings, and the two
+commands that emptied or merged the history now say which list they mean.</li>
+<li>The menu bar mark is the app icon&#39;s card, snipped corner and all, between the
+two cards either side of it. Filled rather than outlined, because a hairline
+outline turns to grey mush at 16 points, and with two lines of clipping
+knocked out of it so it reads as a clipping rather than a document.</li>
+<li>Preferences panes grow to fit their rows, and so does the tab view around
+them. Without the second half of that the Bezel theme menu and the three
+sliders above it were outside the tab view&#39;s bounds: drawn, and unclickable,
+because the clicks fell through to the card behind. The backdrop colour, image and
+scaling controls had been pushed below the edge of the Appearance pane by
+the rows added for themes and placement: still drawn, and deaf to the mouse.</li>
+<li>Every Settings pane is one form: labels in a column, right-aligned and ending
+in a colon, every control starting on the same line beside them, and what a
+control does in small grey text under it. General, Hotkeys, 1Password and
+Obsidian had been laid out for the old 800 point window and sat in a narrow
+column against the left of their card. General&#39;s Pasteboard types field and
+its password lengths field no longer run past the edge of the card.</li>
+<li>A pane shorter than the sidebar hangs its card under its title, rather than
+leaving a gap above it. The 1Password pane&#39;s Notification Settings button no
+longer covers the offer menu, and the AI pane&#39;s setup rows take the room
+their message needs, so a one-line answer leaves no hole under it and Check
+again stands where its row starts.</li>
+<li>The bezel is the website&#39;s card: ink, 25px radius, a hairline of light, the
+source row and the counter in mono, no inner boxes. Favourites are the same
+card in violet; a credential wears a raspberry edge and tag. Carousel side
+cards are two thirds of the bezel, 20pt apart, as the hero animates them.</li>
+<li>The keys the bezel answers to are one strip of keyboard caps under the card,
+drawn as the website draws them: white caps on paper, ink borders and a solid
+offset each, the word beside them in grey. Instead of a hint line inside
+every card. A key that only works on the card in front of you leads the strip
+and fades in wearing the colour of what it does: <code>r show/hide</code> on a
+credential in raspberry, <code>o obsidian</code> in violet once a folder is chosen. A
+small screen sheds keys from the tail rather than truncating them.</li>
+<li>The strip holds one spot on screen, and so does the carousel. The card now
+has a normal size that any clipping fitting five lines gets, grows in whole
+steps of six lines for longer ones, and grows upwards off a fixed bottom
+edge instead of resizing about its middle, so stepping through the history
+no longer has everything on screen breathing in and out.</li>
+<li>Carousel cards are centred on that same line, two thirds of the normal card
+either side of it and half of it again beyond, which reads as distance. They
+keep their size whatever the card in the middle is doing.</li>
+<li>The whole bezel sits 4cm lower on the screen, under what you are working on
+rather than across it, measured in millimetres so it is 4cm on any display.</li>
+<li>The card is padded like the card on the website: air over the source row,
+the same gap between each row, and the three rows on one left edge.</li>
+<li>A card says how long ago it was copied, as the website&#39;s cards do: &quot;just
+now&quot;, &quot;12 min&quot;, the clock for the rest of today, &quot;yesterday 22:30&quot;, the
+weekday for the rest of the week, the date beyond that. The size beside it
+counts in whole words: &quot;1 char&quot;, &quot;36 chars&quot;, &quot;~65 tokens&quot;.</li>
+<li>Appearance has the bezel&#39;s placement in it: where it stands, in millimetres
+below the middle of the screen so it is the same distance on any display, and
+how far under it the keys sit.</li>
+<li>Five carousel shapes to choose between, from cards that shrink sharply with
+distance to a row of side cards all one size.</li>
+<li>Six themes for the card: Ink, which is the website&#39;s and the default, then
+Midnight, Graphite, Paper, Terminal and Outline. The shapes are the same in
+all of them, and so is what a colour means.</li>
+<li>Clippings can be coloured like code, off by default: quoted text, numbers,
+comments and the words every language shares, in the fixed pitch face.</li>
+<li>The backdrop can be a pattern: dots on paper like the website&#39;s stage,
+Blueprint graph paper, or diagonal lines, in colours of your own.</li>
+<li>The bezel takes h, j, k and l as well as the arrows, and the cap for whatever
+key you press goes down under it.</li>
+<li>The search hotkey is in the Hotkeys pane with the main one, where it always
+should have been, rather than at the bottom of Appearance.</li>
+<li>A new history keeps 99 clippings rather than the 40 the fork inherited. The
+stepper in General goes to 999.</li>
+<li>The card&#39;s bottom row counts twice: where the clipping sits in the stack on
+the left, its size in characters and estimated tokens on the right.</li>
+<li>Search, Ask, the notices and the 1Password offer are drawn as dark cards
+with the same tokens. Ask&#39;s Copy answer button is cyan, the offer&#39;s Save is
+lime.</li>
+<li>Settings: a sentence under each pane title saying what it is for, and the
+controls on a card that is white on paper by day and ink after dark,
+following the system appearance. The wordmark in the sidebar.</li>
+<li>Website: a light and dark theme, following the system with a toggle in the
+nav. A few lines of JavaScript remember the choice; still no tracking.</li>
 <li>Version numbering restarts at 1.0.0. Upstream stopped at 1.9.6 and this is a
 different product.</li>
 <li>Menu bar mark: Stashcut&#39;s own carousel glyph, a template image that follows
-the menu bar&#39;s light or dark appearance, with a colour variant in Preferences<blockquote>
-<p>Appearance. General Arcade&#39;s scissors icons are no longer used.</p>
-</blockquote>
-</li>
+the menu bar&#39;s light or dark appearance, with a colour variant in
+Preferences &gt; Appearance. General Arcade&#39;s scissors icons are no longer used.</li>
 <li>Added a Search clipboard hotkey (Shift-Command-B by default) and a search window.</li>
 <li>Sticky bezel is on by default. Space or right-click pins the bezel.</li>
 <li>Dropped the iOS app, iCloud / CloudKit sync, InAppSettingsKit, MGSwipeTableCell, and MJCloudKitUserDefaultsSync.</li>
@@ -426,8 +622,8 @@ removed too, so a failed filing leaves the vault as it was found.</li>
 content into a browser, a chat client or an AI chat application. The alert
 names what was found and where it is going (&quot;Paste a payment card number into
 Google Chrome?&quot;) and offers <strong>Paste Anyway</strong>, <strong>Cancel</strong>, and <strong>Don&#39;t Warn for
-<application></strong>. Cancel is the default button, and cancelling leaves the
-clipboard and the history exactly as they were.</li>
+Google Chrome</strong>, named for the app. Cancel is the default button, and
+cancelling leaves the clipboard and the history exactly as they were.</li>
 <li>This is a second, wider detection tier, not the store-time one reused. The
 store-time detector refuses to save credentials in the first place, so a guard
 keyed on it would have almost nothing left to guard. What the history actually
