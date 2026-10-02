@@ -3,10 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Thank you · Stashcut</title>
-<meta name="description" content="Your Stashcut licence key.">
-<meta name="robots" content="noindex">
-<link rel="canonical" href="https://stashcut.com/thanks.html">
+<title>Download · Stashcut</title>
+<meta name="description" content="Download Stashcut with your licence key.">
+<link rel="canonical" href="https://stashcut.com/download">
 <link rel="icon" href="stashcut-icon.svg" type="image/svg+xml">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#6D4DFF">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#6D4DFF">
@@ -62,6 +61,12 @@
   footer a { color:inherit; }
   @media (max-width:800px) { nav ul { display:none; } }
   @media (max-width:600px) { nav .pill { display:none; } }
+  .keyform { display:flex; flex-wrap:wrap; gap:12px; align-items:center; }
+  .keyform input { flex:1 1 320px; min-width:0; padding:12px 14px; border:2px solid var(--ink); border-radius:12px; background:var(--paper); color:var(--ink); font-family:var(--mono); font-size:17px; }
+  .keyform input:focus-visible { outline:3px solid var(--violet); outline-offset:2px; }
+  .keyform .copy { margin-top:0; }
+  .status { min-height:1.6em; margin:14px 0 0; font-size:15px; color:var(--muted); }
+  .status.error { color:var(--raspberry); font-weight:600; }
   @media (prefers-reduced-motion: reduce) { .pill, .theme-toggle, .copy, .spinner { transition:none; animation:none; } }
 </style>
 </head>
@@ -78,19 +83,20 @@
   </div>
 </div></nav>
 <main>
-<h1>Thank you for buying Stashcut.</h1>
-<p class="lede">Your licence key is below, and on its way to your inbox.</p>
+<h1>Download Stashcut.</h1>
+<p class="lede">Stashcut downloads for buyers only. Enter your licence key and your download starts.</p>
 
-<div class="keybox" id="box">
-  <p class="label">Your licence key</p>
-  <p class="keyval" id="key"><span class="spinner" aria-hidden="true"></span>Fetching your key...</p>
-  <button class="copy" id="copy" type="button" hidden>Copy key</button>
+<div class="keybox">
+  <form class="keyform" id="form">
+    <label class="label" for="key" style="flex-basis:100%;margin:0">Your licence key</label>
+    <input id="key" name="key" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="SC1-..." required>
+    <button class="copy" type="submit">Download</button>
+  </form>
+  <p class="status" id="status" role="status"></p>
 </div>
 
-<p><a id="download" href="/download"><strong>Download Stashcut</strong></a> (22 MB), drag it into Applications, open it, and paste your key when it asks. The download link is yours alone and works for 7 days; the same link is in your email.</p>
-
-<p id="help" class="note">One licence covers up to three Macs you personally use. Keep the email: it is your proof of purchase, and it has the download link for your next Mac. Questions? <a href="mailto:hello@stashcut.com">hello@stashcut.com</a>.</p>
-
+<p>Your key is in the email you got when you bought Stashcut. The download is the same app on every Mac; your key is what unlocks it, on up to three Macs you personally use.</p>
+<p class="note">No key yet? <a href="index.html#pricing">Buy Stashcut</a>. Lost the email? Write to <a href="mailto:hello@stashcut.com">hello@stashcut.com</a> from the address you bought with.</p>
 </main>
 <footer><div class="wrap">Copyright © 2026 Khalil Gharbaoui. Built on <a href="https://github.com/TermiT/Flycut">Flycut</a> and Jumpcut, both MIT licensed. <a href="index.html">Home</a> · <a href="help.html">Help</a> · <a href="changelog.html">Changelog</a> · <a href="terms.html">Terms</a> · <a href="mailto:hello@stashcut.com">Contact</a></div></footer>
 <script>
@@ -114,56 +120,43 @@
   })();
 </script>
 <script>
-  /* Fetch the licence key for this Checkout Session, once. The licence server
-     returns it a single time, then it lives only in the confirmation email.
-     The webhook can lag a second or two after the redirect, so retry a few
-     times before giving up. */
+  /* Ask the licence server for a personal download link for this key, then go
+     there. The link is made for this licence alone and expires in 7 days. */
   (function () {
     var API = "https://api.stashcut.com";
-    var keyEl = document.getElementById("key");
-    var copyEl = document.getElementById("copy");
-    var helpEl = document.getElementById("help");
-    var session = new URLSearchParams(location.search).get("session");
-
-    function showEmailFallback(msg) {
-      keyEl.textContent = msg;
-      keyEl.style.fontFamily = "var(--font)";
-      keyEl.style.fontWeight = "400";
+    var form = document.getElementById("form");
+    var input = document.getElementById("key");
+    var statusEl = document.getElementById("status");
+    var messages = {
+      malformed_key: "That does not look like a Stashcut key. Check it and try again.",
+      unknown_key: "We do not have that key. Check your purchase email.",
+      revoked: "This licence has been refunded or cancelled."
+    };
+    function say(text, isError) {
+      statusEl.textContent = text;
+      statusEl.className = isError ? "status error" : "status";
     }
-    if (!session) {
-      showEmailFallback("Check your email for your licence key.");
-      return;
-    }
-
-    var attempts = 0;
-    function tryFetch() {
-      attempts++;
-      fetch(API + "/delivery?session=" + encodeURIComponent(session), { cache: "no-store" })
-        .then(function (res) {
-          if (res.ok) return res.json();
-          if (res.status === 404 && attempts < 6) { setTimeout(tryFetch, 2000); return null; }
-          throw new Error("status " + res.status);
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      say("Checking your key...", false);
+      fetch(API + "/download-link", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ key: input.value.trim() })
+      })
+        .then(function (res) { return res.json().then(function (data) { return { ok: res.ok, data: data }; }); })
+        .then(function (answer) {
+          if (answer.ok && answer.data.url) {
+            say("Your download is starting.", false);
+            location.href = answer.data.url;
+          } else {
+            say(messages[answer.data.error] || "Something went wrong. Please try again, or write to hello@stashcut.com.", true);
+          }
         })
-        .then(function (data) {
-          if (!data) return;
-          keyEl.textContent = data.key;
-          // The personal link the server made for this licence. Without it the
-          // link stays on /download, which makes one from the key.
-          if (data.download) document.getElementById("download").href = data.download;
-          copyEl.hidden = false;
-          copyEl.addEventListener("click", function () {
-            navigator.clipboard.writeText(data.key).then(function () {
-              copyEl.textContent = "Copied";
-              setTimeout(function () { copyEl.textContent = "Copy key"; }, 2000);
-            });
-          });
-        })
-        .catch(function () {
-          showEmailFallback("Your key is in your email. If it has not arrived, write to hello@stashcut.com.");
-        });
-    }
-    tryFetch();
+        .catch(function () { say("Could not reach the licence server. Check your connection.", true); });
+    });
   })();
 </script>
+
 </body>
 </html>
