@@ -1,0 +1,3 @@
+# Cloudflare Pages redirects. /download is the one link the site, the thank-you
+# page and the licence email use; each release changes only this line.
+/download https://download.stashcut.com/Stashcut-1.0.0.dmg 302

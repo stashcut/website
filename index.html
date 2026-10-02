@@ -18,7 +18,6 @@
   Design tokens and rules: Branding/design.md in the app repository.
 
   Before publishing:
-    * point every href="#buy" at the checkout link (see the pricing section)
     * confirm the refund line in the pricing card and the FAQ
     * drop the demo video in place of the poster in the #demo section
     * stashcut-icon.svg and stashcut-icon-1024.png come from Branding/make-icons.sh
@@ -989,10 +988,10 @@
             <li>All 1.x updates, on every Mac you own</li>
             <li>14-day refund, no questions asked</li>
           </ul>
-          <!-- Replace #buy with the checkout URL. A merchant of record (Paddle, Lemon Squeezy)
-               handles EU VAT for you; Stripe Checkout leaves VAT to you. -->
-          <a id="buy" class="btn btn-lime" href="#buy">Buy Stashcut for €29</a>
-          <p class="fine" style="margin:0;text-align:center">Requires macOS 10.13 or later. The built-in search model needs macOS 12.</p>
+          <!-- Stripe Checkout, through the licence server (server/). While its
+               SALES_OPEN is "false", /buy sends people back to #pricing. -->
+          <a id="buy" class="btn btn-lime" href="https://api.stashcut.com/buy">Buy Stashcut for €29</a>
+          <p class="fine" style="margin:0;text-align:center">Requires macOS 10.13 or later. The built-in search model needs macOS 12. Bought it already? <a href="/download">Download Stashcut</a>.</p>
         </div>
 
         <div class="compare">
