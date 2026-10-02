@@ -623,6 +623,16 @@
   .amount .num { font-size: 92px; font-weight: 800; letter-spacing: -0.06em; line-height: 1; }
   .amount .cur { font-size: 30px; font-weight: 700; color: var(--violet-ink); }
   .amount .once { font-size: 16px; color: var(--muted); }
+  /* The launch price's end, counted down. Raspberry dot for the same reason as
+     the ribbon: it is true today, not forever. Without JavaScript it reads as a
+     plain date; once the date passes, the script hides it and the ribbon. */
+  .countdown { margin: -6px 0 0; display: flex; align-items: center; flex-wrap: wrap; gap: 8px; font-size: 14px; font-weight: 600; color: var(--muted); }
+  .countdown::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--raspberry); }
+  .countdown .unit { display: inline-flex; align-items: baseline; gap: 3px; padding: 3px 9px; border: 2px solid var(--ink); border-radius: var(--r-ctl); background: var(--paper-2); color: var(--ink); font-family: var(--mono); }
+  .countdown .unit b { font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .countdown .unit small { font-size: 11px; color: var(--muted); }
+  .countdown[hidden] { display: none; } /* the rule above sets display, so hidden must opt back out */
+  .countdown .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   .checks { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
   .checks li { display: flex; gap: 12px; align-items: flex-start; font-size: 16px; }
   .checks li::before {
@@ -979,6 +989,9 @@
         <div class="price">
           <span class="ribbon">Launch price</span>
           <div class="amount"><span class="cur">€</span><span class="num">29</span><span class="once">one-time, VAT included</span></div>
+          <!-- The launch price ends here, Amsterdam time. A countdown has to be
+               true: on this date the price goes up, or this date moves. -->
+          <p class="countdown" data-ends="2026-11-01T00:00:00+01:00">Launch price until <time datetime="2026-11-01T00:00:00+01:00">31 October 2026</time></p>
           <ul class="checks">
             <li>Clipboard history, search by meaning, the carousel, hotkeys</li>
             <li>Secret detection, paste guard, 1Password hand-off</li>
@@ -1198,6 +1211,63 @@
     });
     system.addEventListener("change", reflect);
     reflect();
+  })();
+
+  /* The launch price countdown. The date lives in one place, data-ends on
+     .countdown. Screen readers keep the plain date; the ticking units are
+     hidden from them. When the date has passed, the countdown and the
+     "Launch price" ribbon both go, so the page never claims a deal that ended. */
+  (function () {
+    var box = document.querySelector(".countdown");
+    if (!box) return;
+    var ends = new Date(box.getAttribute("data-ends")).getTime();
+    if (isNaN(ends)) return;
+    var ribbon = document.querySelector(".price .ribbon");
+
+    var plain = document.createElement("span");
+    plain.className = "sr";
+    plain.textContent = box.textContent;
+    var visible = document.createElement("span");
+    visible.setAttribute("aria-hidden", "true");
+    visible.style.display = "contents";
+    box.textContent = "";
+    box.appendChild(plain);
+    box.appendChild(visible);
+
+    function unit(value, name) {
+      var el = document.createElement("span");
+      el.className = "unit";
+      var number = document.createElement("b");
+      number.textContent = value;
+      var label = document.createElement("small");
+      label.textContent = name;
+      el.appendChild(number);
+      el.appendChild(label);
+      return el;
+    }
+    function two(n) { return n < 10 ? "0" + n : String(n); }
+
+    var timer;
+    function tick() {
+      var left = Math.floor((ends - Date.now()) / 1000);
+      if (left <= 0) {
+        box.hidden = true;
+        if (ribbon) ribbon.hidden = true;
+        clearInterval(timer);
+        return;
+      }
+      var days = Math.floor(left / 86400);
+      var hours = Math.floor(left % 86400 / 3600);
+      var minutes = Math.floor(left % 3600 / 60);
+      var seconds = left % 60;
+      visible.textContent = "Launch price ends in";
+      if (days > 0) visible.appendChild(unit(days, days === 1 ? "day" : "days"));
+      visible.appendChild(unit(two(hours), "h"));
+      visible.appendChild(unit(two(minutes), "m"));
+      visible.appendChild(unit(two(seconds), "s"));
+    }
+    tick();
+    timer = setInterval(tick, 1000);
   })();
 </script>
 
