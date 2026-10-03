@@ -108,6 +108,7 @@
 <p><strong>r</strong>: Reveal the value behind a 1Password credential card. Does nothing on any other clipping, which is why the bezel&#39;s key hint line only lists it while you are on a credential. See <strong>Keeping credentials in 1Password instead</strong> below.</p>
 <p><strong>t</strong>: On a screenshot, turn the card over to the text read out of it, and back. Pasting pastes whichever side is showing.</p>
 <p><strong>z</strong>: On a screenshot, show it full screen. <strong>Esc</strong> comes back to the bezel.</p>
+<p><strong>b</strong>: On a clipping with one link in it, open the link in your default browser, closing the Bezel. Only <code>http</code> and <code>https</code> links open.</p>
 <p><strong>o</strong>: Send the clipping currently displayed to your Obsidian vault, closing the Bezel. Does nothing until you choose a folder in Preferences &gt; Obsidian, which is why the key hint line only lists it once you have. See <strong>Sending a clipping to Obsidian</strong> below.</p>
 <p><strong>Menu Features</strong></p>
 <p>The Stashcut menu allows you to select from the most recent items in the main clipboard history store, clear all of them, merge them all into one entry, or access the preferences panel.  You can also Option-Click the menu icon to disable or reenable clipboard tracking, in case you are copying sensitive information such as passwords.</p>
@@ -477,6 +478,20 @@ older the screenshot is still kept, described by its size.</p>
 <p>To turn image capture off, run this in Terminal and restart Stashcut:</p>
 <pre><code>defaults write com.stashcut.app captureImages -bool NO
 </code></pre>
+<p><strong>Links</strong></p>
+<p>Stashcut finds links by rule, not with a model: anything that starts with
+<code>http://</code>, <code>https://</code> or <code>www.</code> and has a real host. A file name such as
+<code>setup.py</code> is not a link, nor is an email address, and nothing but an http or
+https link is ever offered to your browser.</p>
+<p>A clipping that is a link is drawn as a link card: whose it is, large, on top,
+which is the part to check before opening anything, then the whole link with
+its parts in their own colours. Links inside other text are coloured and
+underlined where they are. In the menu, a link shows its domain in bold.</p>
+<p>Copying a link sends nothing anywhere. Stashcut never looks a link up: no
+preview, no icon, no check of where it leads. It is opened only when you ask:
+press <strong>b</strong> in the bezel, click <strong>Open</strong> on the card, or hold <strong>Option</strong> over
+the link in the menu and choose <strong>Open in browser</strong>. When a clipping holds more
+than one link, none is opened, because which one you meant would be a guess.</p>
 <p><strong>Finding a clipping by what it meant</strong></p>
 <p>Press Shift-Command-B to open the search window. Typing filters your history by
 substring as it always has. With semantic search on, it also lists clippings that
