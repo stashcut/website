@@ -106,6 +106,8 @@
 <p><strong>f</strong>: Switch between the main clipboard history store and the favorites store.  The favorites store appears in the Bezel and works in the same way as the main clipboard history store, aside from having a yellow tint to the Bezel.</p>
 <p><strong>F</strong>: Save the clipboard history item currently displayed to the favorites store, deleting it from the main clipboard history store and closing the Bezel.</p>
 <p><strong>r</strong>: Reveal the value behind a 1Password credential card. Does nothing on any other clipping, which is why the bezel&#39;s key hint line only lists it while you are on a credential. See <strong>Keeping credentials in 1Password instead</strong> below.</p>
+<p><strong>t</strong>: On a screenshot, turn the card over to the text read out of it, and back. Pasting pastes whichever side is showing.</p>
+<p><strong>z</strong>: On a screenshot, show it full screen. <strong>Esc</strong> comes back to the bezel.</p>
 <p><strong>o</strong>: Send the clipping currently displayed to your Obsidian vault, closing the Bezel. Does nothing until you choose a folder in Preferences &gt; Obsidian, which is why the key hint line only lists it once you have. See <strong>Sending a clipping to Obsidian</strong> below.</p>
 <p><strong>Menu Features</strong></p>
 <p>The Stashcut menu allows you to select from the most recent items in the main clipboard history store, clear all of them, merge them all into one entry, or access the preferences panel.  You can also Option-Click the menu icon to disable or reenable clipboard tracking, in case you are copying sensitive information such as passwords.</p>
@@ -452,17 +454,25 @@ shows up in the menu and the bezel by what it says, substring search finds it,
 and related search indexes it alongside everything else.</p>
 <p>An image with no readable text is kept too, described by its size, for example
 <strong>Image, 1280 by 720</strong>, so it is still something you can find and paste.</p>
-<p>Pasting an image clipping puts both things on the clipboard: the picture and the
-text. Whichever you paste into takes what it can use, so an image editor or a
-chat window gets the screenshot and a text field gets the words out of it.</p>
+<p>In the bezel a screenshot shows itself: the picture on the card, with a
+<strong>Screenshot</strong> tag, and a small toolbar beside the counter. <strong>t</strong> (or the
+toolbar) turns the card over to the text read out of it, and back. <strong>z</strong> (or
+the toolbar&#39;s last button) shows it full screen; there <strong>t</strong> turns it over too,
+the text is large and you can select and copy part of it, the arrows move to the
+clipping before or after, Return pastes, and <strong>Esc</strong> brings you back to the
+bezel exactly where you were. In the menu a screenshot has a small preview with
+a camera badge.</p>
+<p>Pasting pastes what you see: the picture, or, turned over, the text. Never both
+at once, which some apps, web chats among them, would take as two pastes. In
+the menu, hold <strong>Option</strong> over a screenshot to get <strong>Paste text</strong> instead.</p>
 <p>The pictures live in <code>~/Library/Application Support/Stashcut/Clipboard Images</code>.
 Only the file name is kept in your history, not the picture itself. Stashcut
 deletes any picture no clipping refers to when it starts, and keeps the folder
 under about 200 MB by dropping the oldest first. If a picture has gone, pasting
 that clipping still gives you its text.</p>
 <p>A screenshot goes through the same credential check as copied text, so a picture
-of a terminal with an API key in it is left out of your history exactly as the
-key itself would be. Text recognition needs macOS 10.15 or later; on anything
+of a terminal with an API key in it is kept hidden exactly as the key itself
+would be, its picture in memory only. Text recognition needs macOS 10.15 or later; on anything
 older the screenshot is still kept, described by its size.</p>
 <p>To turn image capture off, run this in Terminal and restart Stashcut:</p>
 <pre><code>defaults write com.stashcut.app captureImages -bool NO
