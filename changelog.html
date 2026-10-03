@@ -81,7 +81,21 @@
 </div></nav>
 <!-- Everything inside <main> is CHANGELOG.md rendered by `npx marked@18.0.14 -i CHANGELOG.md`, with the lede paragraph joined onto the h1. Regenerate rather than edit by hand. -->
 <main>
-<h1>Changelog</h1><p class="lede">What changed, and why.</p><h2>1.0.1, 2 October 2026</h2>
+<h1>Changelog</h1><p class="lede">What changed, and why.</p><h2>1.0.2, 3 October 2026</h2>
+<ul>
+<li>A copied password or key is now kept, and hidden. It pastes like any other
+clipping; in its place you see a lock and its shape. Hold Option, or press r, to
+read it. Leave it hidden, save it to 1Password, or mark it not a secret.</li>
+<li>Hidden clippings live in memory only: never written to disk, never searched by
+meaning, never given to agents, Obsidian or AI. They are forgotten after an hour,
+or whatever you choose in the new Settings &gt; Privacy pane.</li>
+<li>Better at telling a credential from ordinary text, with a model that runs on
+your Mac, and no more alarms over documented example keys.</li>
+<li>Better at recognising which programming language a clipping is in.</li>
+<li>Stashcut now updates itself, on macOS 12 and later. It asks once whether to
+check automatically; Check for Updates&hellip; in the menu works any time.</li>
+</ul>
+<h2>1.0.1, 2 October 2026</h2>
 <ul>
 <li>Model packs (e5-small, bge-small) now download from the licence server, which
 hands one over only to a Mac with a valid licence. The bundled search model is
