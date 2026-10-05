@@ -86,12 +86,14 @@
 <p>Paste the same way as always.</p>
 <p>Press the Main Hotkey (Shift-Command-V, by default) to access your clipboard history.  Press the Search hotkey (Shift-Command-B, by default) to search it.  Or click the Stashcut mark in the menu bar, the little card between two side bars.</p>
 <p><strong>The Bezel</strong></p>
-<p>The Bezel is what you see when you press the Main Hotkey.  It&#39;s the semi-transparent box that appears in the middle of your screen, showing you your clipboard history.  To get started, just use the up and down arrow keys while holding the command key to step through your history. </p>
+<p>The Bezel is what you see when you press the Main Hotkey. It is the semi-transparent card in the middle of your screen. Use Left and Right (or H and L) to step through your history. On a stack with AI results, use Up and Down (or K and J) to choose its front layer.</p>
 <p>Sticky bezel is on by default, so there is no need to hold the command key. When you find something you want to paste, press Return and it is pasted while the Bezel closes automatically.  If you don&#39;t want to paste, just press the Esc key.  Space or right-click pins the Bezel so it stays until you paste, Esc, or click away.</p>
 <p><strong>Bezel Keystrokes</strong></p>
 <p>Here&#39;s a complete list of keys you can use in the Bezel.</p>
-<p><strong>Down Arrow</strong> or <strong>Right Arrow</strong>: Move backward in your clipboard history.</p>
-<p><strong>Up Arrow</strong> or <strong>Left Arrow</strong>: Move forward in your clipboard history.</p>
+<p><strong>Right Arrow</strong> or <strong>L</strong>: Move to the next, older stack in your clipboard history.</p>
+<p><strong>Left Arrow</strong> or <strong>H</strong>: Move to the previous, newer stack in your clipboard history.</p>
+<p><strong>Up Arrow</strong> or <strong>K</strong>: Bring the previous layer of the current stack to the front.</p>
+<p><strong>Down Arrow</strong> or <strong>J</strong>: Bring the next layer of the current stack to the front. Vertical navigation stops at the first and last layer; it never changes stacks.</p>
 <p><strong>Return</strong>: Paste the clipboard history item currently displayed, closing the Bezel.</p>
 <p><strong>Esc</strong>: Close the bezel without pasting. If favorites were selected, returns to the main list.</p>
 <p><strong>Enter</strong> (Fn-Return): Move the clipboard history item currently displayed to the front of the history, closing the Bezel.</p>
@@ -100,11 +102,11 @@
 <p><strong>End</strong>: Move to the least recent item in your clipboard history.</p>
 <p><strong>PgDn</strong>: Move backward ten positions in your clipboard history.</p>
 <p><strong>PgUp</strong>: Move forward ten positions in your clipboard history.</p>
-<p><strong>Backspace</strong> or <strong>Delete</strong>: Delete the clipboard history item currently displayed, closing the Bezel.</p>
+<p><strong>Backspace</strong> or <strong>Delete</strong>: Delete the front AI result and reveal the preceding layer. On Original, delete the whole stack. The bezel stays open while there are clippings left.</p>
 <p><strong>1</strong> through <strong>9</strong> and <strong>0</strong>: Move to the clipboard history position indicated by the number, or position 10 for zero.</p>
 <p><strong>s</strong> or <strong>S</strong>: Save the clipboard history item currently displayed to a file, closing the Bezel.  Delete the item from the clipboard history if capital S was pressed.  Clipping is saved to a file on the Desktop, akin to how Screen Shots are saved by OS X.  e.g.  &quot;Desktop/Clipping 2015-07-15 at 08.35.10.txt&quot;</p>
 <p><strong>f</strong>: Switch between the main clipboard history store and the favorites store.  The favorites store appears in the Bezel and works in the same way as the main clipboard history store, aside from having a yellow tint to the Bezel.</p>
-<p><strong>F</strong>: Save the clipboard history item currently displayed to the favorites store, deleting it from the main clipboard history store and closing the Bezel.</p>
+<p><strong>F</strong>: Move the whole current stack to favorites, keeping its original, results and front layer, and close the Bezel.</p>
 <p><strong>r</strong>: Reveal the value behind a 1Password credential card. Does nothing on any other clipping, which is why the bezel&#39;s key hint line only lists it while you are on a credential. See <strong>Keeping credentials in 1Password instead</strong> below.</p>
 <p><strong>t</strong>: On a screenshot, turn the card over to the text read out of it, and back. Pasting pastes whichever side is showing.</p>
 <p><strong>z</strong>: On a screenshot, show it full screen. <strong>Esc</strong> comes back to the bezel.</p>
@@ -116,7 +118,7 @@
 <p>The bezel in the middle is the clipping you are on. Either side of it are the
 clippings next to it in your history, two on the left and two on the right, all
 the same size and fainter the further out they are. Left is more recent and
-right is older, the same direction the arrow keys move, and pressing an arrow
+right is older, the same direction Left and Right move, and pressing either
 slides the whole row along by one. When there is no card on one side there is
 nothing further that way: you are at the start or the end of your history.</p>
 <p>Only the middle bezel takes your keys, so the application you are about to paste
@@ -533,8 +535,8 @@ yourself is never replaced.</p>
 <p>Once enabled, the menu gains an <strong>AI Actions</strong> submenu: Summarize, Rewrite Clearly,
 Fix Spelling &amp; Grammar, Explain, and Translate to English. Each one acts on whatever
 is currently on the clipboard, so copy something (or pick a clipping from the menu
-first), then choose an action. The result is placed on the clipboard and added to
-your history as a new clipping.</p>
+first), then choose an action. The result is placed on the clipboard and kept
+as a layer of that clipping&#39;s stack, alongside its original.</p>
 <p>In the bezel, a second row of keys under the first lists the AI actions that fit
 the card you are looking at, with their keys: all five for ordinary text and a
 screenshot&#39;s text, Summarize and Explain for code, none for a password, a hidden
@@ -542,12 +544,23 @@ clipping or a bare link. While the bezel is open those keys act on that card
 rather than on the clipboard, and the card itself does the work: a cyan tag at
 the top of it names what is happening (Summarizing…, Fixing spelling…), three
 dots pulse beside it, and the clipping sits back until the answer starts to
-write itself in its place. When the answer is complete it becomes a new card,
-named for what it is (Summary, Explanation, Rewritten, Fixed, Translated),
-dealt onto the card it came from, which peeks out beneath it. Return pastes it,
-the arrows move on through the history, and it is clipping 1 from then on. The
-row follows <strong>Show the row of keys under the bezel</strong> and only lists an action
-whose key is set.</p>
+write itself in its place. When complete, the answer comes to the front of the
+same stack, named Summary, Explanation, Rewritten, Fixed or Translated. Exposed
+card edges and a layer counter make its depth visible, even on Original and on
+neighbouring cards. Return pastes whichever layer is at the front.</p>
+<p><strong>Left/Right or H/L change stacks. Up/Down or K/J change layers.</strong> A stack
+stays stacked when you leave it, and returning brings back the layer you last
+chose. Closing the bezel keeps the stack too. With history saving enabled, its
+layers and front selection also survive restarting Stashcut.</p>
+<p>There is one slot per action: running Summarize again replaces Summary,
+leaving the original and other results intact. An action on a result uses that
+front layer as its input and keeps its answer in the same stack. A stack can
+contain the original plus five results, never duplicate summaries.</p>
+<p>The defaults are <strong>Shift-Command-S</strong> Summarize,
+<strong>Shift-Command-R</strong> Rewrite, <strong>Shift-Command-F</strong> Fix Spelling &amp; Grammar,
+<strong>Shift-Command-E</strong> Explain and <strong>Shift-Command-T</strong> Translate.
+Change them in Settings &gt; Hotkeys. The AI row follows
+<strong>Show the row of keys under the bezel</strong> and only lists actions whose keys are set.</p>
 <p>A small ellipsis appears in the menu bar while a request is running. From the
 menu, or from a Shift Command key with the bezel closed, the bezel comes up on
 the clipboard&#39;s clipping and the same thing happens there: the card is the one
