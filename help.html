@@ -539,23 +539,31 @@ your history as a new clipping.</p>
 the card you are looking at, with their keys: all five for ordinary text and a
 screenshot&#39;s text, Summarize and Explain for code, none for a password, a hidden
 clipping or a bare link. While the bezel is open those keys act on that card
-rather than on the clipboard, and the bezel closes as the action starts. The row
-follows <strong>Show the row of keys under the bezel</strong> and only lists an action whose
-key is set.</p>
-<p>A small ellipsis appears in the menu bar while a request is running, and a panel opens
-at the top right showing the answer as the model writes it, with the seconds counting
-up beside it. The panel does not take focus, so you can keep typing where you were.
-Nothing is added to your history until the answer is finished.</p>
-<p>Press <strong>Cancel</strong> in the panel, Escape while the panel has focus, or <strong>Cancel AI
-Action</strong> in the AI Actions submenu to stop a running action; nothing is stored and
-nothing is said about it. Local models are not instant: the first run after a pause
-pays for loading the weights, and a large model can take a minute. Smaller models are
-listed first in Preferences &gt; AI with their size, and one under about 5 GB usually
-answers in a few seconds.</p>
-<p>If a request has run for twenty seconds with nothing to show yet, the status line
-adds a sentence saying why, either that the model is large or that it is reasoning
-before it answers, and points at the smaller models in Preferences &gt; AI. It is said
-once and disappears the moment the answer starts arriving.</p>
+rather than on the clipboard, and the card itself does the work: a cyan tag at
+the top of it names what is happening (Summarizing…, Fixing spelling…), three
+dots pulse beside it, and the clipping sits back until the answer starts to
+write itself in its place. When the answer is complete it becomes a new card,
+named for what it is (Summary, Explanation, Rewritten, Fixed, Translated),
+dealt onto the card it came from, which peeks out beneath it. Return pastes it,
+the arrows move on through the history, and it is clipping 1 from then on. The
+row follows <strong>Show the row of keys under the bezel</strong> and only lists an action
+whose key is set.</p>
+<p>A small ellipsis appears in the menu bar while a request is running. From the
+menu, or from a Shift Command key with the bezel closed, the bezel comes up on
+the clipboard&#39;s clipping and the same thing happens there: the card is the one
+place an action is watched. It does not take focus, so you can keep typing where
+you were. Nothing is added to your history until the answer is finished.</p>
+<p>Press Escape while the card is working, or <strong>Cancel AI Action</strong> in the AI Actions
+submenu, to stop a running action; the card is itself again, nothing is stored
+and nothing is said about it. If an action fails, the tag turns raspberry and one
+line beside it says why; Escape puts it away. Local models are not instant: the
+first run after a pause pays for loading the weights, and a large model can take
+a minute. Smaller models are listed first in Preferences &gt; AI with their size,
+and one under about 5 GB usually answers in a few seconds.</p>
+<p>If a request has run for twenty seconds with nothing to show yet, the card adds a
+sentence beside the tag saying why, either that the model is large or that it is
+reasoning before it answers, and points at the smaller models in Preferences &gt; AI.
+It is said once and disappears the moment the answer starts arriving.</p>
 <p><strong>Reasoning models</strong></p>
 <p>A reasoning model, such as <code>qwen3</code>, thinks in writing before it answers. Those
 thinking tokens are most of the wait and none of the answer, so Stashcut asks such a
@@ -572,8 +580,8 @@ without and remembers not to ask that model again.</p>
 <pre><code>defaults write com.stashcut.app aiAllowThinking -bool YES
 </code></pre>
 <p>There is no checkbox for it. With it on, and on any model whose runtime rejected the
-request, the thinking appears in the panel as it streams, in a dimmer colour with the
-status reading <strong>Thinking…</strong>, so it cannot be mistaken for the answer. It is only
+request, the thinking runs along the tag&#39;s row on the card as it streams, small and
+slanted and read from its end, so it cannot be mistaken for the answer. It is only
 something to watch while you wait: it is never stored as a clipping, never put on the
 clipboard, and never copied by <strong>Copy Answer</strong>.</p>
 <p><strong>Ask Your Clipboard</strong></p>
