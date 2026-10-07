@@ -87,7 +87,7 @@
   <button class="copy" id="copy" type="button" hidden>Copy key</button>
 </div>
 
-<p><a id="download" href="/download"><strong>Download Stashcut</strong></a> (22 MB), drag it into Applications, open it, and paste your key when it asks. The download link is yours alone and works for 7 days; the same link is in your email.</p>
+<p><a id="download" href="/download"><strong>Download Stashcut</strong></a>, drag it into Applications, open it, and paste your key when it asks. Keep your personal download link private. It works for 7 days; your email includes a link too.</p>
 
 <p id="help" class="note">One licence covers up to three Macs you personally use. Keep the email: it is your proof of purchase, and it has the download link for your next Mac. Questions? <a href="mailto:hello@stashcut.com">hello@stashcut.com</a>.</p>
 
@@ -114,10 +114,8 @@
   })();
 </script>
 <script>
-  /* Fetch the licence key for this Checkout Session, once. The licence server
-     returns it a single time, then it lives only in the confirmation email.
-     The webhook can lag a second or two after the redirect, so retry a few
-     times before giving up. */
+  /* Key retrieval is repeatable for one hour, so a reload or a lost response
+     does not consume the buyer's key. The email is the lasting copy. */
   (function () {
     var API = "https://api.stashcut.com";
     var keyEl = document.getElementById("key");
@@ -141,7 +139,7 @@
       fetch(API + "/delivery?session=" + encodeURIComponent(session), { cache: "no-store" })
         .then(function (res) {
           if (res.ok) return res.json();
-          if (res.status === 404 && attempts < 6) { setTimeout(tryFetch, 2000); return null; }
+          if ((res.status === 404 || res.status >= 500) && attempts < 15) { setTimeout(tryFetch, 2000); return null; }
           throw new Error("status " + res.status);
         })
         .then(function (data) {
@@ -159,7 +157,8 @@
           });
         })
         .catch(function () {
-          showEmailFallback("Your key is in your email. If it has not arrived, write to hello@stashcut.com.");
+          if (attempts < 15) { setTimeout(tryFetch, 2000); return; }
+          showEmailFallback("Your licence email may still be on its way. Reload this page to try again, or write to hello@stashcut.com if it has not arrived.");
         });
     }
     tryFetch();
