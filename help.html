@@ -65,6 +65,12 @@
   @media (max-width:800px) { nav ul { display:none; } }
   @media (max-width:600px) { nav .pill { display:none; } } /* as index.html does; the toggle and the wordmark are what fit beside each other at phone width */
   @media (prefers-reduced-motion: reduce) { .pill, .theme-toggle { transition:none; } }
+  /* Keys, drawn as index.html and the app draw them: one cap per key, a +
+     between the keys of a chord, letters in lower case, symbols a size up. */
+  .kbd { display:inline-block; min-width:1.9em; font-family:var(--mono); font-size:13px; font-weight:600; line-height:1.3; text-align:center; padding:1px 6px 2px; border:1.5px solid var(--ink); border-radius:7px; box-shadow:0 2px 0 var(--ink); background:var(--surface); color:var(--ink); vertical-align:1px; white-space:nowrap; }
+  .kbd.sym { font-size:14.5px; font-weight:500; }
+  .chord { display:inline-flex; align-items:center; gap:4px; vertical-align:1px; } .chord .kbd { vertical-align:0; }
+  .plus { opacity:.65; font-weight:600; font-size:.85em; }
 </style>
 </head>
 <body>
@@ -84,36 +90,36 @@
 <p><strong>Basics</strong></p>
 <p>Copy the same way as always. Launching Stashcut does not clear the system clipboard.</p>
 <p>Paste the same way as always.</p>
-<p>Press the Main Hotkey (Shift-Command-V, by default) to access your clipboard history.  Press the Search hotkey (Shift-Command-B, by default) to search it.  Or click the Stashcut mark in the menu bar, the little card between two side bars.</p>
+<p>Press the Main Hotkey (<span class="chord"><span class="kbd sym">⇧</span><span class="plus">+</span><span class="kbd sym">⌘</span><span class="plus">+</span><span class="kbd">v</span></span> by default) to access your clipboard history.  Press the Search hotkey (<span class="chord"><span class="kbd sym">⇧</span><span class="plus">+</span><span class="kbd sym">⌘</span><span class="plus">+</span><span class="kbd">?</span></span> by default) to search it.  Or click the Stashcut mark in the menu bar, the little card between two side bars.</p>
 <p><strong>The Bezel</strong></p>
 <p>The Bezel is what you see when you press the Main Hotkey. It is the semi-transparent card in the middle of your screen. Use Left and Right (or H and L) to step through your history. On a stack with AI results, use Up and Down (or K and J) to choose its front layer.</p>
 <p>Sticky bezel is on by default, so there is no need to hold the command key. When you find something you want to paste, press Return and it is pasted while the Bezel closes automatically.  If you don&#39;t want to paste, just press the Esc key.  Space or right-click pins the Bezel so it stays until you paste, Esc, or click away.</p>
 <p><strong>Bezel Keystrokes</strong></p>
 <p>Here&#39;s a complete list of keys you can use in the Bezel.</p>
-<p><strong>Right Arrow</strong> or <strong>L</strong>: Move to the next, older stack in your clipboard history.</p>
-<p><strong>Left Arrow</strong> or <strong>H</strong>: Move to the previous, newer stack in your clipboard history.</p>
-<p><strong>Up Arrow</strong> or <strong>K</strong>: Bring the layer above the current one down to the front. The layers above are the cards rising over the one you are reading, nearest first, each named.</p>
-<p><strong>Down Arrow</strong> or <strong>J</strong>: Bring the layer below the current one back up to the front. Vertical navigation stops at the original and at the top layer; it never changes stacks.</p>
-<p><strong>Return</strong>: Paste the clipboard history item currently displayed, closing the Bezel.</p>
-<p><strong>Esc</strong>: Close the bezel without pasting. If favorites were selected, returns to the main list.</p>
-<p><strong>Enter</strong> (Fn-Return): Move the clipboard history item currently displayed to the front of the history, closing the Bezel.</p>
-<p><strong>Command-,</strong>: Display the Stashcut preferences panel.</p>
-<p><strong>Home</strong>: Move to the most recent item in your clipboard history.</p>
-<p><strong>End</strong>: Move to the least recent item in your clipboard history.</p>
-<p><strong>PgDn</strong>: Move backward ten positions in your clipboard history.</p>
-<p><strong>PgUp</strong>: Move forward ten positions in your clipboard history.</p>
-<p><strong>Backspace</strong> or <strong>Delete</strong>: Delete the front AI result and reveal the preceding layer. On Original, delete the whole stack. The bezel stays open while there are clippings left.</p>
-<p><strong>1</strong> through <strong>9</strong> and <strong>0</strong>: Move to the clipboard history position indicated by the number, or position 10 for zero.</p>
-<p><strong>s</strong> or <strong>S</strong>: Save the clipboard history item currently displayed to a file, closing the Bezel.  Delete the item from the clipboard history if capital S was pressed.  Clipping is saved to a file on the Desktop, akin to how Screen Shots are saved by OS X.  e.g.  &quot;Desktop/Clipping 2015-07-15 at 08.35.10.txt&quot;</p>
-<p><strong>f</strong>: Switch between the main clipboard history store and the favorites store.  The favorites store appears in the Bezel and works in the same way as the main clipboard history store, aside from having a yellow tint to the Bezel.</p>
-<p><strong>F</strong>: Move the whole current stack to favorites, keeping its original, results and front layer, and close the Bezel.</p>
-<p><strong>r</strong>: Reveal the value behind a 1Password credential card. Does nothing on any other clipping, which is why the bezel&#39;s key hint line only lists it while you are on a credential. See <strong>Keeping credentials in 1Password instead</strong> below.</p>
-<p><strong>t</strong>: On a screenshot, turn the card over to the text read out of it, and back. Pasting pastes whichever side is showing.</p>
-<p><strong>z</strong>: On a screenshot, show it full screen. <strong>Esc</strong> comes back to the bezel.</p>
-<p><strong>b</strong>: On a clipping with one link in it, open the link in your default browser, closing the Bezel. Only <code>http</code> and <code>https</code> links open.</p>
-<p><strong>o</strong>: Send the clipping currently displayed to your Obsidian vault, closing the Bezel. Does nothing until you choose a folder in Preferences &gt; Obsidian, which is why the key hint line only lists it once you have. See <strong>Sending a clipping to Obsidian</strong> below.</p>
+<p><span class="kbd sym">→</span> or <span class="kbd">l</span>: Move to the next, older stack in your clipboard history.</p>
+<p><span class="kbd sym">←</span> or <span class="kbd">h</span>: Move to the previous, newer stack in your clipboard history.</p>
+<p><span class="kbd sym">↑</span> or <span class="kbd">k</span>: Bring the next layer to the front, in the order the layers were made. Every other layer stands above the card with its own named tab. Up from the last layer wraps to Original.</p>
+<p><span class="kbd sym">↓</span> or <span class="kbd">j</span>: Bring the previous layer to the front. Up and Down wrap around the stack in creation order and never change stacks. You can also click a tab or an exposed card body above the front card to select its layer directly.</p>
+<p><span class="kbd sym">↩</span>: Paste the clipboard history item currently displayed, closing the Bezel.</p>
+<p><span class="kbd">esc</span>: Close the bezel without pasting. If favorites were selected, returns to the main list.</p>
+<p><span class="chord"><span class="kbd">fn</span><span class="plus">+</span><span class="kbd sym">↩</span></span> (Enter): Move the clipboard history item currently displayed to the front of the history, closing the Bezel.</p>
+<p><span class="chord"><span class="kbd sym">⌘</span><span class="plus">+</span><span class="kbd">,</span></span>: Display the Stashcut preferences panel.</p>
+<p><span class="kbd">home</span>: Move to the most recent item in your clipboard history.</p>
+<p><span class="kbd">end</span>: Move to the least recent item in your clipboard history.</p>
+<p><span class="kbd">page down</span>: Move backward ten positions in your clipboard history.</p>
+<p><span class="kbd">page up</span>: Move forward ten positions in your clipboard history.</p>
+<p><span class="kbd sym">⌫</span> or <span class="kbd sym">⌦</span>: Delete the front AI result and reveal the preceding layer. On Original, delete the whole stack. The bezel stays open while there are clippings left.</p>
+<p><span class="kbd">1</span> through <span class="kbd">9</span> and <span class="kbd">0</span>: Move to the clipboard history position indicated by the number, or position 10 for zero.</p>
+<p><span class="kbd">s</span> or <span class="chord"><span class="kbd sym">⇧</span><span class="plus">+</span><span class="kbd">s</span></span>: Save the clipboard history item currently displayed to a file, closing the Bezel.  Delete the item from the clipboard history if Shift was held.  Clipping is saved to a file on the Desktop, akin to how Screen Shots are saved by OS X.  e.g.  &quot;Desktop/Clipping 2015-07-15 at 08.35.10.txt&quot;</p>
+<p><span class="kbd">f</span>: Switch between the main clipboard history store and the favorites store.  The favorites store appears in the Bezel and works in the same way as the main clipboard history store, aside from having a yellow tint to the Bezel.</p>
+<p><span class="chord"><span class="kbd sym">⇧</span><span class="plus">+</span><span class="kbd">f</span></span>: Move the whole current stack to favorites, keeping its original, results and front layer, and close the Bezel.</p>
+<p><span class="kbd">r</span>: Reveal the value behind a 1Password credential card. Does nothing on any other clipping, which is why the bezel&#39;s key hint line only lists it while you are on a credential. See <strong>Keeping credentials in 1Password instead</strong> below.</p>
+<p><span class="kbd">t</span>: On a screenshot, turn the card over to the text read out of it, and back. Pasting pastes whichever side is showing.</p>
+<p><span class="kbd">z</span>: On a screenshot, show it full screen. <span class="kbd">esc</span> comes back to the bezel.</p>
+<p><span class="kbd">b</span>: On a clipping with one link in it, open the link in your default browser, closing the Bezel. Only <code>http</code> and <code>https</code> links open.</p>
+<p><span class="kbd">o</span>: Send the clipping currently displayed to your Obsidian vault, closing the Bezel. Does nothing until you choose a folder in Preferences &gt; Obsidian, which is why the key hint line only lists it once you have. See <strong>Sending a clipping to Obsidian</strong> below.</p>
 <p><strong>Menu Features</strong></p>
-<p>The Stashcut menu allows you to select from the most recent items in the main clipboard history store, clear all of them, merge them all into one entry, or access the preferences panel.  You can also Option-Click the menu icon to disable or reenable clipboard tracking, in case you are copying sensitive information such as passwords.</p>
+<p>The Stashcut menu allows you to select from the most recent items in the main clipboard history store, clear all of them, merge them all into one entry, or access the preferences panel.  You can also <span class="kbd sym">⌥</span>-click the menu icon to disable or reenable clipboard tracking, in case you are copying sensitive information such as passwords.</p>
 <p><strong>Reading the bezel</strong></p>
 <p>The bezel in the middle is the clipping you are on. Either side of it are the
 clippings next to it in your history, two on the left and two on the right, all
@@ -239,7 +245,7 @@ on its own, because detection fires exactly when you are in the middle of puttin
 a key into a terminal or a form, and a panel that swallowed your next Return at
 that moment would be worse than the silence it replaces. <strong>Move the pointer onto
 it and it takes the keyboard</strong>, showing a <strong>return save  esc dismiss</strong> line to
-say that it has; <strong>Return</strong> then saves and <strong>Escape</strong> dismisses. Move the pointer
+say that it has; <span class="kbd sym">↩</span> then saves and <span class="kbd">esc</span> dismisses. Move the pointer
 off it and the keyboard goes straight back to whatever you were typing into. A
 pointer that happened to be resting where the notice opened does not count as
 having been moved onto it: move it away and back.</p>
@@ -260,10 +266,10 @@ open and is gone when it closes, so hiding it is about what is on your screen
 rather than about what Stashcut is holding. It is never written anywhere. The key
 hint line along the bottom of the bezel lists <strong>r show/hide</strong> while a credential
 is on the card, and does not while an ordinary clipping is.</p>
-<p><strong>Return</strong> pastes it, the same as on every other clipping, fetching it from
+<p><span class="kbd sym">↩</span> pastes it, the same as on every other clipping, fetching it from
 1Password first if you have not revealed it. When it has to fetch, the card shows
 <strong>Revealing…</strong> for about a second and the paste happens when the value arrives,
-so nothing is pasted early and nothing empty is pasted. The keypad <strong>Enter</strong> puts
+so nothing is pasted early and nothing empty is pasted. The keypad <span class="kbd">enter</span> puts
 the credential on the clipboard and closes the bezel without pasting it, which is
 what Enter does for an ordinary clipping too.</p>
 <p>A pasted credential is put on the clipboard marked <code>org.nspasteboard.ConcealedType</code>,
@@ -283,7 +289,7 @@ yours is somewhere else:</p>
 <pre><code>defaults write com.stashcut.app onePasswordCommandPath /path/to/op
 </code></pre>
 <p><strong>Sending a clipping to Obsidian</strong></p>
-<p>Press <strong>o</strong> in the bezel and the clipping you are looking at is filed into your
+<p>Press <span class="kbd">o</span> in the bezel and the clipping you are looking at is filed into your
 Obsidian vault as plain markdown. <strong>Send to Obsidian</strong> in the menu files the same
 clipping, which is the most recent one unless you left the bezel somewhere else.
 A notice appears under the menu bar icon naming the note it went to.</p>
@@ -295,7 +301,7 @@ Preferences &gt; Obsidian and press <strong>Choose…</strong>. Everything you s
 one folder, so pick one you would be happy to find anything in: a vault usually
 holds work notes beside private ones, and a clipping filed into the wrong one
 cannot be unfiled. <strong>Clear</strong> puts it back to nothing, which is how you turn this
-off again. Until a folder is chosen, <strong>o</strong> says so and writes nothing, and the
+off again. Until a folder is chosen, <span class="kbd">o</span> says so and writes nothing, and the
 bezel&#39;s key hint line does not mention it.</p>
 <p><strong>Where it goes.</strong> Entries are appended to the daily note for the day the
 clipping was copied, <code>2026-09-20.md</code>, inside the folder you picked, and the note
@@ -335,7 +341,7 @@ dot or <code>..</code> in it is ignored and <code>attachments</code> is used, so
 preference cannot write outside the folder you picked.</p>
 <p><strong>Credentials are never sent.</strong> A credential kept in 1Password is a reference,
 and the point of that is that the secret is not in a file Stashcut wrote. Pressing
-<strong>o</strong> on one says so and writes nothing.</p>
+<span class="kbd">o</span> on one says so and writes nothing.</p>
 <p><strong>When it cannot be written.</strong> A folder that has been renamed, deleted, left on a
 drive that is not connected, made read-only, or is momentarily unavailable in
 iCloud Drive gets one sentence naming it, and nothing is written at all. Nothing
@@ -465,16 +471,16 @@ and related search indexes it alongside everything else.</p>
 <p>An image with no readable text is kept too, described by its size, for example
 <strong>Image, 1280 by 720</strong>, so it is still something you can find and paste.</p>
 <p>In the bezel a screenshot shows itself: the picture on the card, with a
-<strong>Screenshot</strong> tag, and a small toolbar beside the counter. <strong>t</strong> (or the
-toolbar) turns the card over to the text read out of it, and back. <strong>z</strong> (or
-the toolbar&#39;s last button) shows it full screen; there <strong>t</strong> turns it over too,
+<strong>Screenshot</strong> tag, and a small toolbar beside the counter. <span class="kbd">t</span> (or the
+toolbar) turns the card over to the text read out of it, and back. <span class="kbd">z</span> (or
+the toolbar&#39;s last button) shows it full screen; there <span class="kbd">t</span> turns it over too,
 the text is large and you can select and copy part of it, the arrows move to the
-clipping before or after, Return pastes, and <strong>Esc</strong> brings you back to the
+clipping before or after, <span class="kbd sym">↩</span> pastes, and <span class="kbd">esc</span> brings you back to the
 bezel exactly where you were. In the menu a screenshot has a small preview with
 a camera badge.</p>
 <p>Pasting pastes what you see: the picture, or, turned over, the text. Never both
 at once, which some apps, web chats among them, would take as two pastes. In
-the menu, hold <strong>Option</strong> over a screenshot to get <strong>Paste text</strong> instead.</p>
+the menu, hold <span class="kbd sym">⌥</span> over a screenshot to get <strong>Paste text</strong> instead.</p>
 <p>The pictures live in <code>~/Library/Application Support/Stashcut/Clipboard Images</code>.
 Only the file name is kept in your history, not the picture itself. Stashcut
 deletes any picture no clipping refers to when it starts, and keeps the folder
@@ -498,11 +504,11 @@ its parts in their own colours. Links inside other text are coloured and
 underlined where they are. In the menu, a link shows its domain in bold.</p>
 <p>Copying a link sends nothing anywhere. Stashcut never looks a link up: no
 preview, no icon, no check of where it leads. It is opened only when you ask:
-press <strong>b</strong> in the bezel, click <strong>Open</strong> on the card, or hold <strong>Option</strong> over
+press <span class="kbd">b</span> in the bezel, click <strong>Open</strong> on the card, or hold <span class="kbd sym">⌥</span> over
 the link in the menu and choose <strong>Open in browser</strong>. When a clipping holds more
 than one link, none is opened, because which one you meant would be a guess.</p>
 <p><strong>Finding a clipping by what it meant</strong></p>
-<p>Press Shift-Command-B to open the search window. Typing filters your history by
+<p>Press <span class="chord"><span class="kbd sym">⇧</span><span class="plus">+</span><span class="kbd sym">⌘</span><span class="plus">+</span><span class="kbd">?</span></span> to open the search window. Typing filters your history by
 substring as it always has. With semantic search on, it also lists clippings that
 are about what you typed even when they share no words with it, marked with <code>≈</code>
 and placed under the exact matches. Searching &quot;pastry ingredients&quot; will turn up
@@ -556,9 +562,9 @@ layers and front selection also survive restarting Stashcut.</p>
 leaving the original and other results intact. An action on a result uses that
 front layer as its input and keeps its answer in the same stack. A stack can
 contain the original plus five results, never duplicate summaries.</p>
-<p>The defaults are <strong>Shift-Command-S</strong> Summarize,
-<strong>Shift-Command-R</strong> Rewrite, <strong>Shift-Command-F</strong> Fix Spelling &amp; Grammar,
-<strong>Shift-Command-E</strong> Explain and <strong>Shift-Command-T</strong> Translate.
+<p>The defaults are <span class="chord"><span class="kbd sym">⇧</span><span class="plus">+</span><span class="kbd sym">⌘</span><span class="plus">+</span><span class="kbd">s</span></span> Summarize,
+<span class="chord"><span class="kbd sym">⇧</span><span class="plus">+</span><span class="kbd sym">⌘</span><span class="plus">+</span><span class="kbd">r</span></span> Rewrite, <span class="chord"><span class="kbd sym">⇧</span><span class="plus">+</span><span class="kbd sym">⌘</span><span class="plus">+</span><span class="kbd">f</span></span> Fix Spelling &amp; Grammar,
+<span class="chord"><span class="kbd sym">⇧</span><span class="plus">+</span><span class="kbd sym">⌘</span><span class="plus">+</span><span class="kbd">e</span></span> Explain and <span class="chord"><span class="kbd sym">⇧</span><span class="plus">+</span><span class="kbd sym">⌘</span><span class="plus">+</span><span class="kbd">t</span></span> Translate.
 Change them in Settings &gt; Hotkeys. The AI row follows
 <strong>Show the row of keys under the bezel</strong> and only lists actions whose keys are set.</p>
 <p>A small ellipsis appears in the menu bar while a request is running. From the

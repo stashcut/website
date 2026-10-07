@@ -13,7 +13,8 @@
 <link rel="canonical" href="https://stashcut.com/">
 <link rel="icon" href="stashcut-icon.svg" type="image/svg+xml">
 <!--
-  Stashcut sales page. One file, no build step, a few lines of JavaScript for the theme toggle, no tracking.
+  Stashcut sales page. One file, no build step, no tracking. JavaScript for the theme toggle, the
+  launch price countdown, and the live bezel in the hero; without it the page reads the same, standing still.
   Copyright (c) 2026 Khalil Gharbaoui.
   Design tokens and rules: Branding/design.md in the app repository.
 
@@ -211,18 +212,33 @@
     transition: transform 0.12s ease, box-shadow 0.12s ease;
   }
   .pill:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--ink); }
+  /* A key cap, drawn as the app draws its caps: one cap per key, with a +
+     between the keys of a chord, and a solid shadow straight down. Pressed, a
+     cap sinks onto its own shadow and takes a faint grey veil, the way a
+     pressed key catches a little less light. Arrows and the other symbols
+     set a size up, so they are not specks in the middle of a cap. */
   .kbd {
+    --drop: 2px;
     display: inline-block;
+    min-width: 1.9em;
     font-family: var(--mono);
     font-size: 12px;
-    padding: 2px 7px 3px;
+    text-align: center;
+    padding: 2px 6px 3px;
     border-radius: 7px;
     border: 1.5px solid var(--ink);
-    box-shadow: 0 2px 0 var(--ink);
-    background: var(--surface);
+    box-shadow: 0 var(--drop) 0 var(--ink);
+    background-color: var(--surface);
     color: var(--ink);
     vertical-align: 1px;
+    transition: transform 0.06s ease, box-shadow 0.06s ease, background-color 0.12s ease;
   }
+  .kbd.sym { font-size: 13.5px; line-height: 1.2; }
+  .chord { display: inline-flex; align-items: center; gap: 4px; vertical-align: 1px; }
+  .chord .kbd { vertical-align: 0; }
+  .plus { color: inherit; opacity: 0.65; font-weight: 600; font-size: 0.85em; } /* the text's own colour, so it reads on violet and cyan too */
+  button.chord { margin: 0; padding: 0 0 2px; border: 0; background: none; font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  button.chord:focus-visible { outline: 3px solid var(--violet); outline-offset: 3px; border-radius: 8px; }
 
   /* ---------- hero ---------- */
   .hero { padding: 72px 0 40px; }
@@ -270,9 +286,13 @@
   .lede strong { color: var(--ink); font-weight: 600; }
   .cta { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
   .fine { margin-top: 18px; font-size: 14px; color: var(--muted); }
-  .fine .kbd { font-size: 12px; }
 
   /* ---------- the carousel stage ---------- */
+  /* The hero is the bezel, live. It steps on its own as the app's carousel
+     does, and stops for anybody who touches it: the app's keys, a click on a
+     side card, a swipe, a sideways flick on a trackpad, or the caps, which are
+     buttons. The script moves a card by changing its data-slot and the
+     transition is the slide. Without the script it is the same row, still. */
   .stage {
     --w: 244px;
     --gap: 18px;
@@ -286,7 +306,12 @@
       var(--violet-soft);
     box-shadow: var(--shadow);
     overflow: hidden;
+    overflow: clip; /* where supported, nothing can scroll the row sideways out of true */
+    touch-action: pan-y pinch-zoom; /* a sideways swipe is ours, scrolling the page is not */
+    overscroll-behavior-x: contain;
   }
+  .stage:focus { outline: none; }
+  .stage:focus-visible { outline: 3px solid var(--violet); outline-offset: 4px; }
   .stage .menubar {
     position: absolute; inset: 0 0 auto 0;
     height: 28px;
@@ -297,7 +322,10 @@
     font-size: 12px; font-weight: 600; color: var(--muted);
   }
   .stage .menubar svg { width: 16px; height: 16px; color: var(--ink); }
-  .track { position: absolute; inset: 28px 0 44px 0; }
+  .stage .menubar .try { margin-right: auto; color: var(--violet-ink); font-weight: 700; white-space: nowrap; }
+  .stage .menubar .try-touch { display: none; }
+  .stage .menubar .pin-badge { padding: 1px 8px; border-radius: 999px; background: var(--violet); color: var(--on-dark); font-size: 11px; font-weight: 700; }
+  .track { position: absolute; inset: 28px 0 84px 0; }
   .card {
     position: absolute;
     left: 50%; top: 50%;
@@ -312,17 +340,14 @@
     display: grid;
     grid-template-rows: auto 1fr auto;
     gap: 10px;
-    animation: carousel 18.2s cubic-bezier(0.2, 0.8, 0.2, 1) infinite both;
-    will-change: transform, opacity;
+    transform: translateX(var(--x)) scale(var(--s));
+    opacity: var(--o);
+    z-index: var(--z);
   }
-  .card:nth-child(1) { animation-delay: 0s; }
-  .card:nth-child(2) { animation-delay: -2.6s; }
-  .card:nth-child(3) { animation-delay: -5.2s; }
-  .card:nth-child(4) { animation-delay: -7.8s; }
-  .card:nth-child(5) { animation-delay: -10.4s; }
-  .card:nth-child(6) { animation-delay: -13s; }
-  .card:nth-child(7) { animation-delay: -15.6s; }
-  .card .src { display: flex; align-items: center; gap: 8px; font-size: 12px; color: rgba(255, 255, 255, 0.6); }
+  .stage.live .card { transition: transform 0.16s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.12s ease; }
+  .stage.live .card.jump { transition: none; } /* going round the back, unseen */
+  .stage.live .card:not([data-slot="0"]) { cursor: pointer; }
+  .card .src { display: flex; align-items: center; gap: 8px; white-space: nowrap; font-size: 12px; color: rgba(255, 255, 255, 0.6); }
   .card .src i { width: 14px; height: 14px; border-radius: 4px; background: var(--cyan); display: inline-block; }
   /* Not .term: that class is the terminal block further down the page, and its
      padding would inflate this 14px square into a white slab. */
@@ -332,7 +357,7 @@
   .card .src i.figma { background: var(--raspberry); }
   .card .src i.msg { background: var(--lime); }
   .card .src b { color: var(--on-dark); font-weight: 600; }
-  .card .body { font-size: 15px; line-height: 1.45; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; }
+  .card .body { font-size: 15px; line-height: 1.45; overflow: hidden; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; }
   .card .body code { font-family: var(--mono); font-size: 14px; color: var(--cyan); }
   .card .meta { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 12px; color: rgba(255, 255, 255, 0.55); }
   .card .meta b { color: var(--on-dark); font-weight: 600; }
@@ -340,48 +365,238 @@
   .card.secret .mask { font-family: var(--mono); letter-spacing: 0.1em; color: var(--on-dark); }
   .card.secret { border: 2px solid var(--raspberry); }
   .card .tag { display: inline-block; margin-top: 8px; padding: 3px 9px; border-radius: 999px; font-size: 12px; font-weight: 700; background: var(--raspberry); color: var(--on-accent); }
-  .card .swatch { display: inline-block; width: 14px; height: 14px; border-radius: 4px; vertical-align: -2px; margin-right: 6px; border: 1px solid rgba(255,255,255,0.4); }
-  .card .shot { height: 100%; min-height: 96px; border-radius: 12px; background: repeating-linear-gradient(135deg, #2b2850 0 10px, #241f47 10px 20px); position: relative; overflow: hidden; }
-  .card .shot::before { content: ""; position: absolute; left: 12px; top: 12px; width: 46%; height: 10px; border-radius: 5px; background: var(--cyan); }
-  .card .shot::after { content: ""; position: absolute; left: 12px; top: 30px; width: 70%; height: 8px; border-radius: 4px; background: rgba(255,255,255,0.35); box-shadow: 0 16px 0 rgba(255,255,255,0.25), 0 32px 0 rgba(255,255,255,0.15); }
+  .swatch { display: inline-block; width: 14px; height: 14px; border-radius: 4px; vertical-align: -2px; margin-right: 6px; border: 1px solid rgba(255,255,255,0.4); }
+  .shot { height: 100%; min-height: 96px; border-radius: 12px; background: repeating-linear-gradient(135deg, #2b2850 0 10px, #241f47 10px 20px); position: relative; overflow: hidden; }
+  .shot::before { content: ""; position: absolute; left: 12px; top: 12px; width: 46%; height: 10px; border-radius: 5px; background: var(--cyan); }
+  .shot::after { content: ""; position: absolute; left: 12px; top: 30px; width: 70%; height: 8px; border-radius: 4px; background: rgba(255,255,255,0.35); box-shadow: 0 16px 0 rgba(255,255,255,0.25), 0 32px 0 rgba(255,255,255,0.15); }
+
+  /* A screenshot turns over to the text read out of it (t), and a stack shows
+     one layer at a time (up and down) with the card behind peeking out under
+     it, one step narrower, the way the app draws an AI result's stack. */
+  .card.stack .body, .card.shot-card .body { display: block; }
+  .card .side.picture { height: 100%; }
+  .card .layer, .card .side.text { display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; }
+  .card .layer[hidden], .card .side[hidden] { display: none; }
+  .card .layer:not([hidden]), .card .side:not([hidden]) { animation: settle 0.16s cubic-bezier(0.2, 0.8, 0.2, 1); }
+  .card .layer-tag { margin-left: auto; font-style: normal; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; color: rgba(255, 255, 255, 0.6); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2); }
+  .card .layer-tag.answer { background: var(--cyan); color: var(--on-accent); box-shadow: none; }
+  .card.stack::after { content: ""; position: absolute; top: 100%; left: 18px; right: 18px; height: 12px; border-radius: 0 0 16px 16px; background: #2B2852; box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.08); }
+  /* No, said the way macOS says it: a credential will not paste. And the
+     small settle at either end of a stack. */
+  .card.shake { animation: shake 0.32s ease; }
+  .card.nudge-up { animation: nudge-up 0.16s ease; }
+  .card.nudge-down { animation: nudge-down 0.16s ease; }
+  @keyframes settle { from { opacity: 0; translate: 0 4px; } }
+  @keyframes shake { 20%, 60% { translate: -6px 0; } 40%, 80% { translate: 6px 0; } }
+  @keyframes nudge-up { 50% { translate: 0 -4px; } }
+  @keyframes nudge-down { 50% { translate: 0 4px; } }
 
   /* Slot positions, derived the way the app derives them: one card and one gap
-     further out per step, side cards all one size. */
+     further out per step, side cards all one size, fainter further out. */
   .stage {
     --x1: calc(var(--w) * (0.5 + var(--side) / 2) + var(--gap));
     --x2: calc(var(--x1) + var(--w) * var(--side) + var(--gap));
     --x3: calc(var(--x2) + var(--w) * var(--side) + var(--gap));
   }
-  @keyframes carousel {
-    0%,     13.40% { transform: translateX(var(--x3)) scale(var(--side)); opacity: 0; z-index: 0; }
-    14.29%, 27.68% { transform: translateX(var(--x2)) scale(var(--side)); opacity: 0.42; z-index: 1; }
-    28.57%, 41.96% { transform: translateX(var(--x1)) scale(var(--side)); opacity: 0.72; z-index: 2; }
-    42.86%, 56.25% { transform: translateX(0) scale(1); opacity: 1; z-index: 3; }
-    57.14%, 70.54% { transform: translateX(calc(-1 * var(--x1))) scale(var(--side)); opacity: 0.72; z-index: 2; }
-    71.43%, 84.82% { transform: translateX(calc(-1 * var(--x2))) scale(var(--side)); opacity: 0.42; z-index: 1; }
-    85.71%, 100%   { transform: translateX(calc(-1 * var(--x3))) scale(var(--side)); opacity: 0; z-index: 0; }
+  .card[data-slot="0"]  { --x: 0px; --s: 1; --o: 1; --z: 3; }
+  .card[data-slot="1"]  { --x: var(--x1); --s: var(--side); --o: 0.72; --z: 2; }
+  .card[data-slot="-1"] { --x: calc(-1 * var(--x1)); --s: var(--side); --o: 0.72; --z: 2; }
+  .card[data-slot="2"]  { --x: var(--x2); --s: var(--side); --o: 0.42; --z: 1; }
+  .card[data-slot="-2"] { --x: calc(-1 * var(--x2)); --s: var(--side); --o: 0.42; --z: 1; }
+  .card[data-slot="3"]  { --x: var(--x3); --s: var(--side); --o: 0; --z: 0; }
+  .card[data-slot="-3"] { --x: calc(-1 * var(--x3)); --s: var(--side); --o: 0; --z: 0; }
+  /* Side cards brighten under the mouse to say a click brings them in. */
+  @media (hover: hover) {
+    .stage.live .card[data-slot="1"]:hover, .stage.live .card[data-slot="-1"]:hover { --o: 0.9; }
+    .stage.live .card[data-slot="2"]:hover, .stage.live .card[data-slot="-2"]:hover { --o: 0.62; }
   }
+  .stage.live .track { transition: opacity 0.12s ease, transform 0.16s cubic-bezier(0.2, 0.8, 0.2, 1); }
+  .stage.dragging .track { transition: none; }
+  .stage[data-mode="closed"] .track { opacity: 0; transform: scale(0.94); pointer-events: none; }
+  .stage[data-mode="search"] .track { opacity: 0.15; pointer-events: none; }
+
+  /* The keys. Every cap on the stage is a button; pressing one, or its key,
+     puts it down onto its own shadow, as the app's caps do. */
   .hint {
-    position: absolute; left: 0; right: 0; bottom: 0;
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 6;
     height: 44px;
-    display: flex; align-items: center; justify-content: center; gap: 18px;
-    font-size: 12px; font-weight: 600; color: var(--muted);
+    display: flex; align-items: stretch; justify-content: center; gap: 0;
+    padding: 0 4px;
+    font-size: 12.5px; font-weight: 500; color: var(--muted);
     background: var(--glass);
     border-top: 1px solid var(--line);
+    white-space: nowrap;
+    overflow: hidden;
   }
-  .hint .kbd { font-size: 11px; }
+  /* The card's own keys float under the card rather than leading the row, so
+     the keys a pointer is on never move when the card changes. */
+  .card-keys {
+    position: absolute; left: 0; right: 0; bottom: 52px; z-index: 5;
+    display: flex; justify-content: center; gap: 8px;
+    pointer-events: none;
+    font-size: 12.5px; font-weight: 500; color: var(--ink);
+    white-space: nowrap;
+  }
+  .card-keys .item { pointer-events: auto; height: 38px; padding: 0 4px; border-radius: 999px; background: var(--glass); box-shadow: inset 0 0 0 1px var(--line); }
+  .hint, .card-keys { transition: opacity 0.12s ease; }
+  .hint.swap, .card-keys.swap { opacity: 0; }
+  .hint .item, .card-keys .item { display: inline-flex; align-items: stretch; }
+  .hint .item[hidden], .card-keys .item[hidden] { display: none; }
+  .hint.tight .move-word { display: none; } /* the arrows say it; shed before any key is */
+  /* The stage's caps are the app's, to the point: 26 tall, 9 round, a 2px
+     ink edge, 3px of shadow, the glyph in mono 13 (symbols 15), 5 between
+     the caps of one item and either side of a +, 7 to the word, 18 between
+     items. */
+  .key {
+    display: inline-flex; align-items: center; gap: 7px;
+    margin: 0; padding: 0 9px 3px;
+    border: 0; background: none;
+    font: inherit; color: inherit;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  .key.pair { padding-right: 0; }
+  .key.pair + .key { padding-left: 5px; }
+  .key:focus-visible { outline: 2px solid var(--violet); outline-offset: -2px; border-radius: 8px; }
+  .hint .kbd, .card-keys .kbd, .keycap .kbd {
+    --drop: 3px;
+    display: inline-flex; align-items: center; justify-content: center;
+    height: 26px; min-width: 26px;
+    padding: 0 8px;
+    border-width: 2px; border-radius: 9px;
+    font-size: 13px; font-weight: 600; line-height: 1;
+    vertical-align: 0;
+  }
+  .hint .kbd.sym, .card-keys .kbd.sym, .keycap .kbd.sym { font-size: 15px; font-weight: 500; }
+  .hint .chord, .card-keys .chord { gap: 5px; vertical-align: 0; }
+  .hint .plus, .card-keys .plus, .keycap .plus { font-size: 12.5px; font-weight: 500; }
+  /* Hover only where there is a pointer that hovers: on a phone it would stick
+     to the last cap tapped. */
+  @media (hover: hover) {
+    .key:hover { color: var(--ink); }
+    .key:hover .kbd, button.chord:hover .kbd, .keycap:hover .kbd { background-color: var(--paper-2); }
+  }
+  .kbd.violet, .key .kbd.violet { background-color: var(--violet); color: var(--on-dark); }
+  /* Down: for a held key, a click, or pin while it is pinned. */
+  .kbd.down, .key:active .kbd, button.chord:active .kbd, .keycap:active .kbd, .key[aria-pressed="true"] .kbd {
+    transform: translateY(var(--drop));
+    box-shadow: 0 0 0 var(--ink);
+    background-image: linear-gradient(rgba(128, 128, 128, 0.22), rgba(128, 128, 128, 0.22));
+  }
   .keycap {
-    position: absolute; right: 18px; top: 44px;
-    display: inline-flex; gap: 6px;
-    z-index: 5;
-  }
-  .keycap span {
-    font-family: var(--mono); font-size: 13px; font-weight: 700;
-    padding: 6px 10px;
-    background: var(--surface);
-    border: 2px solid var(--ink); border-radius: 9px;
-    box-shadow: 3px 3px 0 var(--ink);
+    position: absolute; right: 18px; top: 40px; z-index: 5;
+    display: inline-flex; align-items: center; gap: 5px;
+    margin: 0; padding: 0 0 3px;
+    border: 0; background: none;
+    font: inherit; color: var(--muted);
+    cursor: pointer;
     transform: rotate(3deg);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .keycap .kbd { height: 32px; min-width: 32px; font-size: 14px; font-weight: 700; }
+  .keycap .kbd.sym { font-size: 16px; }
+  .keycap:focus-visible { outline: 3px solid var(--violet); outline-offset: 4px; border-radius: 10px; }
+
+  /* What a paste did: the bezel gets out of the way and the clipping lands in
+     a note, never on the visitor's real clipboard. */
+  .paste-view {
+    position: absolute; inset: 28px 0 44px; z-index: 4;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+    padding: 16px;
+  }
+  .paste-view[hidden] { display: none; }
+  .doc {
+    width: 100%; max-width: 340px;
+    padding: 10px 16px 16px;
+    background: var(--surface); color: var(--ink);
+    border: 2px solid var(--ink); border-radius: 14px;
+    box-shadow: 4px 4px 0 var(--ink);
+    font-size: 14px; line-height: 1.5;
+    animation: rise 0.16s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+  .doc-bar { display: flex; align-items: center; gap: 6px; margin-bottom: 10px; }
+  .doc-bar i { width: 9px; height: 9px; border-radius: 50%; background: var(--raspberry); }
+  .doc-bar i:nth-child(2) { background: var(--violet); }
+  .doc-bar i:nth-child(3) { background: var(--cyan); }
+  .doc-bar b { margin-left: 6px; font-size: 12px; color: var(--muted); }
+  .doc-paste { margin: 0 -4px; padding: 2px 4px; border-radius: 6px; overflow-wrap: anywhere; }
+  .doc-paste.flash { animation: pasted 1.4s ease-out; }
+  .doc-paste::after { content: "▍"; color: var(--violet); animation: blink 1s steps(1) infinite; }
+  .doc-paste code { font-family: var(--mono); font-size: 13px; color: var(--violet-ink); }
+  .doc-paste .shot { height: 96px; }
+  .paste-note { margin: 0; font-size: 12.5px; font-weight: 600; color: var(--muted); text-align: center; }
+  @keyframes pasted { from { background: rgba(109, 77, 255, 0.28); } to { background: transparent; } }
+  @keyframes rise { from { opacity: 0; translate: 0 8px; } }
+
+  /* Search, as the app's search window: an ink card, a cyan kicker, the field
+     on ink-2. Words match first; what means the same comes under Related. */
+  .search {
+    position: absolute; inset: 28px 0 44px; z-index: 7;
+    display: flex; align-items: center; justify-content: center;
+    padding: 12px 16px;
+  }
+  .search[hidden] { display: none; }
+  .search-card {
+    width: 100%; max-width: 400px; max-height: 100%;
+    display: flex; flex-direction: column;
+    padding: 12px 14px 14px;
+    border-radius: 18px;
+    background: var(--dark); color: var(--on-dark);
+    box-shadow: inset 0 0 0 1px var(--line), 0 24px 48px -24px rgba(20, 18, 42, 0.7);
+    animation: rise 0.16s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+  .search-head { display: flex; align-items: center; gap: 6px; margin-bottom: 10px; }
+  .search-head i { width: 9px; height: 9px; border-radius: 50%; background: var(--raspberry); }
+  .search-head i:nth-child(2) { background: var(--violet); }
+  .search-head i:nth-child(3) { background: var(--cyan); }
+  .search-head span { margin-left: auto; font-size: 11px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--cyan); }
+  .search input {
+    width: 100%; margin: 0;
+    padding: 9px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 10px;
+    background: var(--ink-2); color: var(--on-dark);
+    font: 16px/1.3 var(--font); /* 16px or iOS zooms in on focus */
+    -webkit-appearance: none; appearance: none;
+  }
+  .search input::placeholder { color: rgba(255, 255, 255, 0.45); }
+  .search input:focus { outline: 2px solid var(--violet); outline-offset: 1px; }
+  .results { position: relative; min-height: 0; overflow-y: auto; list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 4px; }
+  .results li { display: grid; grid-template-columns: 10px auto minmax(0, 1fr) auto; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 10px; background: rgba(255, 255, 255, 0.04); font-size: 13px; cursor: pointer; }
+  .results li i { width: 10px; height: 10px; border-radius: 3px; }
+  .results li b { font-weight: 600; }
+  .results li .snip { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: rgba(255, 255, 255, 0.7); }
+  .results li em { font-style: normal; font-family: var(--mono); font-size: 11px; color: rgba(255, 255, 255, 0.5); }
+  .results li[aria-selected="true"] { background: rgba(109, 77, 255, 0.5); }
+  .results mark { background: none; color: var(--on-dark); font-weight: 700; text-decoration: underline 2px rgba(255, 255, 255, 0.5); text-underline-offset: 2px; }
+  .results li.rel { display: block; padding: 6px 2px 0; background: none; font-size: 11px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255, 255, 255, 0.5); cursor: default; }
+  .search-foot { margin: 8px 2px 0; font-size: 12px; color: rgba(255, 255, 255, 0.6); }
+  .search-foot:empty { display: none; }
+
+  /* A notice, under the menu bar like the app's. */
+  .toast {
+    position: absolute; left: 50%; top: 38px; z-index: 8;
+    width: max-content; max-width: calc(100% - 32px);
+    margin: 0; padding: 6px 12px;
+    border-radius: 14px;
+    background: var(--dark); color: var(--on-dark);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12), 0 12px 24px -12px rgba(20, 18, 42, 0.6);
+    font-size: 12.5px; font-weight: 600; line-height: 1.35; text-align: center;
+    opacity: 0; transform: translate(-50%, -6px);
+    transition: opacity 0.12s ease, transform 0.16s cubic-bezier(0.2, 0.8, 0.2, 1);
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+  .toast.raspberry { background: var(--raspberry); color: var(--on-accent); }
+  .toast.violet { background: var(--violet); color: var(--on-dark); }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  /* On a phone there are no keys to press, so it says what works there, and
+     a long press on a card does not start selecting its text mid-swipe. */
+  @media (hover: none) {
+    .stage .menubar .try-keys { display: none; }
+    .stage .menubar .try-touch { display: inline; }
+    .stage { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
   }
 
   /* ---------- logo strip ---------- */
@@ -701,7 +916,7 @@
   @media (max-width: 960px) {
     .hero { padding-top: 48px; }
     .hero .wrap { grid-template-columns: 1fr; gap: 36px; }
-    .stage { --w: 300px; height: 380px; }
+    .stage { --w: 300px; height: 400px; }
     .card-p, .card-p.wide { grid-column: span 3; }
     .card-p.full { grid-column: span 6; grid-template-columns: 1fr; }
     .integrations, .price-wrap, .faq, .vows, .ask-grid { grid-template-columns: 1fr; }
@@ -717,11 +932,16 @@
     .card-p, .card-p.wide { grid-column: span 6; }
     .amount .num { font-size: 72px; }
     footer .wrap { grid-template-columns: 1fr; }
-    .stage { --w: 250px; --gap: 16px; height: 340px; }
+    .stage { --w: 250px; --gap: 16px; height: 360px; }
     .card { height: 200px; margin-top: -100px; }
-    .keycap { display: none; }
-    .hint { gap: 10px; font-size: 12px; }
-    .hint span:nth-child(3) { display: none; }
+    .keycap, .stage .menubar .clock { display: none; }
+    /* The same caps a size down, so a phone keeps search in the row. */
+    .key { padding: 0 6px 3px; gap: 5px; }
+    .key.pair + .key { padding-left: 4px; }
+    .hint .kbd, .card-keys .kbd { height: 24px; min-width: 24px; padding: 0 6px; font-size: 12px; }
+    .hint .kbd.sym, .card-keys .kbd.sym { font-size: 14px; }
+    .hint .chord, .card-keys .chord { gap: 3px; }
+    .key .more { display: none; }
     .eyebrow { font-size: 12px; }
     nav .pill { display: none; }
     .buybar {
@@ -735,16 +955,15 @@
     .buybar .pill { box-shadow: none; }
     footer { padding-bottom: 96px; }
   }
+  /* Reduced motion: the row slides once on its own, to show that it moves,
+     and then holds; every key, tap and swipe still works and still slides.
+     The rest of the page's small motion is off. */
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
-    .card, .term .cursor::after { animation: none !important; }
+    .term .cursor::after, .doc-paste::after { animation: none !important; }
+    .card, .card .layer, .card .side, .doc, .search-card, .doc-paste.flash { animation: none !important; }
+    .hint, .card-keys, .toast, .kbd { transition: none !important; }
     .btn, .pill, .theme-toggle, .card-p, .integ, .demo .play { transition: none !important; }
-    .card { opacity: 0; }
-    .card:nth-child(4) { transform: none; opacity: 1; z-index: 3; }
-    .card:nth-child(3) { transform: translateX(var(--x1)) scale(var(--side)); opacity: 0.72; }
-    .card:nth-child(5) { transform: translateX(calc(-1 * var(--x1))) scale(var(--side)); opacity: 0.72; }
-    .card:nth-child(2) { transform: translateX(var(--x2)) scale(var(--side)); opacity: 0.42; }
-    .card:nth-child(6) { transform: translateX(calc(-1 * var(--x2))) scale(var(--side)); opacity: 0.42; }
   }
 </style>
 </head>
@@ -787,53 +1006,93 @@
           <a class="btn btn-lime" href="#pricing">Get Stashcut <small>€29, once</small></a>
           <a class="btn btn-ghost" href="#features">See what it does</a>
         </div>
-        <p class="fine"><span class="kbd">⇧⌘V</span> pastes anything you ever copied. <span class="kbd">⇧⌘?</span> searches all of it. Works offline. Yours forever.</p>
+        <p class="fine"><button type="button" class="chord" data-act="hotkey" aria-label="Shift Command V, try it on the bezel"><span class="kbd sym">⇧</span><span class="plus">+</span><span class="kbd sym">⌘</span><span class="plus">+</span><span class="kbd">v</span></button> pastes anything you ever copied. <button type="button" class="chord" data-act="search" aria-label="Shift Command question mark, try it on the bezel"><span class="kbd sym">⇧</span><span class="plus">+</span><span class="kbd sym">⌘</span><span class="plus">+</span><span class="kbd">?</span></button> searches all of it. Works offline. Yours forever.</p>
       </div>
 
-      <div class="stage" aria-hidden="true">
+      <!-- The bezel, live: the script at the end of the body drives it. Cards
+           run newest to oldest, left to right, as in the app; data-slot is
+           where each one stands, 0 in the middle. data-pos is its number in
+           the history, data-meaning the words search counts as related. -->
+      <div class="stage" id="bezel" tabindex="0" role="region" aria-roledescription="carousel" aria-label="Try the bezel: Left and Right move, Return pastes, Space pins, Escape closes" data-mode="open">
         <div class="menubar">
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><rect x="0.75" y="4.5" width="1.5" height="7" rx="0.6" fill="currentColor" stroke="none" opacity="0.5"/><rect x="13.75" y="4.5" width="1.5" height="7" rx="0.6" fill="currentColor" stroke="none" opacity="0.5"/><path d="M5 3.25H9.25L12.25 6.25V11.75A1.25 1.25 0 0 1 11 13H5A1.25 1.25 0 0 1 3.75 11.75V4.5A1.25 1.25 0 0 1 5 3.25Z"/><path d="M9.25 3.25V6.25H12.25" stroke-width="1.25"/></svg>
-          <span>Mon 09:41</span>
+          <span class="try"><span class="try-keys">Try it: press ← → or click a key</span><span class="try-touch">Try it: swipe, or tap a key</span></span>
+          <span class="pin-badge" hidden>Pinned</span>
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><rect x="0.75" y="4.5" width="1.5" height="7" rx="0.6" fill="currentColor" stroke="none" opacity="0.5"/><rect x="13.75" y="4.5" width="1.5" height="7" rx="0.6" fill="currentColor" stroke="none" opacity="0.5"/><path d="M5 3.25H9.25L12.25 6.25V11.75A1.25 1.25 0 0 1 11 13H5A1.25 1.25 0 0 1 3.75 11.75V4.5A1.25 1.25 0 0 1 5 3.25Z"/><path d="M9.25 3.25V6.25H12.25" stroke-width="1.25"/></svg>
+          <span class="clock" aria-hidden="true">Mon 09:41</span>
         </div>
-        <div class="keycap"><span>⇧</span><span>⌘</span><span>V</span></div>
+        <button class="keycap" type="button" data-act="hotkey" tabindex="-1" aria-label="Shift Command V: the next clipping"><span class="kbd sym">⇧</span><span class="plus">+</span><span class="kbd sym">⌘</span><span class="plus">+</span><span class="kbd">v</span></button>
         <div class="track">
-          <article class="card">
-            <div class="src"><i class="figma"></i><b>Figma</b> · 32 min</div>
-            <div class="body"><span class="swatch" style="background:#6D4DFF"></span><code>#6D4DFF</code><br>Brand violet, primary button fill</div>
-            <div class="meta"><span><b>6</b> of 212</span><span>7 chars</span></div>
+          <article class="card shot-card" data-slot="-3" data-pos="1" data-meaning="picture image screenshot chart report dashboard numbers revenue quarter metrics">
+            <div class="src"><i style="background:var(--on-dark)"></i><b>Screenshot</b> · 1 min</div>
+            <div class="body"><div class="side picture"><div class="shot"></div></div><div class="side text" hidden>Q3 revenue up 18%. Churn down to 2.1%. Next review Thursday at 10:00.</div></div>
+            <div class="meta"><span><b>1</b> of 212</span><span class="size" data-picture="1440 × 900">1440 × 900</span></div>
           </article>
-          <article class="card">
-            <div class="src"><i class="mail"></i><b>Mail</b> · 09:41</div>
-            <div class="body">Dear Ms Alvarez, thank you for the revised invoice. INV-2026-0917 now reads €4,820 and we agree with the split you proposed.</div>
-            <div class="meta"><span><b>5</b> of 212</span><span>128 chars</span></div>
-          </article>
-          <article class="card">
-            <div class="src"><i class="safari"></i><b>Safari</b> · 12 min</div>
-            <div class="body">https://developer.apple.com/documentation/appkit/nspasteboard</div>
-            <div class="meta"><span><b>4</b> of 212</span><span>61 chars</span></div>
-          </article>
-          <article class="card">
-            <div class="src"><i class="shell"></i><b>Terminal</b> · just now</div>
-            <div class="body"><code>git rebase -i origin/main</code><br>then <code>git push --force-with-lease</code></div>
-            <div class="meta"><span><b>3</b> of 212</span><span>52 chars</span></div>
-          </article>
-          <article class="card secret">
-            <div class="src"><i style="background:#FF4D8D"></i><b>Looked like an API key</b></div>
-            <div class="body"><span class="mask">sk-live-••••••••••••••••••••</span><br><span class="tag">kept out of history · send to 1Password?</span></div>
-            <div class="meta"><span>not stored</span><span>0 chars kept</span></div>
-          </article>
-          <article class="card">
+          <article class="card" data-slot="-2" data-pos="2" data-meaning="calendar schedule appointment time call room location where when moved">
             <div class="src"><i class="msg"></i><b>Messages</b> · 4 min</div>
             <div class="body">Meeting moved to 14:00, room 4B. Bring the signed proposal.</div>
             <div class="meta"><span><b>2</b> of 212</span><span>59 chars</span></div>
           </article>
-          <article class="card">
-            <div class="src"><i style="background:var(--on-dark)"></i><b>Screenshot</b> · 1 min</div>
-            <div class="body"><div class="shot"></div></div>
-            <div class="meta"><span><b>1</b> of 212</span><span>1440 × 900</span></div>
+          <article class="card secret" data-slot="-1" data-meaning="password key token credential secret api stripe sk-live">
+            <div class="src"><i style="background:#FF4D8D"></i><b>Looked like an API key</b></div>
+            <div class="body"><span class="mask">sk-live-••••••••••••••••••••</span><br><span class="tag">kept out of history · send to 1Password?</span></div>
+            <div class="meta"><span>not stored</span><span>0 chars kept</span></div>
+          </article>
+          <article class="card" data-slot="0" data-pos="3" data-meaning="command shell terminal code branch commit history deploy force">
+            <div class="src"><i class="shell"></i><b>Terminal</b> · just now</div>
+            <div class="body"><code>git rebase -i origin/main</code><br>then <code>git push --force-with-lease</code></div>
+            <div class="meta"><span><b>3</b> of 212</span><span>52 chars</span></div>
+          </article>
+          <article class="card" data-slot="1" data-pos="4" data-link="https://developer.apple.com/documentation/appkit/nspasteboard" data-meaning="link url docs documentation apple developer pasteboard clipboard api web reference">
+            <div class="src"><i class="safari"></i><b>Safari</b> · 12 min</div>
+            <div class="body">https://developer.apple.com/documentation/appkit/nspasteboard</div>
+            <div class="meta"><span><b>4</b> of 212</span><span>61 chars</span></div>
+          </article>
+          <article class="card stack" data-slot="2" data-pos="5" data-layer="1" data-meaning="invoice bill money payment price euro cost client amount">
+            <div class="src"><i class="mail"></i><b>Mail</b> · 09:41<em class="layer-tag answer">Summary</em></div>
+            <div class="body">
+              <div class="layer" data-name="Original" hidden>Dear Ms Alvarez, thank you for the revised invoice. INV-2026-0917 now reads €4,820 and we agree with the split you proposed.</div>
+              <div class="layer" data-name="Summary">The client accepts invoice INV-2026-0917 at €4,820, split the way you proposed.</div>
+            </div>
+            <div class="meta"><span><b>5</b> of 212</span><span><span class="layer-count">2 / 2</span> · <span class="size">79 chars</span></span></div>
+          </article>
+          <article class="card" data-slot="3" data-pos="6" data-meaning="colour color hex purple violet design brand palette button">
+            <div class="src"><i class="figma"></i><b>Figma</b> · 32 min</div>
+            <div class="body"><span class="swatch" style="background:#6D4DFF"></span><code>#6D4DFF</code><br>Brand violet, primary button fill</div>
+            <div class="meta"><span><b>6</b> of 212</span><span>7 chars</span></div>
           </article>
         </div>
-        <div class="hint"><span><span class="kbd">←</span> <span class="kbd">→</span> move</span><span><span class="kbd">↩</span> paste</span><span><span class="kbd">space</span> pin</span><span><span class="kbd">⇧⌘?</span> search</span></div>
+        <div class="paste-view" hidden>
+          <div class="doc">
+            <div class="doc-bar" aria-hidden="true"><i></i><i></i><i></i><b>Notes</b></div>
+            <div class="doc-paste"></div>
+          </div>
+          <p class="paste-note">Pasted where your cursor was. The bezel got out of the way.</p>
+        </div>
+        <div class="search" hidden>
+          <div class="search-card">
+            <div class="search-head" aria-hidden="true"><i></i><i></i><i></i><span>Search</span></div>
+            <input type="text" placeholder="Search everything you copied" aria-label="Search the clippings" aria-controls="bezel-results" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="go">
+            <ul class="results" id="bezel-results" role="listbox" aria-label="Clippings"></ul>
+            <p class="search-foot"></p>
+          </div>
+        </div>
+        <p class="toast" role="status"></p>
+        <p class="sr-only" aria-live="polite"></p>
+        <div class="card-keys">
+          <span class="item" data-item="open" hidden><button class="key" type="button" data-act="open" tabindex="-1"><span class="kbd violet">b</span> <span>open<span class="more"> in browser</span></span></button></span>
+          <span class="item" data-item="flip" hidden><button class="key" type="button" data-act="flip" tabindex="-1"><span class="kbd violet">t</span> <span class="flip-word">text</span></button></span>
+          <span class="item" data-item="layers" hidden><button class="key pair" type="button" data-act="up" tabindex="-1" aria-label="Previous layer"><span class="kbd sym violet">↑</span></button><button class="key" type="button" data-act="down" tabindex="-1" aria-label="Next layer"><span class="kbd sym violet">↓</span> layers</button></span>
+        </div>
+        <div class="hint">
+          <span class="item" data-item="move"><button class="key pair" type="button" data-act="prev" tabindex="-1" aria-label="Newer clipping"><span class="kbd sym">←</span></button><button class="key" type="button" data-act="next" tabindex="-1" aria-label="Older clipping"><span class="kbd sym">→</span> <span class="move-word">move</span></button></span>
+          <span class="item" data-item="paste"><button class="key" type="button" data-act="paste" tabindex="-1"><span class="kbd sym">↩</span> paste</button></span>
+          <span class="item" data-item="pin"><button class="key" type="button" data-act="pin" tabindex="-1" aria-pressed="false"><span class="kbd">space</span> pin</button></span>
+          <span class="item" data-item="search"><button class="key" type="button" data-act="search" tabindex="-1" aria-label="Shift Command question mark: search"><span class="chord"><span class="kbd sym">⇧</span><span class="plus">+</span><span class="kbd sym">⌘</span><span class="plus">+</span><span class="kbd">?</span></span> search</button></span>
+          <span class="item" data-item="reopen" hidden><button class="key" type="button" data-act="hotkey" tabindex="-1" aria-label="Shift Command V: open the bezel"><span class="chord"><span class="kbd sym">⇧</span><span class="plus">+</span><span class="kbd sym">⌘</span><span class="plus">+</span><span class="kbd">v</span></span> open the bezel</button></span>
+          <span class="item" data-item="choose" hidden><button class="key pair" type="button" data-act="pick-up" tabindex="-1" aria-label="Previous result"><span class="kbd sym">↑</span></button><button class="key" type="button" data-act="pick-down" tabindex="-1" aria-label="Next result"><span class="kbd sym">↓</span> choose</button></span>
+          <span class="item" data-item="go" hidden><button class="key" type="button" data-act="go" tabindex="-1"><span class="kbd sym">↩</span> go to it</button></span>
+          <span class="item" data-item="close" hidden><button class="key" type="button" data-act="esc" tabindex="-1"><span class="kbd">esc</span> close</button></span>
+        </div>
       </div>
     </div>
   </header>
@@ -864,13 +1123,13 @@
         <article class="card-p violet wide">
           <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="7" width="14" height="13" rx="2.5"/><path d="M8 4h11a2 2 0 0 1 2 2v10"/><path d="M8 12h6M8 16h4"/></svg></div>
           <h3>Nothing you copy is ever gone</h3>
-          <p>Hundreds of clippings, in order, with the app they came from. Paste the third-last thing with <span class="kbd">⇧⌘V</span> and two arrow keys, even when something else is on the clipboard now. The <b>bezel stays up</b> while you pick.</p>
+          <p>Hundreds of clippings, in order, with the app they came from. Paste the third-last thing with <span class="chord"><span class="kbd sym">⇧</span><span class="plus">+</span><span class="kbd sym">⌘</span><span class="plus">+</span><span class="kbd">v</span></span> and two arrow keys, even when something else is on the clipboard now. The <b>bezel stays up</b> while you pick.</p>
         </article>
 
         <article class="card-p soft2 wide">
           <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></div>
           <h3>Find it in a keystroke</h3>
-          <p><span class="kbd">⇧⌘?</span> searches the whole history. Every word, in any order, with a typo forgiven. Ignores case and accents, understands Arabic, Japanese and emoji, and finds what <b>meant</b> the same thing, with a model that ships inside Stashcut and never goes online.</p>
+          <p><span class="chord"><span class="kbd sym">⇧</span><span class="plus">+</span><span class="kbd sym">⌘</span><span class="plus">+</span><span class="kbd">?</span></span> searches the whole history. Every word, in any order, with a typo forgiven. Ignores case and accents, understands Arabic, Japanese and emoji, and finds what <b>meant</b> the same thing, with a model that ships inside Stashcut and never goes online.</p>
         </article>
 
         <article class="card-p raspberry">
@@ -912,7 +1171,7 @@
         <article class="card-p cyan wide">
           <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18"/></svg></div>
           <h3>Copy, press, paste</h3>
-          <p>Summarize, rewrite clearly, fix spelling, explain, or translate to English: <span class="kbd">⇧⌘</span> and the first letter works on whatever you copied, <b>without opening anything</b>. Runs on the model you already use for Ask.</p>
+          <p>Summarize, rewrite clearly, fix spelling, explain, or translate to English: <span class="chord"><span class="kbd sym">⇧</span><span class="plus">+</span><span class="kbd sym">⌘</span></span> and the first letter works on whatever you copied, <b>without opening anything</b>. Runs on the model you already use for Ask.</p>
         </article>
       </div>
     </div>
@@ -923,7 +1182,7 @@
     <div class="wrap">
       <p class="kicker">Works with what you already use</p>
       <h2>Plugged into your stack. Not into a cloud.</h2>
-      <p class="sub">Every integration talks to software on your own Mac. Stashcut adds no account, no token of its own and no server between you and your tools.</p>
+      <p class="sub">Connect directly to your tools without creating a Stashcut account. Local models keep AI processing on your Mac; remote providers and optional integrations use the services you choose.</p>
 
       <div class="integrations">
         <article class="integ">
@@ -1124,7 +1383,7 @@
       <div class="vows">
         <article class="vow"><div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></div><h3>No account</h3><p>Buy it, download it, use it. There is nothing to sign in to and nobody to sign in as.</p></article>
         <article class="vow"><div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></div><h3>No analytics</h3><p>No telemetry, no crash reporter that phones home, no "anonymous usage data". Zero.</p></article>
-        <article class="vow"><div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></div><h3>No cloud of ours</h3><p>History lives in your Library folder. The only network calls are the ones you configure, to the model endpoint you chose.</p></article>
+        <article class="vow"><div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></div><h3>History stays local</h3><p>History lives in your Library folder. Our service handles licences and downloads, not your clipboard. AI uses the model endpoint you choose.</p></article>
       </div>
     </div>
   </section>
@@ -1268,6 +1527,654 @@
     }
     tick();
     timer = setInterval(tick, 1000);
+  })();
+</script>
+
+<script>
+  /* The hero's bezel, live. It steps on its own every 2.6 s and holds, and
+     waits for anybody who touches it. The app's keys work while it is on
+     screen: Left and Right (or h and l) and ⇧⌘V anywhere on the page, the
+     rest once the stage has focus, which any click or key on it gives it.
+     Every cap is a button, a side card comes to the middle when clicked, a
+     phone swipes it and a trackpad flicks it sideways. Nothing leaves the
+     page except b, which opens the link card's link as the app would:
+     "paste" lands in the stage's own note and never touches the visitor's
+     real clipboard, which is theirs. */
+  (function () {
+    var stage = document.getElementById("bezel");
+    if (!stage) return;
+    var track = stage.querySelector(".track");
+    var cards = Array.prototype.slice.call(track.querySelectorAll(".card"));
+    var count = cards.length;
+    var current = Math.max(0, cards.indexOf(track.querySelector('.card[data-slot="0"]')));
+    var toast = stage.querySelector(".toast");
+    var live = stage.querySelector(".sr-only");
+    var pinBadge = stage.querySelector(".pin-badge");
+    var pinKey = stage.querySelector('.key[data-act="pin"]');
+    var pasteView = stage.querySelector(".paste-view");
+    var pasted = stage.querySelector(".doc-paste");
+    var search = stage.querySelector(".search");
+    var field = search.querySelector("input");
+    var results = search.querySelector(".results");
+    var foot = search.querySelector(".search-foot");
+    var flipWord = stage.querySelector(".flip-word");
+    var reduceMotion = matchMedia("(prefers-reduced-motion: reduce)");
+
+    var mode = "open";        // open, closed (after a paste or esc), or search
+    var pinned = false;
+    var visible = true;
+    var hovering = false;
+    var lastTouch = 0;        // the autoplay waits 8 s after anything a person did
+    var reopenTimer = 0;
+    var toastTimer = 0;
+    var drag = null;
+
+    function chars(text) {
+      var n = text.trim().length;
+      return n + (n === 1 ? " char" : " chars");
+    }
+    function fold(text) {
+      return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    }
+    function plain(element) {
+      var copy = element.cloneNode(true);
+      Array.prototype.forEach.call(copy.querySelectorAll("br"), function (br) { br.replaceWith(" "); });
+      return copy.textContent.replace(/\s+/g, " ").trim();
+    }
+    function touch() { lastTouch = Date.now(); }
+    function announce(text) { live.textContent = text; }
+    function label(card) {
+      return card.querySelector(".src b").textContent + ", " + card.querySelector(".meta span").textContent;
+    }
+    function say(text, tone) {
+      var base = "toast" + (tone ? " " + tone : "");
+      toast.textContent = text;
+      toast.className = base + " show";
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function () { toast.className = base; }, 2400);
+    }
+    function play(element, name) {
+      if (reduceMotion.matches) return;
+      element.classList.remove(name);
+      void element.offsetWidth;
+      element.classList.add(name);
+    }
+
+    /* ---- the row ---- */
+    function offset(index) {
+      var distance = ((index - current) % count + count) % count;
+      return distance > count / 2 ? distance - count : distance;
+    }
+    function layout() {
+      cards.forEach(function (card, index) {
+        var slot = offset(index);
+        var before = Number(card.getAttribute("data-slot"));
+        card.classList.toggle("jump", Math.abs(slot - before) > count / 2);
+        card.setAttribute("data-slot", String(slot));
+        if (slot === 0) card.removeAttribute("aria-hidden");
+        else card.setAttribute("aria-hidden", "true");
+      });
+      renderRows();
+    }
+    function step(by) {
+      if (mode !== "open") return;
+      current = ((current + by) % count + count) % count;
+      layout();
+    }
+    function move(by) {
+      if (mode !== "open") return;
+      step(by);
+      announce(label(cards[current]));
+    }
+    function goTo(index) {
+      if (index < 0) return;
+      current = index;
+      layout();
+      announce(label(cards[current]));
+    }
+
+    /* ---- the keys under it ---- */
+    function makeRow(element) {
+      var items = {};
+      Array.prototype.forEach.call(element.querySelectorAll("[data-item]"), function (item) {
+        items[item.getAttribute("data-item")] = item;
+      });
+      return { element: element, items: items, key: "", timer: 0 };
+    }
+    var baseRow = makeRow(stage.querySelector(".hint"));
+    var cardRow = makeRow(stage.querySelector(".card-keys"));
+
+    function fits(row) {
+      var style = getComputedStyle(row.element);
+      var room = row.element.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+      var gap = parseFloat(style.columnGap) || 0;
+      var used = 0;
+      var shown = 0;
+      Object.keys(row.items).forEach(function (name) {
+        if (row.items[name].hidden) return;
+        used += row.items[name].offsetWidth;
+        shown++;
+      });
+      return used + gap * Math.max(0, shown - 1) <= room;
+    }
+    /* A row that changes fades out, changes while nobody can see it, and fades
+       back, so a cap appears rather than the row shuffling sideways. */
+    function show(row, list, key, after) {
+      if (key === row.key) return;
+      var first = !row.key;
+      row.key = key;
+      clearTimeout(row.timer);
+      function apply() {
+        Object.keys(row.items).forEach(function (name) { row.items[name].hidden = list.indexOf(name) === -1; });
+        if (after) after();
+        row.element.classList.remove("swap");
+      }
+      if (first || reduceMotion.matches) { apply(); return; }
+      row.element.classList.add("swap");
+      row.timer = setTimeout(apply, 120);
+    }
+    function renderRows(force) {
+      if (force) { baseRow.key = ""; cardRow.key = ""; }
+      var base = mode === "closed" ? ["reopen"] : mode === "search" ? ["choose", "go", "close"] : ["move", "paste", "pin", "search"];
+      show(baseRow, base, mode, function () {
+        // Too narrow for all of it: the word "move" goes first, then search,
+        // then pin, as the app sheds from the tail.
+        baseRow.element.classList.remove("tight");
+        if (!fits(baseRow)) baseRow.element.classList.add("tight");
+        ["search", "pin"].forEach(function (name) {
+          if (!fits(baseRow)) baseRow.items[name].hidden = true;
+        });
+      });
+      var card = cards[current];
+      var own = [];
+      if (mode === "open") {
+        if (card.hasAttribute("data-link")) own.push("open");
+        if (card.classList.contains("shot-card")) own.push("flip");
+        if (card.classList.contains("stack")) own.push("layers");
+      }
+      var word = card.classList.contains("flipped") ? "picture" : "text";
+      show(cardRow, own, own.join(" ") + "|" + word, function () { flipWord.textContent = word; });
+    }
+
+    /* ---- what the keys do ---- */
+    function setMode(next) {
+      mode = next;
+      stage.setAttribute("data-mode", next);
+      search.hidden = next !== "search";
+      if (next !== "closed") pasteView.hidden = true;
+      renderRows();
+    }
+    function setPinned(on, quiet) {
+      if (pinned === on) return;
+      pinned = on;
+      pinBadge.hidden = !on;
+      pinKey.setAttribute("aria-pressed", String(on));
+      if (!quiet) say(on ? "Pinned: it stays put until you paste or press esc" : "Unpinned", on ? "violet" : "");
+    }
+    function close(withPaste) {
+      setPinned(false, true);
+      pasteView.hidden = !withPaste;
+      setMode("closed");
+      clearTimeout(reopenTimer);
+      reopenTimer = setTimeout(reopen, withPaste ? 3600 : 2400);
+    }
+    function reopen() {
+      clearTimeout(reopenTimer);
+      if (mode === "closed") setMode("open");
+    }
+    function frontOf(card) {
+      if (card.classList.contains("stack")) return card.querySelectorAll(".layer")[Number(card.getAttribute("data-layer"))];
+      if (card.classList.contains("shot-card")) return card.querySelector(".side:not([hidden])");
+      return card.querySelector(".body");
+    }
+    function paste() {
+      if (mode === "search") { choose(); return; }
+      if (mode !== "open") return;
+      var card = cards[current];
+      if (card.classList.contains("secret")) {
+        say("Kept out of history: nothing to paste", "raspberry");
+        play(card, "shake");
+        return;
+      }
+      pasted.textContent = "";
+      Array.prototype.forEach.call(frontOf(card).childNodes, function (node) { pasted.appendChild(node.cloneNode(true)); });
+      play(pasted, "flash");
+      close(true);
+      announce("Pasted " + label(card));
+    }
+    function escape() {
+      if (mode === "search") closeSearch();
+      else if (mode === "closed") reopen();
+      else { close(false); say("Closed without pasting"); }
+    }
+    function hotkey() {
+      // ⇧⌘V opens the bezel, and pressed again while it is open, steps on.
+      if (mode === "closed") reopen();
+      else if (mode === "search") closeSearch();
+      else move(1);
+    }
+    function showLayer(card) {
+      var layers = card.querySelectorAll(".layer");
+      var at = Number(card.getAttribute("data-layer"));
+      Array.prototype.forEach.call(layers, function (layer, index) { layer.hidden = index !== at; });
+      var tag = card.querySelector(".layer-tag");
+      tag.textContent = layers[at].getAttribute("data-name");
+      tag.classList.toggle("answer", at > 0);
+      card.querySelector(".layer-count").textContent = (at + 1) + " / " + layers.length;
+      card.querySelector(".size").textContent = chars(layers[at].textContent);
+    }
+    function layer(by) {
+      var card = cards[current];
+      if (mode !== "open" || !card.classList.contains("stack")) return;
+      var layers = card.querySelectorAll(".layer");
+      var next = (Number(card.getAttribute("data-layer")) + by + layers.length) % layers.length;
+      card.setAttribute("data-layer", String(next));
+      showLayer(card);
+      announce(layers[next].getAttribute("data-name"));
+    }
+    function flip() {
+      var card = cards[current];
+      if (mode !== "open" || !card.classList.contains("shot-card")) return;
+      var flipped = card.classList.toggle("flipped");
+      var text = card.querySelector(".side.text");
+      var size = card.querySelector(".size");
+      card.querySelector(".side.picture").hidden = flipped;
+      text.hidden = !flipped;
+      size.textContent = flipped ? chars(text.textContent) : size.getAttribute("data-picture");
+      announce(flipped ? "The text read out of the screenshot" : "The screenshot");
+      renderRows();
+    }
+    function openLink() {
+      var url = mode === "open" && cards[current].getAttribute("data-link");
+      if (!url) return;
+      window.open(url, "_blank", "noopener");
+      close(false);
+      say("Opened in a new tab");
+    }
+
+    /* ---- search: words first, then what means the same, under Related ---- */
+    var entries = cards.filter(function (card) { return !card.classList.contains("secret"); }).map(function (card) {
+      var name = card.querySelector(".src b").textContent;
+      var text = plain(card.querySelector(".body"));
+      return { card: card, name: name, text: text, folded: fold(name + " " + text), meaning: fold(card.getAttribute("data-meaning") || "").split(" ") };
+    });
+    var secretCard = track.querySelector(".card.secret");
+    var secretWords = secretCard ? fold(secretCard.getAttribute("data-meaning") || "") : "";
+    var picks = [];
+    var picked = 0;
+
+    function around(text, words) {
+      var at = words.length ? fold(text).indexOf(words[0]) : -1;
+      return at > 24 ? "…" + text.slice(at - 16) : text;
+    }
+    function highlight(element, text, words) {
+      var patterns = words.map(function (word) { return word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); });
+      if (!patterns.length) { element.textContent = text; return; }
+      text.split(new RegExp("(" + patterns.join("|") + ")", "i")).forEach(function (part, index) {
+        if (!part) return;
+        if (index % 2) {
+          var mark = document.createElement("mark");
+          mark.textContent = part;
+          element.appendChild(mark);
+        } else {
+          element.appendChild(document.createTextNode(part));
+        }
+      });
+    }
+    function addResult(entry, words) {
+      var index = picks.length;
+      var row = document.createElement("li");
+      row.id = "bezel-result-" + index;
+      row.setAttribute("role", "option");
+      var dot = document.createElement("i");
+      dot.style.background = getComputedStyle(entry.card.querySelector(".src i")).backgroundColor;
+      var name = document.createElement("b");
+      name.textContent = entry.name;
+      var snip = document.createElement("span");
+      snip.className = "snip";
+      highlight(snip, around(entry.text, words), words);
+      var where = document.createElement("em");
+      where.textContent = entry.card.getAttribute("data-pos") + " of 212";
+      row.appendChild(dot);
+      row.appendChild(name);
+      row.appendChild(snip);
+      row.appendChild(where);
+      row.addEventListener("click", function () { touch(); picked = index; choose(); });
+      results.appendChild(row);
+      picks.push(entry);
+    }
+    function showPicked() {
+      var rows = results.querySelectorAll('[role="option"]');
+      Array.prototype.forEach.call(rows, function (row, index) { row.setAttribute("aria-selected", String(index === picked)); });
+      var chosen = rows[picked];
+      if (!chosen) { field.removeAttribute("aria-activedescendant"); return; }
+      field.setAttribute("aria-activedescendant", chosen.id);
+      if (chosen.offsetTop < results.scrollTop) results.scrollTop = chosen.offsetTop;
+      else if (chosen.offsetTop + chosen.offsetHeight > results.scrollTop + results.clientHeight)
+        results.scrollTop = chosen.offsetTop + chosen.offsetHeight - results.clientHeight;
+    }
+    function runSearch() {
+      var words = fold(field.value).split(/\s+/).filter(Boolean);
+      results.textContent = "";
+      foot.textContent = "";
+      picks = [];
+      picked = 0;
+      if (!words.length) {
+        foot.textContent = "Try invoice, meeting or money.";
+        showPicked();
+        return;
+      }
+      var literal = entries.filter(function (entry) {
+        return words.every(function (word) { return entry.folded.indexOf(word) !== -1; });
+      });
+      // As in the app: meaning is only asked when the words found fewer than five.
+      var related = literal.length >= 5 ? [] : entries.filter(function (entry) {
+        return literal.indexOf(entry) === -1 && words.some(function (word) {
+          return word.length >= 3 && entry.meaning.some(function (meaning) { return meaning.indexOf(word) === 0; });
+        });
+      });
+      literal.forEach(function (entry) { addResult(entry, words); });
+      if (related.length) {
+        var heading = document.createElement("li");
+        heading.className = "rel";
+        heading.setAttribute("role", "presentation");
+        heading.textContent = "Related";
+        results.appendChild(heading);
+        related.forEach(function (entry) { addResult(entry, []); });
+      }
+      if (words.some(function (word) { return word.length >= 3 && secretWords.indexOf(word) !== -1; }))
+        foot.textContent = "The key you copied is not in here: secrets are never stored.";
+      else if (!picks.length)
+        foot.textContent = "Nothing with that in it. Try invoice, meeting or money.";
+      showPicked();
+    }
+    function pick(by) {
+      if (mode !== "search" || !picks.length) return;
+      picked = Math.max(0, Math.min(picks.length - 1, picked + by));
+      showPicked();
+    }
+    function choose() {
+      var entry = picks[picked];
+      if (mode !== "search" || !entry) return;
+      closeSearch();
+      goTo(cards.indexOf(entry.card));
+    }
+    function openSearch() {
+      if (mode === "closed") reopen();
+      setMode("search");
+      field.value = "";
+      runSearch();
+      field.focus({ preventScroll: true });
+    }
+    function closeSearch() {
+      if (mode !== "search") return;
+      setMode("open");
+      stage.focus({ preventScroll: true });
+    }
+
+    var actions = {
+      prev: function () { move(-1); },
+      next: function () { move(1); },
+      up: function () { layer(1); },
+      down: function () { layer(-1); },
+      paste: paste,
+      pin: function () { if (mode === "open") setPinned(!pinned); },
+      search: function () { if (mode === "search") closeSearch(); else openSearch(); },
+      hotkey: hotkey,
+      open: openLink,
+      flip: flip,
+      esc: escape,
+      "pick-up": function () { pick(-1); },
+      "pick-down": function () { pick(1); },
+      go: choose
+    };
+
+    /* ---- caps going down, as the app's do ----
+       A cap is down for as long as its key is held, and at least 0.13 s.
+       Caps answer to the glyph on them, so a held modifier presses every cap
+       of it on the page at once, and holding ⇧⌘ shows which chords are one
+       key away. h j k l press the arrows they stand for. A click puts down
+       the caps of what it pressed, wherever else on the page they are. */
+    var allCaps = Array.prototype.slice.call(document.querySelectorAll(".kbd"));
+    var downs = {};       // glyph -> { at, token } while its key is held
+    var tokens = 0;
+    var byCode = {};      // the physical key -> the glyph it put down
+    var tapped = [];      // caps a click put down
+    var glyphNames = {
+      Shift: "⇧", Meta: "⌘", Control: "⌃", Alt: "⌥",
+      ArrowLeft: "←", ArrowRight: "→", ArrowUp: "↑", ArrowDown: "↓",
+      Enter: "↩", " ": "space", Escape: "esc", Backspace: "⌫",
+      h: "←", l: "→", k: "↑", j: "↓"
+    };
+    function paint() {
+      allCaps.forEach(function (cap) {
+        cap.classList.toggle("down", !!downs[cap.textContent.trim()] || tapped.indexOf(cap) !== -1);
+      });
+    }
+    function glyphOf(event) {
+      var key = event.key;
+      if (!key) return null;
+      // A letter's cap is lower case, chord or not: ⇧ + ⌘ + v, never a V that
+      // reads as Shift twice. Shift turns the key into V, so fold it back.
+      if ((event.metaKey || event.ctrlKey) && !glyphNames[key]) return key === "/" ? "?" : key.length === 1 ? key.toLowerCase() : null;
+      if (event.target === field && key.length === 1 && key !== " ") return null; // typing a query presses nothing
+      return glyphNames[key] || (key.length === 1 ? key : null);
+    }
+    function hold(glyph) {
+      var entry = downs[glyph];
+      if (!entry) downs[glyph] = entry = { at: Date.now() };
+      entry.token = ++tokens;
+      paint();
+    }
+    function letGo(glyph, after) {
+      var entry = downs[glyph];
+      if (!entry) return;
+      var token = entry.token;
+      setTimeout(function () {
+        if (downs[glyph] && downs[glyph].token === token) { delete downs[glyph]; paint(); }
+      }, Math.max(after || 0, 130 - (Date.now() - entry.at)));
+    }
+    function letGoAll(keep) {
+      Object.keys(downs).forEach(function (glyph) { if (glyph !== keep) letGo(glyph); });
+      Object.keys(byCode).forEach(function (code) { if (byCode[code] !== keep) delete byCode[code]; });
+    }
+    function tap(name) {
+      var caps = Array.prototype.slice.call(document.querySelectorAll('[data-act="' + name + '"] .kbd'));
+      tapped = tapped.concat(caps);
+      paint();
+      setTimeout(function () {
+        tapped = tapped.filter(function (cap) { return caps.indexOf(cap) === -1; });
+        paint();
+      }, 130);
+    }
+    // In the capture phase, so a key the search field or a button handles
+    // still puts its cap down.
+    document.addEventListener("keydown", function (event) {
+      if (event.isComposing) return;
+      var glyph = glyphOf(event);
+      if (!glyph) return;
+      byCode[event.code || event.key] = glyph;
+      hold(glyph);
+      // With Command down macOS sends no key-up for the other key, so it taps.
+      if (event.metaKey && glyph !== "⌘" && glyph !== "⇧") letGo(glyph, 130);
+    }, true);
+    document.addEventListener("keyup", function (event) {
+      // Command coming up takes every key pressed with it; Shift may stay.
+      if (event.key === "Meta") { letGoAll(event.shiftKey ? "⇧" : null); return; }
+      var glyph = byCode[event.code || event.key] || glyphNames[event.key];
+      delete byCode[event.code || event.key];
+      if (glyph) letGo(glyph);
+    }, true);
+    window.addEventListener("blur", function () { letGoAll(null); });
+
+    function applies(name) {
+      var card = cards[current];
+      if (name === "hotkey" || name === "search" || name === "esc") return true;
+      if (mode !== "open") return false;
+      if (name === "up" || name === "down") return card.classList.contains("stack");
+      if (name === "flip") return card.classList.contains("shot-card");
+      if (name === "open") return card.hasAttribute("data-link");
+      return true;
+    }
+
+    var stageKeys = {
+      ArrowLeft: "prev", h: "prev", ArrowRight: "next", l: "next",
+      ArrowUp: "up", k: "up", ArrowDown: "down", j: "down",
+      Enter: "paste", " ": "pin", Escape: "esc", t: "flip", b: "open"
+    };
+    var pageKeys = { ArrowLeft: "prev", h: "prev", ArrowRight: "next", l: "next" };
+
+    document.addEventListener("keydown", function (event) {
+      if (event.defaultPrevented || event.isComposing) return;
+      var target = event.target;
+      if (target === field || target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName)) return;
+      var inStage = stage.contains(target);
+      var onPage = target === document.body || target === document.documentElement;
+      var name = null;
+      if (event.metaKey && event.shiftKey && !event.ctrlKey && !event.altKey) {
+        if (event.key === "v" || event.key === "V") name = "hotkey";
+        else if (event.key === "?" || event.key === "/") name = "search";
+        if (!inStage && !visible) return;
+      } else if (event.metaKey || event.ctrlKey || event.altKey) {
+        return;
+      } else if (inStage) {
+        name = stageKeys[event.key] || null;
+        if (!name && /^[1-9]$/.test(event.key) && mode === "open") {
+          var numbered = track.querySelector('.card[data-pos="' + event.key + '"]');
+          if (numbered) { event.preventDefault(); touch(); goTo(cards.indexOf(numbered)); }
+          return;
+        }
+      } else if (onPage && visible) {
+        name = pageKeys[event.key] || null;
+      }
+      if (!name || !applies(name)) return;
+      event.preventDefault();
+      if (!inStage) stage.focus({ preventScroll: true });
+      if (event.repeat && name !== "prev" && name !== "next") return;
+      touch();
+      actions[name]();
+    });
+
+    field.addEventListener("input", runSearch);
+    field.addEventListener("keydown", function (event) {
+      if (event.isComposing) return;
+      var name = { ArrowDown: "pick-down", ArrowUp: "pick-up", Enter: "go", Escape: "esc" }[event.key];
+      if (!name) return;
+      event.preventDefault();
+      touch();
+      actions[name]();
+    });
+    search.addEventListener("pointerdown", function (event) {
+      if (event.target === search) { touch(); closeSearch(); }
+    });
+
+    /* Every cap on the page with a data-act is a button for the same thing,
+       the two in the hero's fine print included. */
+    document.addEventListener("click", function (event) {
+      var button = event.target.closest && event.target.closest("[data-act]");
+      if (!button || !actions[button.getAttribute("data-act")]) return;
+      var name = button.getAttribute("data-act");
+      tap(name);
+      touch();
+      actions[name]();
+      if (!stage.contains(button)) {
+        var box = stage.getBoundingClientRect();
+        if (box.top < 0 || box.bottom > window.innerHeight)
+          stage.scrollIntoView({ block: "center", behavior: reduceMotion.matches ? "auto" : "smooth" });
+      } else if (mode === "search") {
+        field.focus({ preventScroll: true });
+      } else {
+        stage.focus({ preventScroll: true });
+      }
+    });
+
+    /* ---- pointers: a click brings a side card in, a swipe moves the row ---- */
+    stage.addEventListener("pointerdown", function (event) {
+      if (event.pointerType === "mouse" && event.button !== 0) return;
+      if (event.target.closest("button, .search")) return;
+      touch();
+      if (mode === "closed") { reopen(); return; }
+      if (mode !== "open") return;
+      drag = { id: event.pointerId, x: event.clientX, y: event.clientY, dx: 0, moved: false,
+               card: event.target.closest(".card"), swipe: event.pointerType !== "mouse" };
+    });
+    stage.addEventListener("pointermove", function (event) {
+      if (!drag || event.pointerId !== drag.id || !drag.swipe) return;
+      drag.dx = event.clientX - drag.x;
+      if (!drag.moved && Math.abs(drag.dx) > 8 && Math.abs(drag.dx) > Math.abs(event.clientY - drag.y)) {
+        drag.moved = true;
+        stage.classList.add("dragging");
+        try { stage.setPointerCapture(drag.id); } catch (error) {}
+      }
+      if (drag.moved) track.style.transform = "translateX(" + drag.dx * 0.5 + "px)";
+    });
+    function endDrag(event, cancelled) {
+      if (!drag || event.pointerId !== drag.id) return;
+      var ended = drag;
+      drag = null;
+      stage.classList.remove("dragging");
+      track.style.transform = "";
+      touch();
+      if (ended.moved) {
+        if (!cancelled && Math.abs(ended.dx) > 40) move(ended.dx < 0 ? 1 : -1);
+        return;
+      }
+      if (cancelled) return;
+      stage.focus({ preventScroll: true });
+      if (!ended.card) return;
+      var index = cards.indexOf(ended.card);
+      var slot = offset(index);
+      if (slot !== 0 && Math.abs(slot) < 3) goTo(index);
+    }
+    stage.addEventListener("pointerup", function (event) { endDrag(event, false); });
+    stage.addEventListener("pointercancel", function (event) { endDrag(event, true); });
+    stage.addEventListener("pointerenter", function (event) { if (event.pointerType === "mouse") hovering = true; });
+    stage.addEventListener("pointerleave", function (event) { if (event.pointerType === "mouse") hovering = false; });
+
+    // A sideways two-finger flick on a trackpad is one step, however long its
+    // momentum runs; it also stops the flick going back a page in the browser.
+    var wheelSum = 0;
+    var wheelLocked = false;
+    var wheelTimer = 0;
+    stage.addEventListener("wheel", function (event) {
+      if (mode !== "open" || Math.abs(event.deltaX) <= Math.abs(event.deltaY)) return;
+      event.preventDefault();
+      touch();
+      wheelSum += event.deltaX;
+      clearTimeout(wheelTimer);
+      wheelTimer = setTimeout(function () { wheelSum = 0; wheelLocked = false; }, 180);
+      if (!wheelLocked && Math.abs(wheelSum) > 30) {
+        wheelLocked = true;
+        move(wheelSum > 0 ? 1 : -1);
+      }
+    }, { passive: false });
+
+    /* ---- on its own ---- */
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (entries) { visible = entries[0].isIntersecting; }, { threshold: 0.35 }).observe(stage);
+    }
+    var steppedOnce = false;
+    setInterval(function () {
+      if (document.hidden || !visible || hovering || pinned || drag || mode !== "open") return;
+      if (Date.now() - lastTouch < 8000) return;
+      // Reduced motion: one slide, so it is plain the row moves, then it holds
+      // for good. Somebody who already moved it needs no showing.
+      if (reduceMotion.matches) {
+        if (steppedOnce || lastTouch) return;
+        steppedOnce = true;
+      }
+      step(1);
+    }, 2600);
+
+    cards.forEach(function (card) {
+      card.addEventListener("animationend", function (event) {
+        if (event.target === card) card.classList.remove("shake", "nudge-up", "nudge-down");
+      });
+      if (card.classList.contains("stack")) showLayer(card);
+    });
+    window.addEventListener("resize", function () { renderRows(true); });
+    layout();
+    stage.classList.add("live");
   })();
 </script>
 
