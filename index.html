@@ -988,7 +988,7 @@
         <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
         <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
       </button>
-      <a class="pill" href="#pricing">Get Stashcut <span aria-hidden="true">·</span> €29</a>
+      <a class="pill" href="#pricing">Get Stashcut <span aria-hidden="true">·</span> €<span data-current-price>29</span></a>
     </div>
   </div>
 </nav>
@@ -1003,7 +1003,7 @@
         <h1>Your clipboard, with a <span class="hl">memory</span> and a <span class="hl cyan">brain</span><span class="stop">.</span></h1>
         <p class="lede">Stashcut keeps <strong>everything you copy</strong>, keeps your <strong>secrets out</strong> of it, and answers questions about it with a model that runs <strong>on your Mac</strong>.</p>
         <div class="cta">
-          <a class="btn btn-lime" href="#pricing">Get Stashcut <small>€29, once</small></a>
+          <a class="btn btn-lime" href="#pricing">Get Stashcut <small>€<span data-current-price>29</span>, once</small></a>
           <a class="btn btn-ghost" href="#features">See what it does</a>
         </div>
         <p class="fine"><button type="button" class="chord" data-act="hotkey" aria-label="Shift Command V, try it on the bezel"><span class="kbd sym">⇧</span><span class="plus">+</span><span class="kbd sym">⌘</span><span class="plus">+</span><span class="kbd">v</span></button> pastes anything you ever copied. <button type="button" class="chord" data-act="search" aria-label="Shift Command question mark, try it on the bezel"><span class="kbd sym">⇧</span><span class="plus">+</span><span class="kbd sym">⌘</span><span class="plus">+</span><span class="kbd">?</span></button> searches all of it. Works offline. Yours forever.</p>
@@ -1241,34 +1241,35 @@
   <section id="pricing" class="tint">
     <div class="wrap">
       <p class="kicker">Pricing</p>
-      <h2>€29. Once. Not per month, not per seat, not per question.</h2>
+      <h2>€<span data-current-price>29</span>. Once. Not per month, not per seat, not per question.</h2>
       <p class="sub">Pay once, use it on up to three of your Macs, get every 1.x update. Ask your clipboard uses a model you already run, so Stashcut adds no per-question cost of its own.</p>
 
       <div class="price-wrap">
         <div class="price">
           <span class="ribbon">Launch price</span>
-          <div class="amount"><span class="cur">€</span><span class="num">29</span><span class="once">one-time, VAT included</span></div>
-          <!-- The launch price ends here, Amsterdam time. A countdown has to be
-               true: on this date the price goes up, or this date moves. -->
-          <p class="countdown" data-ends="2026-11-01T00:00:00+01:00">Launch price until <time datetime="2026-11-01T00:00:00+01:00">31 October 2026</time></p>
+          <div class="amount"><span class="cur">€</span><span class="num" data-current-price>29</span><span class="once">one-time, VAT included</span></div>
+          <p data-launch-details><strong>Save €10 at launch.</strong> €39 from January 1, 2027.</p>
+          <!-- Inclusive through December 31, Amsterdam time. Checkout applies
+               this same deadline on the server, independently of this clock. -->
+          <p class="countdown" data-ends="2027-01-01T00:00:00+01:00">€29 launch price through <time datetime="2026-12-31">December 31, 2026</time> (Amsterdam time). €39 afterwards.</p>
           <ul class="checks">
             <li>Clipboard history, search by meaning, the carousel, hotkeys</li>
             <li>Secret detection, paste guard, 1Password hand-off</li>
             <li>Ask your clipboard and five one-key transforms, with Ollama, LM Studio or llama.cpp</li>
             <li>Obsidian, image capture, code colouring, backdrops</li>
             <li>The MCP server and one-button agent setup</li>
-            <li>All 1.x updates, on every Mac you own</li>
+            <li>All 1.x updates, on up to three of your Macs</li>
             <li>14-day refund, no questions asked</li>
           </ul>
           <!-- Stripe Checkout, through the licence server (server/). While its
                SALES_OPEN is "false", /buy sends people back to #pricing. -->
-          <a id="buy" class="btn btn-lime" href="https://api.stashcut.com/buy">Buy Stashcut for €29</a>
+          <a id="buy" class="btn btn-lime" href="https://api.stashcut.com/buy">Buy Stashcut for €<span data-current-price>29</span></a>
           <p class="fine" style="margin:0;text-align:center">Requires macOS 10.13 or later. The built-in search model needs macOS 12. Bought it already? <a href="/download">Download Stashcut</a>.</p>
         </div>
 
         <div class="compare">
           <h3>No subscription. No account. No per-question fee.</h3>
-          <p class="big">Pay once. Use it on every Mac you own. Ask your clipboard through a model you already run, so nothing here meters your questions.</p>
+          <p class="big">Pay once. Use it on up to three of your Macs. Ask your clipboard through a model you already run, so nothing here meters your questions.</p>
           <p style="margin:0;color:rgba(255,255,255,0.7);font-size:14px">One person makes Stashcut and answers the mail. That is who you are paying.</p>
         </div>
       </div>
@@ -1337,7 +1338,7 @@
           <div>
             <h3 style="margin-top:0">Credentials stay invisible to agents, in every form</h3>
             <p>Not the value, not the 1Password reference, not even the item's title. They are reported as a count so the agent knows something was withheld and does not reason around a gap it cannot see. Clippings that look like card numbers, bank accounts, keys or bulk email lists come back with their text replaced by a plain notice.</p>
-            <div class="cta" style="margin-top:22px"><a class="btn btn-lime" href="#pricing">Give your agent a memory <small>€29</small></a></div>
+            <div class="cta" style="margin-top:22px"><a class="btn btn-lime" href="#pricing">Give your agent a memory <small>€<span data-current-price>29</span></small></a></div>
           </div>
           <div class="term">
             <div class="bar"><i></i><i></i><i></i></div>
@@ -1401,7 +1402,7 @@
         <details><summary>Is Stashcut open source?</summary><p>Stashcut is built on Flycut and Jumpcut, both MIT licensed, and their notices ship in the app's Credits tab. The additions that make Stashcut what it is are proprietary. You are paying for those, and for the person keeping them working.</p></details>
         <details><summary>Can I use it on more than one Mac?</summary><p>Yes. One licence covers up to three Macs you personally use. Replace one and the licence moves with you.</p></details>
         <details><summary>What about iCloud sync and an iPhone app?</summary><p>Not yet. Sync will arrive as an opt-in, off by default, once the plumbing meets the same standard as everything else here. An iOS companion is on the list after that.</p></details>
-        <details><summary>Refunds?</summary><p>Fourteen days, no questions. If Stashcut does not earn its place in your menu bar, write and get your €29 back.</p></details>
+        <details><summary>Refunds?</summary><p>Fourteen days, no questions. If Stashcut does not earn its place in your menu bar, write and get your purchase refunded.</p></details>
       </div>
     </div>
   </section>
@@ -1414,7 +1415,7 @@
         <p>Install it before lunch. By the afternoon you will have pasted something you would otherwise have retyped.</p>
       </div>
       <div class="cta">
-        <a class="btn btn-lime" href="#pricing">Get Stashcut <small>€29, once</small></a>
+        <a class="btn btn-lime" href="#pricing">Get Stashcut <small>€<span data-current-price>29</span>, once</small></a>
         <a class="btn btn-ghost" href="help.html">Read the help</a>
       </div>
     </div>
@@ -1450,7 +1451,7 @@
   </div>
 </footer>
 
-<div class="buybar"><span>Stashcut for Mac</span><a class="pill" href="#pricing">Get it · €29</a></div>
+<div class="buybar"><span>Stashcut for Mac</span><a class="pill" href="#pricing">Get it · €<span data-current-price>29</span></a></div>
 
 <script>
   /* The theme toggle. A click stores an explicit choice; with none stored the page follows the system. */
@@ -1475,13 +1476,15 @@
   /* The launch price countdown. The date lives in one place, data-ends on
      .countdown. Screen readers keep the plain date; the ticking units are
      hidden from them. When the date has passed, the countdown and the
-     "Launch price" ribbon both go, so the page never claims a deal that ended. */
+      "Launch price" ribbon both go and every price changes to €39. */
   (function () {
     var box = document.querySelector(".countdown");
     if (!box) return;
     var ends = new Date(box.getAttribute("data-ends")).getTime();
     if (isNaN(ends)) return;
     var ribbon = document.querySelector(".price .ribbon");
+    var prices = document.querySelectorAll("[data-current-price]");
+    var offer = document.querySelector("[data-launch-details]");
 
     var plain = document.createElement("span");
     plain.className = "sr";
@@ -1508,8 +1511,11 @@
 
     var timer;
     function tick() {
-      var left = Math.floor((ends - Date.now()) / 1000);
-      if (left <= 0) {
+      var remaining = ends - Date.now();
+      var left = Math.max(1, Math.ceil(remaining / 1000));
+      if (remaining <= 0) {
+        prices.forEach(function (price) { price.textContent = "39"; });
+        if (offer) offer.hidden = true;
         box.hidden = true;
         if (ribbon) ribbon.hidden = true;
         clearInterval(timer);
@@ -1525,8 +1531,8 @@
       visible.appendChild(unit(two(minutes), "m"));
       visible.appendChild(unit(two(seconds), "s"));
     }
-    tick();
     timer = setInterval(tick, 1000);
+    tick();
   })();
 </script>
 
