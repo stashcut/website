@@ -79,9 +79,22 @@
     <a class="pill" href="index.html#pricing">Get Stashcut · €29</a>
   </div>
 </div></nav>
-<!-- Everything inside <main> is CHANGELOG.md rendered by `npx marked@18.0.14 -i CHANGELOG.md`, with the lede paragraph joined onto the h1. Regenerate rather than edit by hand. -->
+<!-- Current release summaries follow CHANGELOG.md. The historical record was rendered with marked@18.0.14; preserve its headings and links when regenerating it. -->
 <main>
-<h1>Changelog</h1><p class="lede">What changed, and why.</p><h2>1.0.2, 3 October 2026, the first release</h2>
+<h1>Changelog</h1><p class="lede">What changed, and why.</p>
+<h2>1.0.3, 7 October 2026</h2>
+<ul>
+<li>AI results are persistent card stacks. Left/Right and H/L change stacks; Up/Down and K/J bring another layer forward and wrap in creation order. Returning restores the selected layer, and each action replaces its own answer without losing the original.</li>
+<li>The stack is a box of index guides: named, coloured tabs above the card. Click a tab or exposed card body to choose its layer. A single spring moves the cards and their text together; Reduce Motion uses a short cross-fade.</li>
+<li>Layer switching caches card bodies and shadows, keeping temporary fills inside their borders. Carousel side cards retain their complete miniature stacks and do not blink when the front layer changes.</li>
+<li>Shortcut keys have separate caps with plus signs between chord components. Lowercase letters match the website and Help; held keys stay depressed until released. AI defaults are Shift Command S, R, F, E and T, and existing custom shortcuts are preserved.</li>
+<li>Screenshots have picture and OCR Text layers, paste only the selected mode, and open in a full-screen viewer with z. Side-card previews no longer cover the picture with a purple Screenshot badge. Hidden credential screenshots remain memory-only.</li>
+<li>Link cards colour the URL's parts and offer an Open button; nothing is fetched until you choose to open it. Code uses language logos and theme-specific syntax colours, including the new Omarchy theme.</li>
+<li>Settings anchors its top edge while the height follows each pane. Long panes scroll. Card dates update while the bezel is open, and Appearance offers a 12-hour clock.</li>
+<li>Activation signatures and signed dates are verified before replacing saved access. Network failures preserve the activation, release clears it only after confirmation, and long-running apps periodically renew. Paid operations and pending AI/credential completions check access.</li>
+<li>Purchase keys can be retrieved repeatedly for one hour. Pending delivery keys are encrypted, failed licence emails retry automatically, and concurrent checkout, device and download limits are handled atomically. Refunds arriving before purchase events still revoke access.</li>
+</ul>
+<h2>1.0.2, 3 October 2026, the first release</h2>
 <p>Stashcut, a commercial macOS clipboard manager. Lineage and licences: <code>license.txt</code>.</p>
 <ul>
 <li>A copied password or key is now kept, and hidden. It pastes like any other
