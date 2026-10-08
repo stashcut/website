@@ -210,6 +210,15 @@
   .btn-violet { background: var(--violet); color: var(--on-dark); }
   .btn-ghost { background: transparent; box-shadow: none; }
   .btn-ghost:hover { background: var(--violet-soft); transform: none; box-shadow: none; }
+  /* Apple's own badge, unaltered and at the Buy button's height. Hidden until
+     the app is live on the Mac App Store; see appStoreLive below. */
+  .mas-badge { display: inline-flex; line-height: 0; border-radius: 10px; transition: opacity 0.12s ease; }
+  .mas-badge[hidden] { display: none; }
+  .mas-badge img { height: 53px; width: auto; }
+  .mas-badge:hover { opacity: 0.85; }
+  .mas-badge:focus-visible { outline: 3px solid var(--violet); outline-offset: 3px; }
+  .mas-or { display: flex; flex-direction: column; align-items: center; gap: 10px; font-size: 14px; color: var(--muted); }
+  .mas-or[hidden] { display: none; }
   .btn small { font-weight: 600; opacity: 0.7; font-size: 14px; }
   .btn:focus-visible, .pill:focus-visible, .theme-toggle:focus-visible, summary:focus-visible, a:focus-visible { outline: 3px solid var(--violet); outline-offset: 3px; }
   .pill {
@@ -1088,6 +1097,7 @@
         <p class="lede">Find what you copied. Make it useful with local AI. Keep the original, and your history, <strong>on your Mac</strong>.</p>
         <div class="cta">
           <a class="btn btn-lime" href="#pricing">Get Stashcut <small>€<span data-current-price>29</span>, once</small></a>
+          <a class="mas-badge" data-app-store hidden href="https://apps.apple.com/app/id6820403297"><img src="mac-app-store-badge.svg" alt="Download on the Mac App Store" width="207" height="53"></a>
           <a class="btn btn-ghost" href="#features">See what it does</a>
         </div>
         <p class="fine"><button type="button" class="chord" data-act="hotkey" aria-label="Shift Command V, try it on the bezel"><span class="kbd sym">⇧</span><span class="plus">+</span><span class="kbd sym">⌘</span><span class="plus">+</span><span class="kbd">v</span></button> history &nbsp; <button type="button" class="chord" data-act="search" aria-label="Shift Command question mark, try it on the bezel"><span class="kbd sym">⇧</span><span class="plus">+</span><span class="kbd sym">⌘</span><span class="plus">+</span><span class="kbd">?</span></button> search</p>
@@ -1366,6 +1376,7 @@
           <!-- Stripe Checkout, through the licence server (server/). While its
                SALES_OPEN is "false", /buy sends people back to #pricing. -->
           <a id="buy" class="btn btn-lime" href="https://api.stashcut.com/buy">Buy Stashcut for €<span data-current-price>29</span></a>
+          <div class="mas-or" data-app-store hidden><span>or get it from the Mac App Store</span><a class="mas-badge" href="https://apps.apple.com/app/id6820403297"><img src="mac-app-store-badge.svg" alt="Download on the Mac App Store" width="207" height="53"></a></div>
           <p class="fine" style="margin:0;text-align:center">Requires macOS 10.13 or later. The built-in search model needs macOS 12. Bought it already? <a href="/download">Download Stashcut</a>.</p>
         </div>
 
@@ -1443,7 +1454,7 @@
           <div>
             <h3 style="margin-top:0">Credential values stay out of agent replies</h3>
             <p>1Password items are reported only as a count, without their value, reference or title. Other clippings that look like card numbers, bank accounts, keys or bulk email lists keep their position and time, but their text is replaced by a notice saying what was withheld.</p>
-            <div class="cta" style="margin-top:22px"><a class="btn btn-lime" href="#pricing">Give your agent a memory <small>€<span data-current-price>29</span></small></a></div>
+            <div class="cta" style="margin-top:22px"><a class="btn btn-lime" href="#pricing">Give your agent a memory <small>€<span data-current-price>29</span></small></a><a class="mas-badge" data-app-store hidden href="https://apps.apple.com/app/id6820403297"><img src="mac-app-store-badge.svg" alt="Download on the Mac App Store" width="207" height="53"></a></div>
           </div>
           <div class="term">
             <div class="bar"><i></i><i></i><i></i></div>
@@ -1521,6 +1532,7 @@
       </div>
       <div class="cta">
         <a class="btn btn-lime" href="#pricing">Get Stashcut <small>€<span data-current-price>29</span>, once</small></a>
+        <a class="mas-badge" data-app-store hidden href="https://apps.apple.com/app/id6820403297"><img src="mac-app-store-badge.svg" alt="Download on the Mac App Store" width="207" height="53"></a>
         <a class="btn btn-ghost" href="help.html">Read the help</a>
       </div>
     </div>
@@ -1558,6 +1570,15 @@
 
 <div class="buybar"><span>Stashcut for Mac</span><a class="pill" href="#pricing">Get it · €<span data-current-price>29</span></a></div>
 
+<script>
+  /* The Mac App Store badges. They link to a page that exists only once Apple
+     has approved the app; flip this to true then, and every badge shows. */
+  (function () {
+    var appStoreLive = false;
+    if (appStoreLive)
+      document.querySelectorAll("[data-app-store]").forEach(function (badge) { badge.hidden = false; });
+  })();
+</script>
 <script>
   /* The theme toggle. A click stores an explicit choice; with none stored the page follows the system. */
   (function () {
