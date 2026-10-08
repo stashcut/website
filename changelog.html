@@ -82,6 +82,11 @@
 <!-- Current release summaries follow CHANGELOG.md. The historical record was rendered with marked@18.0.14; preserve its headings and links when regenerating it. -->
 <main>
 <h1>Changelog</h1><p class="lede">What changed, and why.</p>
+<h2>1.0.4, 8 October 2026</h2>
+<ul>
+<li>Opening Stashcut no longer asks for the login keychain password over the TypeSafe key after an update. The key is read only when a credential check is sent, so a new build asks at most once, at that moment.</li>
+<li>1Password can be reached through a service account as well as the command line tool: Preferences &gt; 1Password &gt; Connect through. The token is kept in the keychain and the account is scoped to a vault set aside for Stashcut, since a service account cannot reach a Private vault. Needs macOS 14 or later.</li>
+</ul>
 <h2>1.0.3, 7 October 2026</h2>
 <ul>
 <li>AI results are persistent card stacks. Left/Right and H/L change stacks; Up/Down and K/J bring another layer forward and wrap in creation order. Returning restores the selected layer, and each action replaces its own answer without losing the original.</li>
