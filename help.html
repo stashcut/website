@@ -52,7 +52,7 @@
   main p, main li { font-size:17px; color:var(--ink-soft); } main li { margin:6px 0; }
   main a { color:var(--violet-ink); text-decoration:none; border-bottom:2px solid var(--violet-soft); } main a:hover { border-bottom-color:var(--violet-ink); }
   main strong { color:var(--ink); }
-  main code { font-family:var(--mono); font-size:.88em; background:var(--paper-2); border:1px solid var(--line); padding:2px 7px; border-radius:6px; }
+  main code { font-family:var(--mono); font-size:.88em; background:var(--paper-2); border:1px solid var(--line); padding:2px 7px; border-radius:6px; overflow-wrap:anywhere; }
   main pre { background:var(--dark); color:#E6E4F5; border-radius:16px; padding:16px 18px; overflow-x:auto; box-shadow:inset 0 0 0 1px var(--line), inset 0 1px 0 rgba(255,255,255,.08); }
   main pre code { background:none; border:0; padding:0; font-size:13.5px; line-height:1.6; color:inherit; }
   main blockquote { margin:20px 0; padding:14px 20px; border-left:4px solid var(--raspberry); background:var(--surface); border:2px solid var(--ink); border-left-width:6px; border-radius:14px; }
@@ -92,14 +92,15 @@
 <p>Paste the same way as always.</p>
 <p>Press the Main Hotkey (<span class="chord"><span class="kbd sym">⇧</span><span class="plus">+</span><span class="kbd sym">⌘</span><span class="plus">+</span><span class="kbd">v</span></span> by default) to access your clipboard history.  Press the Search hotkey (<span class="chord"><span class="kbd sym">⇧</span><span class="plus">+</span><span class="kbd sym">⌘</span><span class="plus">+</span><span class="kbd">?</span></span> by default) to search it.  Or click the Stashcut mark in the menu bar, the little card between two side bars.</p>
 <p><strong>The Bezel</strong></p>
-<p>The Bezel is what you see when you press the Main Hotkey. It is the semi-transparent card in the middle of your screen. Use Left and Right (or H and L) to step through your history. On a stack with AI results, use Up and Down (or K and J) to choose its front layer.</p>
+<p>The Bezel is what you see when you press the Main Hotkey. Use Left and Right to step through your history, and Up and Down to choose a stack's front layer. The home-row aliases work too. Every other layer stands above the front card with its own named tab, including Screenshot and Text on an image clipping. Click a tab or an exposed back to select it. The front tab leaves the selection unchanged.</p>
 <p>Sticky bezel is on by default, so there is no need to hold the command key. When you find something you want to paste, press Return and it is pasted while the Bezel closes automatically.  If you don&#39;t want to paste, just press the Esc key.  Space or right-click pins the Bezel so it stays until you paste, Esc, or click away.</p>
 <p><strong>Bezel Keystrokes</strong></p>
 <p>Here&#39;s a complete list of keys you can use in the Bezel.</p>
-<p><span class="kbd sym">→</span> or <span class="kbd">l</span>: Move to the next, older stack in your clipboard history.</p>
-<p><span class="kbd sym">←</span> or <span class="kbd">h</span>: Move to the previous, newer stack in your clipboard history.</p>
-<p><span class="kbd sym">↑</span> or <span class="kbd">k</span>: Bring the next layer to the front, in the order the layers were made. Every other layer stands above the card with its own named tab. Up from the last layer wraps to Original.</p>
-<p><span class="kbd sym">↓</span> or <span class="kbd">j</span>: Bring the previous layer to the front. Up and Down wrap around the stack in creation order and never change stacks. You can also click a tab or an exposed card body above the front card to select its layer directly.</p>
+<p><span class="kbd sym">→</span>: Move to the next, older stack in your clipboard history.</p>
+<p><span class="kbd sym">←</span>: Move to the previous, newer stack in your clipboard history.</p>
+<p><span class="kbd sym">↑</span>: Bring the next layer to the front, in the order the layers were made. Every other layer stands above the card with its own named tab. Up from the last layer wraps to Original (Screenshot on an image).</p>
+<p><span class="kbd sym">↓</span>: Bring the previous layer to the front. Up and Down wrap around the stack in creation order and never change stacks. You can also click a tab or an exposed card body above the front card to select its layer directly.</p>
+<p>The implicit home-row aliases are h/l for stacks and k/j for layers. The key hints show arrows only.</p>
 <p><span class="kbd sym">↩</span>: Paste the clipboard history item currently displayed, closing the Bezel.</p>
 <p><span class="kbd">esc</span>: Close the bezel without pasting. If favorites were selected, returns to the main list.</p>
 <p><span class="chord"><span class="kbd">fn</span><span class="plus">+</span><span class="kbd sym">↩</span></span> (Enter): Move the clipboard history item currently displayed to the front of the history, closing the Bezel.</p>
@@ -167,29 +168,25 @@ work while it is open. Turn them off with <strong>Show key hints along the botto
 the bezel</strong> once you know them. The carousel is <strong>Show neighbouring clippings
 beside the bezel</strong>, on by default.</p>
 <p><strong>Keeping credentials out of your history</strong></p>
-<p>Stashcut skips anything a password manager marks as concealed. It also reads the
-content of what you copy and skips text that has the shape of a credential:
+<p>Stashcut recognises content a password manager marks as concealed. It also reads the
+content of what you copy and detects text that has the shape of a credential:
 private keys, JSON web tokens, database URLs with a password in them, lines like
 <code>DB_PASSWORD=...</code>, and API keys from the common issuers. This is what catches a
 key pasted out of a terminal, which no password manager ever marked.</p>
-<p>This is on by default, as <strong>Don&#39;t copy keys and passwords found in text</strong> under
-Preferences &gt; General. Turn it off there if you want every copy kept.</p>
+<p>Detection is on by default. Settings &gt; Privacy controls whether detected values stay hidden in memory, are not kept, or are kept as copied.</p>
 <p>Matching is deliberately cautious. It keys on issuer prefixes and lengths rather
 than on how random a string looks, so ordinary writing and source code are
 unaffected, and values that read as documentation are kept rather than
 discarded. The trade is that a credential of pure letters, with no digit in it,
 is not recognised.</p>
-<p>When a copy is skipped this way, a notice appears under the menu bar icon naming
-what it looked like, for example <strong>Not saved: Anthropic API key</strong>, and fades
-after a few seconds. That is there so a missing clipping is never a mystery. If
+<p>When a credential is detected, a notice under the menu bar icon names what it looked like. The hidden clipping itself has a lock, a mask and its visible label. If
 you would rather not see it, run this in Terminal and restart Stashcut:</p>
 <pre><code>defaults write com.stashcut.app notifySkippedSecrets -bool NO
 </code></pre>
-<p>Skipped content is not stored, so it will not appear in the menu or the bezel.
-Your system clipboard still holds it, so you can paste it as normal.</p>
+<p>By default, detected credentials are kept as hidden, memory-only clippings. Their values are masked, never written to history on disk, and never sent to AI, search by meaning, Obsidian or coding agents. You can still paste them from the app or reveal them with <span class="kbd">r</span>.</p>
+<p><strong>Settings &gt; Privacy</strong> lets you choose to keep detected credentials hidden, not keep them, or keep them as copied. Hidden clippings are forgotten after 15 minutes, 1 hour, 8 hours or when Stashcut quits. The default deadline is one hour. <strong>Not a secret</strong> restores an incorrectly detected clipping to ordinary history.</p>
 <p><strong>Keeping credentials in 1Password instead</strong></p>
-<p>Skipping a credential keeps it safe and loses it. If you want it back you have to
-go to wherever you copied it from. Preferences &gt; 1Password offers the other half:
+<p>Hidden clippings last only for your session or chosen deadline. Preferences &gt; 1Password offers a longer-term home:
 the credential goes into 1Password as a proper item, and Stashcut keeps a clipping
 that points at that item, so it is still in your history and can still be pasted
 from the bezel.</p>
@@ -199,9 +196,7 @@ for you, deliberately: if you have a work account and a personal one configured,
 both appear, each vault named with the account it belongs to, and a private
 credential landing in a work vault is exactly the mistake worth making
 impossible.</p>
-<p>With it off, or with no vault chosen, or with the 1Password command line tool not
-installed, a detected credential behaves exactly as described above: skipped,
-announced, nothing stored.</p>
+<p>With it off, or with no vault chosen, or with the 1Password command line tool not installed, the credential follows your Privacy setting. By default it stays hidden in memory only. Saving a detected text credential to 1Password is optional; hidden screenshots are not offered for saving as credential items.</p>
 <p>With it on, the notice under the menu bar icon gains a <strong>Save to 1Password</strong>
 button. Press it and the credential is filed; ignore it and it fades after a
 while, which means no, which is the old behaviour.</p>
@@ -513,22 +508,14 @@ substring as it always has. With semantic search on, it also lists clippings tha
 are about what you typed even when they share no words with it, marked with <code>≈</code>
 and placed under the exact matches. Searching &quot;pastry ingredients&quot; will turn up
 &quot;Recipe: 200g flour, 2 eggs, 100ml milk&quot; that way.</p>
-<p>This needs an embedding model, which is a different thing from a chat model. Run
-<code>ollama pull nomic-embed-text</code>, then tick <strong>Find related clippings when
-searching</strong> in Preferences &gt; AI. The first search after that indexes your
-history, which takes a few seconds and shows its progress under the search box.
-After that only new clippings need indexing.</p>
+<p>Search by meaning uses an embedding model, which is different from the assistant's chat model. The bundled local search model needs no Ollama server or network connection. Settings &gt; AI offers other search engines and optional model downloads. The first index can take a few seconds; afterwards only new clippings need indexing. Literal search remains available while the model is loading or turned off.</p>
 <p>One vector per clipping is kept in
-<code>~/Library/Application Support/Stashcut/embeddings.plist</code>. Clipping text goes to
-your endpoint and nowhere else, the same as the other AI features. Changing the
-embedding model throws the cache away, because vectors made by two different
-models cannot be compared.</p>
+<code>~/Library/Application Support/Stashcut/embeddings.plist</code>. Bundled local search processes text on your Mac. If you configure a remote embedding endpoint, text is sent to that endpoint. Changing the embedding model rebuilds the index, because vectors made by different models cannot be compared.</p>
 <p>Clippings shorter than two words, such as a licence plate, are skipped for
 related search: there is not enough text for the meaning to be measurable, and
 substring search finds them exactly anyway.</p>
 <p><strong>AI Actions</strong></p>
-<p>AI features are off until you turn them on in Preferences &gt; AI. They run against a
-local model, so nothing is sent to a cloud service and there is no API key.</p>
+<p>Assistant features are off until you turn them on in Settings &gt; AI. Actions and Ask Your Clipboard use the model endpoint you choose. With Ollama, LM Studio or llama.cpp running locally, processing stays on your Mac. A remote endpoint receives the text needed for your request. Stashcut does not route your clipboard through its own servers.</p>
 <p>Install <a href="https://ollama.com">Ollama</a> and pull a model, for example <code>ollama pull llama3.2</code>.
 Then open Preferences &gt; AI, tick <strong>Enable AI features</strong>, and press <strong>Refresh</strong> to list
 the models installed on this Mac. The status line tells you whether the endpoint was

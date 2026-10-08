@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Stashcut: the Mac clipboard with a memory and a brain</title>
-<meta name="description" content="Stashcut keeps every copy, keeps your secrets out of it, and answers questions about it with a model that runs on your Mac. Works with Ollama, 1Password, Obsidian, Claude Code and opencode. 29 euro, once.">
+<meta name="description" content="A Mac clipboard with local history, persistent AI card stacks, screenshot text recognition and privacy controls. Works with Ollama, 1Password, Obsidian and coding agents. Pay once.">
 <meta property="og:title" content="Stashcut">
-<meta property="og:description" content="Your clipboard, with a memory and a brain. macOS. 29 euro, once.">
+<meta property="og:description" content="Your clipboard, with a memory and a brain. macOS. Pay once, no subscription.">
 <meta property="og:image" content="stashcut-icon-1024.png">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#6D4DFF">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#6D4DFF">
@@ -62,6 +62,19 @@
     --shadow-hover: 8px 8px 0 var(--ink);
     --font: "SF Pro Display", -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
     --mono: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+    /* Index-guide colours from Branding/bezel-cards.md, on the always-dark demo cards. */
+    --layer-original: #9AA3B8;
+    --layer-text: #9AA3B8;
+    --layer-summary: #FFB020;
+    --layer-rewritten: #3DDC84;
+    --layer-fixed: #FF7A59;
+    --layer-explanation: #4DA3FF;
+    --layer-translated: #E066FF;
+    /* The app's deck: 28 of each back above the card in front, 16 in per side,
+       tabs 22 tall with the key cap's 9 radius on top. */
+    --stack-step: 28px;
+    --stack-inset: 16px;
+    --tab-height: 22px;
   }
 
   /* Dark theme. Keep the two blocks identical: the first is an explicit choice,
@@ -218,7 +231,7 @@
      pressed key catches a little less light. Arrows and the other symbols
      set a size up, so they are not specks in the middle of a cap. */
   .kbd {
-    --drop: 2px;
+    --drop: 3px;
     display: inline-block;
     min-width: 1.9em;
     font-family: var(--mono);
@@ -248,6 +261,8 @@
     gap: 48px;
     align-items: center;
   }
+  .hero .wrap > * { min-width: 0; }
+  .hero-demo { position: relative; }
   .eyebrow {
     display: inline-flex; align-items: center; gap: 10px;
     padding: 6px 12px 6px 6px;
@@ -294,11 +309,12 @@
      buttons. The script moves a card by changing its data-slot and the
      transition is the slide. Without the script it is the same row, still. */
   .stage {
-    --w: 244px;
-    --gap: 18px;
-    --side: 0.66;
+    --w: 272px;
+    --gap: 12px;
+    --side: 0.56;
     position: relative;
-    height: 420px;
+    --deck-room: 56px;
+    height: calc(360px + var(--deck-room));
     border: 2px solid var(--ink);
     border-radius: var(--r);
     background:
@@ -325,13 +341,13 @@
   .stage .menubar .try { margin-right: auto; color: var(--violet-ink); font-weight: 700; white-space: nowrap; }
   .stage .menubar .try-touch { display: none; }
   .stage .menubar .pin-badge { padding: 1px 8px; border-radius: 999px; background: var(--violet); color: var(--on-dark); font-size: 11px; font-weight: 700; }
-  .track { position: absolute; inset: 28px 0 84px 0; }
+  .track { position: absolute; inset: 28px 0 104px 0; }
   .card {
     position: absolute;
-    left: 50%; top: 50%;
+    left: 50%; bottom: 0;
     width: var(--w);
-    height: 232px;
-    margin: -116px 0 0 calc(var(--w) / -2);
+    height: 216px;
+    margin: 0 0 0 calc(var(--w) / -2);
     padding: 16px 18px 14px;
     border-radius: var(--r-bezel);
     background: var(--dark);
@@ -347,7 +363,7 @@
   .stage.live .card { transition: transform 0.16s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.12s ease; }
   .stage.live .card.jump { transition: none; } /* going round the back, unseen */
   .stage.live .card:not([data-slot="0"]) { cursor: pointer; }
-  .card .src { display: flex; align-items: center; gap: 8px; white-space: nowrap; font-size: 12px; color: rgba(255, 255, 255, 0.6); }
+  .card .src { display: flex; align-items: center; gap: 4px; white-space: nowrap; font-size: 11px; color: rgba(255, 255, 255, 0.6); }
   .card .src i { width: 14px; height: 14px; border-radius: 4px; background: var(--cyan); display: inline-block; }
   /* Not .term: that class is the terminal block further down the page, and its
      padding would inflate this 14px square into a white slab. */
@@ -357,36 +373,115 @@
   .card .src i.figma { background: var(--raspberry); }
   .card .src i.msg { background: var(--lime); }
   .card .src b { color: var(--on-dark); font-weight: 600; }
-  .card .body { font-size: 15px; line-height: 1.45; overflow: hidden; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; }
+  .card .body { font-size: 16px; line-height: 1.5; overflow: hidden; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; }
   .card .body code { font-family: var(--mono); font-size: 14px; color: var(--cyan); }
-  .card .meta { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 12px; color: rgba(255, 255, 255, 0.55); }
+  .card .meta { display: flex; justify-content: space-between; gap: 8px; font-family: var(--mono); font-size: 11px; color: rgba(255, 255, 255, 0.55); }
   .card .meta b { color: var(--on-dark); font-weight: 600; }
   .card.secret .body { color: rgba(255, 255, 255, 0.75); }
   .card.secret .mask { font-family: var(--mono); letter-spacing: 0.1em; color: var(--on-dark); }
   .card.secret { border: 2px solid var(--raspberry); }
   .card .tag { display: inline-block; margin-top: 8px; padding: 3px 9px; border-radius: 999px; font-size: 12px; font-weight: 700; background: var(--raspberry); color: var(--on-accent); }
   .swatch { display: inline-block; width: 14px; height: 14px; border-radius: 4px; vertical-align: -2px; margin-right: 6px; border: 1px solid rgba(255,255,255,0.4); }
-  .shot { height: 100%; min-height: 96px; border-radius: 12px; background: repeating-linear-gradient(135deg, #2b2850 0 10px, #241f47 10px 20px); position: relative; overflow: hidden; }
-  .shot::before { content: ""; position: absolute; left: 12px; top: 12px; width: 46%; height: 10px; border-radius: 5px; background: var(--cyan); }
-  .shot::after { content: ""; position: absolute; left: 12px; top: 30px; width: 70%; height: 8px; border-radius: 4px; background: rgba(255,255,255,0.35); box-shadow: 0 16px 0 rgba(255,255,255,0.25), 0 32px 0 rgba(255,255,255,0.15); }
+  .shot { height: 100%; min-height: 96px; border-radius: var(--r-ctl); background: var(--ink-2); padding: 12px; color: var(--on-dark); position: relative; overflow: hidden; }
 
-  /* A screenshot turns over to the text read out of it (t), and a stack shows
-     one layer at a time (up and down) with the card behind peeking out under
-     it, one step narrower, the way the app draws an AI result's stack. */
+   /* Every back rises above the front. The whole group scales on side cards. */
   .card.stack .body, .card.shot-card .body { display: block; }
   .card .side.picture { height: 100%; }
+  .card .layer.picture { height: 100%; }
   .card .layer, .card .side.text { display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; }
   .card .layer[hidden], .card .side[hidden] { display: none; }
   .card .layer:not([hidden]), .card .side:not([hidden]) { animation: settle 0.16s cubic-bezier(0.2, 0.8, 0.2, 1); }
-  .card .layer-tag { margin-left: auto; font-style: normal; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; color: rgba(255, 255, 255, 0.6); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2); }
-  .card .layer-tag.answer { background: var(--cyan); color: var(--on-accent); box-shadow: none; }
-  .card.stack::after { content: ""; position: absolute; top: 100%; left: 18px; right: 18px; height: 12px; border-radius: 0 0 16px 16px; background: #2B2852; box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.08); }
+  [data-kind="Original"], [data-kind="Screenshot"] { --layer-colour: var(--layer-original); }
+  [data-kind="Text"] { --layer-colour: var(--layer-text); }
+  [data-kind="Summary"] { --layer-colour: var(--layer-summary); }
+  [data-kind="Rewritten"] { --layer-colour: var(--layer-rewritten); }
+  [data-kind="Fixed"] { --layer-colour: var(--layer-fixed); }
+  [data-kind="Explanation"] { --layer-colour: var(--layer-explanation); }
+  [data-kind="Translated"] { --layer-colour: var(--layer-translated); }
+  /* A stack is a box of index guides, as in the app: every layer that is not in
+     front stands in the deck above the card, nearest first, each a whole rounded
+     card 28px higher and 16px narrower per side than the one in front of it.
+     Each card wears a tab on its top edge, in the deck's order, and the card in
+     front is the one pulled out of the box. */
+  .card.stack { background: none; box-shadow: none; }
+  .card.stack::before { content: ""; position: absolute; inset: 0; z-index: 1; border-radius: inherit; background: var(--dark); box-shadow: inset 0 0 0 1.5px var(--layer-colour), 0 -3px 9px rgba(0, 0, 0, 0.45); pointer-events: none; }
+  .card.stack[data-kind="Original"]::before, .card.stack[data-kind="Screenshot"]::before { box-shadow: inset 0 0 0 1px var(--layer-original), 0 -3px 9px rgba(0, 0, 0, 0.45); }
+  .card.stack > .src, .card.stack > .body, .card.stack > .meta { position: relative; z-index: 2; }
+  .stack-deck { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+  .stack-guide {
+    position: absolute; top: calc(var(--depth) * var(--stack-step) * -1);
+    left: calc(var(--depth) * var(--stack-inset)); right: calc(var(--depth) * var(--stack-inset));
+    height: 100%; border: 0; padding: 0;
+    border-radius: var(--r-bezel);
+    background: var(--ink-2);
+    background: color-mix(in srgb, var(--ink-2), black calc(var(--depth) * 10%));
+    box-shadow: inset 0 0 0 1px var(--layer-colour), 0 -3px 9px rgba(0, 0, 0, 0.45);
+    color: var(--on-accent); cursor: pointer; pointer-events: none;
+    font: 700 11px/1 var(--font); z-index: calc(10 - var(--depth));
+    transition: top 0.16s ease, left 0.16s ease, right 0.16s ease;
+  }
+  /* Only the exposed top and tab are handles. The rest is a whole card behind the front. */
+  .stack-guide::after { content: ""; position: absolute; inset: 0 0 auto; height: var(--stack-step); border-radius: var(--r-bezel) var(--r-bezel) 0 0; pointer-events: auto; }
+  .stack-guide.front { height: 0; background: none; box-shadow: none; }
+  .stack-guide.front::after { content: none; }
+  /* The tab grows out of its card: key-cap corners on top, flat where it meets the edge. */
+  .stack-tab {
+    position: absolute; bottom: 100%; left: var(--tab-x);
+    height: var(--tab-height); padding: 0 12px; display: flex; align-items: center;
+    border-radius: 9px 9px 0 0; background: var(--layer-colour); color: var(--on-accent);
+    white-space: nowrap; pointer-events: auto;
+    transition: left 0.16s ease;
+  }
+  [data-kind="Original"] > .stack-tab, [data-kind="Screenshot"] > .stack-tab {
+    background: var(--ink-2); color: var(--on-dark); box-shadow: inset 0 0 0 1px var(--layer-original);
+  }
+  .stack-guide:focus-visible { outline: none; }
+  .stack-guide:focus-visible .stack-tab { outline: 3px solid var(--on-dark); outline-offset: 3px; }
+  .stack-guide:active .stack-tab { translate: 0 2px; }
+  @media (hover: hover) { .stack-guide:hover .stack-tab { translate: 0 -1px; } }
+  .card:not([data-slot="0"]) .stack-guide::after, .card:not([data-slot="0"]) .stack-tab { pointer-events: none; }
+  .card:not([data-slot="0"]) .src .age, .card:not([data-slot="0"]) .stack-position, .card:not([data-slot="0"]) .meta .size { display: none; }
+  .stack-position { margin-left: auto; color: rgba(255,255,255,0.75); font: 12px var(--mono); }
+  .card .src .age { margin-left: auto; }
+  .card .meta .size { text-align: right; }
+  .url-domain { display: block; font-size: 18px; color: var(--on-dark); margin-bottom: 8px; }
+  /* The toolbar keeps its height and the button its place whichever card is in
+     front: a card with nothing to transform fades the button out rather than
+     taking it away, so nothing under the stage moves as the carousel steps. */
+  .demo-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 44px; margin-top: 12px; }
+  .demo-actions { position: relative; flex: none; margin: 0; padding: 0; border: 0; background: none; transition: opacity 0.12s ease; }
+  .demo-actions.idle { opacity: 0; pointer-events: none; }
+  .demo-actions.idle summary { visibility: hidden; }
+  .demo-actions[open] { box-shadow: none; }
+  .demo-actions summary { min-height: 44px; align-items: center; gap: 8px; padding: 8px 12px; border: 1px solid var(--line); border-radius: var(--r-ctl); font: 600 12px/1.3 var(--font); color: var(--muted); }
+  .demo-actions summary::after { content: "⌄"; font-size: 16px; color: inherit; }
+  .demo-actions[open] summary::after { content: "⌃"; }
+  .action-menu { position: absolute; right: 0; bottom: calc(100% + 8px); z-index: 10; width: 200px; padding: 8px; border: 2px solid var(--ink); border-radius: var(--r-ctl); background: var(--surface); box-shadow: 4px 4px 0 var(--ink); display: grid; }
+  .demo-actions button { min-height: 44px; padding: 8px 12px; border: 0; border-radius: var(--r-ctl); background: none; color: var(--ink); font: 600 13px var(--font); text-align: left; cursor: pointer; }
+  .demo-actions button:hover { background: var(--violet-soft); }
+  .demo-actions button:disabled { color: var(--muted); cursor: default; }
+  .demo-actions button:focus-visible { outline: 3px solid var(--violet); outline-offset: 3px; }
+  .demo-caption { margin: 0; min-height: 36px; display: flex; align-items: center; font-size: 12px; line-height: 1.5; color: var(--muted); }
+  .shot b { display: block; font-size: 11px; }
+  .shot strong { display: block; font-size: 24px; color: var(--cyan); }
+  .shot svg { width: 100%; height: 48px; }
+  .image-viewer { width: min(960px, calc(100% - 32px)); max-height: calc(100% - 32px); padding: 24px; border: 2px solid var(--ink); border-radius: var(--r); background: var(--surface); color: var(--ink); }
+  .image-viewer::backdrop { background: rgba(20,18,42,0.85); }
+  .viewer-head { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 24px; }
+  .viewer-head h2 { font-size: 24px; margin: 0; }
+  .viewer-head button { min-height: 44px; padding: 8px 16px; border: 2px solid var(--ink); border-radius: var(--r-ctl); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+  .viewer-head button:focus-visible { outline: 3px solid var(--violet); outline-offset: 3px; }
+  .viewer-body { font-size: 24px; line-height: 1.5; overflow-wrap: anywhere; }
+  .viewer-body .shot { min-height: 320px; padding: 32px; }
+  .viewer-body .shot b { font-size: 18px; }
+  .viewer-body .shot strong { font-size: 54px; }
+  .viewer-body .shot svg { height: 160px; }
   /* No, said the way macOS says it: a credential will not paste. And the
      small settle at either end of a stack. */
   .card.shake { animation: shake 0.32s ease; }
   .card.nudge-up { animation: nudge-up 0.16s ease; }
   .card.nudge-down { animation: nudge-down 0.16s ease; }
-  @keyframes settle { from { opacity: 0; translate: 0 4px; } }
+  @keyframes settle { from { opacity: 0; translate: 0 -8px; } }
   @keyframes shake { 20%, 60% { translate: -6px 0; } 40%, 80% { translate: 6px 0; } }
   @keyframes nudge-up { 50% { translate: 0 -4px; } }
   @keyframes nudge-down { 50% { translate: 0 4px; } }
@@ -573,22 +668,6 @@
   .search-foot { margin: 8px 2px 0; font-size: 12px; color: rgba(255, 255, 255, 0.6); }
   .search-foot:empty { display: none; }
 
-  /* A notice, under the menu bar like the app's. */
-  .toast {
-    position: absolute; left: 50%; top: 38px; z-index: 8;
-    width: max-content; max-width: calc(100% - 32px);
-    margin: 0; padding: 6px 12px;
-    border-radius: 14px;
-    background: var(--dark); color: var(--on-dark);
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12), 0 12px 24px -12px rgba(20, 18, 42, 0.6);
-    font-size: 12.5px; font-weight: 600; line-height: 1.35; text-align: center;
-    opacity: 0; transform: translate(-50%, -6px);
-    transition: opacity 0.12s ease, transform 0.16s cubic-bezier(0.2, 0.8, 0.2, 1);
-    pointer-events: none;
-  }
-  .toast.show { opacity: 1; transform: translate(-50%, 0); }
-  .toast.raspberry { background: var(--raspberry); color: var(--on-accent); }
-  .toast.violet { background: var(--violet); color: var(--on-dark); }
   .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
   /* On a phone there are no keys to press, so it says what works there, and
@@ -911,12 +990,12 @@
 
   /* ---------- responsive ---------- */
   @media (max-width: 1080px) {
-    .stage { --w: 220px; }
+    .stage { --w: 248px; }
   }
   @media (max-width: 960px) {
     .hero { padding-top: 48px; }
     .hero .wrap { grid-template-columns: 1fr; gap: 36px; }
-    .stage { --w: 300px; height: 400px; }
+    .stage { --w: 320px; }
     .card-p, .card-p.wide { grid-column: span 3; }
     .card-p.full { grid-column: span 6; grid-template-columns: 1fr; }
     .integrations, .price-wrap, .faq, .vows, .ask-grid { grid-template-columns: 1fr; }
@@ -932,8 +1011,12 @@
     .card-p, .card-p.wide { grid-column: span 6; }
     .amount .num { font-size: 72px; }
     footer .wrap { grid-template-columns: 1fr; }
-    .stage { --w: 250px; --gap: 16px; height: 360px; }
-    .card { height: 200px; margin-top: -100px; }
+    .stage { --w: min(280px, calc(100vw - 80px)); --gap: 16px; --stack-inset: 8px; height: calc(344px + var(--deck-room)); }
+    .card { height: 200px; }
+    .card .body { font-size: 15px; }
+    .card .src .age { display: none; }
+    .model { grid-template-columns: 44px minmax(0, 1fr); }
+    .model .state { grid-column: 2; }
     .keycap, .stage .menubar .clock { display: none; }
     /* The same caps a size down, so a phone keeps search in the row. */
     .key { padding: 0 6px 3px; gap: 5px; }
@@ -963,6 +1046,7 @@
     .term .cursor::after, .doc-paste::after { animation: none !important; }
     .card, .card .layer, .card .side, .doc, .search-card, .doc-paste.flash { animation: none !important; }
     .hint, .card-keys, .toast, .kbd { transition: none !important; }
+    .stack-guide { transition: none !important; }
     .btn, .pill, .theme-toggle, .card-p, .integ, .demo .play { transition: none !important; }
   }
 </style>
@@ -1001,61 +1085,62 @@
       <div>
         <span class="eyebrow"><b>macOS</b> Clipboard manager · pay once · no account</span>
         <h1>Your clipboard, with a <span class="hl">memory</span> and a <span class="hl cyan">brain</span><span class="stop">.</span></h1>
-        <p class="lede">Stashcut keeps <strong>everything you copy</strong>, keeps your <strong>secrets out</strong> of it, and answers questions about it with a model that runs <strong>on your Mac</strong>.</p>
+        <p class="lede">Find what you copied. Make it useful with local AI. Keep the original, and your history, <strong>on your Mac</strong>.</p>
         <div class="cta">
           <a class="btn btn-lime" href="#pricing">Get Stashcut <small>€<span data-current-price>29</span>, once</small></a>
           <a class="btn btn-ghost" href="#features">See what it does</a>
         </div>
-        <p class="fine"><button type="button" class="chord" data-act="hotkey" aria-label="Shift Command V, try it on the bezel"><span class="kbd sym">⇧</span><span class="plus">+</span><span class="kbd sym">⌘</span><span class="plus">+</span><span class="kbd">v</span></button> pastes anything you ever copied. <button type="button" class="chord" data-act="search" aria-label="Shift Command question mark, try it on the bezel"><span class="kbd sym">⇧</span><span class="plus">+</span><span class="kbd sym">⌘</span><span class="plus">+</span><span class="kbd">?</span></button> searches all of it. Works offline. Yours forever.</p>
+        <p class="fine"><button type="button" class="chord" data-act="hotkey" aria-label="Shift Command V, try it on the bezel"><span class="kbd sym">⇧</span><span class="plus">+</span><span class="kbd sym">⌘</span><span class="plus">+</span><span class="kbd">v</span></button> history &nbsp; <button type="button" class="chord" data-act="search" aria-label="Shift Command question mark, try it on the bezel"><span class="kbd sym">⇧</span><span class="plus">+</span><span class="kbd sym">⌘</span><span class="plus">+</span><span class="kbd">?</span></button> search</p>
       </div>
 
       <!-- The bezel, live: the script at the end of the body drives it. Cards
            run newest to oldest, left to right, as in the app; data-slot is
            where each one stands, 0 in the middle. data-pos is its number in
            the history, data-meaning the words search counts as related. -->
-      <div class="stage" id="bezel" tabindex="0" role="region" aria-roledescription="carousel" aria-label="Try the bezel: Left and Right move, Return pastes, Space pins, Escape closes" data-mode="open">
+      <div class="hero-demo">
+      <div class="stage" id="bezel" tabindex="0" role="region" aria-roledescription="carousel" aria-label="Sample clipboard: Left and Right change stacks, Up and Down change layers, Return simulates paste, Space pins, Escape closes" aria-describedby="demo-caption" data-mode="open">
         <div class="menubar">
-          <span class="try"><span class="try-keys">Try it: press ← → or click a key</span><span class="try-touch">Try it: swipe, or tap a key</span></span>
+          <span class="try"><span class="try-keys">← → stacks · ↑ ↓ layers · click a tab</span><span class="try-touch">Swipe stacks · tap a layer tab</span></span>
           <span class="pin-badge" hidden>Pinned</span>
           <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><rect x="0.75" y="4.5" width="1.5" height="7" rx="0.6" fill="currentColor" stroke="none" opacity="0.5"/><rect x="13.75" y="4.5" width="1.5" height="7" rx="0.6" fill="currentColor" stroke="none" opacity="0.5"/><path d="M5 3.25H9.25L12.25 6.25V11.75A1.25 1.25 0 0 1 11 13H5A1.25 1.25 0 0 1 3.75 11.75V4.5A1.25 1.25 0 0 1 5 3.25Z"/><path d="M9.25 3.25V6.25H12.25" stroke-width="1.25"/></svg>
           <span class="clock" aria-hidden="true">Mon 09:41</span>
         </div>
         <button class="keycap" type="button" data-act="hotkey" tabindex="-1" aria-label="Shift Command V: the next clipping"><span class="kbd sym">⇧</span><span class="plus">+</span><span class="kbd sym">⌘</span><span class="plus">+</span><span class="kbd">v</span></button>
         <div class="track">
-          <article class="card shot-card" data-slot="-3" data-pos="1" data-meaning="picture image screenshot chart report dashboard numbers revenue quarter metrics">
-            <div class="src"><i style="background:var(--on-dark)"></i><b>Screenshot</b> · 1 min</div>
-            <div class="body"><div class="side picture"><div class="shot"></div></div><div class="side text" hidden>Q3 revenue up 18%. Churn down to 2.1%. Next review Thursday at 10:00.</div></div>
-            <div class="meta"><span><b>1</b> of 212</span><span class="size" data-picture="1440 × 900">1440 × 900</span></div>
-          </article>
-          <article class="card" data-slot="-2" data-pos="2" data-meaning="calendar schedule appointment time call room location where when moved">
-            <div class="src"><i class="msg"></i><b>Messages</b> · 4 min</div>
-            <div class="body">Meeting moved to 14:00, room 4B. Bring the signed proposal.</div>
-            <div class="meta"><span><b>2</b> of 212</span><span>59 chars</span></div>
-          </article>
-          <article class="card secret" data-slot="-1" data-meaning="password key token credential secret api stripe sk-live">
+          <article class="card secret" data-slot="-2" data-meaning="password key token credential secret api stripe sk-live">
             <div class="src"><i style="background:#FF4D8D"></i><b>Looked like an API key</b></div>
-            <div class="body"><span class="mask">sk-live-••••••••••••••••••••</span><br><span class="tag">kept out of history · send to 1Password?</span></div>
-            <div class="meta"><span>not stored</span><span>0 chars kept</span></div>
+            <div class="body"><span class="mask">••••••••••••••••</span><br><span class="tag">Hidden · memory only</span></div>
+            <div class="meta"><span>forgotten after your deadline</span><span>🔒</span></div>
           </article>
-          <article class="card" data-slot="0" data-pos="3" data-meaning="command shell terminal code branch commit history deploy force">
-            <div class="src"><i class="shell"></i><b>Terminal</b> · just now</div>
+          <article class="card" data-slot="-1" data-pos="1" data-meaning="calendar schedule appointment time call room location where when moved">
+            <div class="src"><i class="msg"></i><b>Messages</b><span class="age">4 min</span></div>
+            <div class="body">Meeting moved to 14:00, room 4B. Bring the signed proposal.</div>
+            <div class="meta"><span><b>1</b> of 212</span><span>59 chars</span></div>
+          </article>
+          <!-- The lap starts here, on the snippet, and the guided tour below builds
+               the stacks in front of the visitor: Explain on this card, then
+               Summarize and Rewrite on the email. Static, these two are plain cards. -->
+          <article class="card code-card" data-slot="0" data-pos="2" data-meaning="command shell terminal code branch commit history deploy force">
+            <div class="src"><i class="shell"></i><b>Terminal</b><span class="age">just now</span></div>
             <div class="body"><code>git rebase -i origin/main</code><br>then <code>git push --force-with-lease</code></div>
-            <div class="meta"><span><b>3</b> of 212</span><span>52 chars</span></div>
+            <div class="meta"><span><b>2</b> of 212</span><span>Shell · 52 chars</span></div>
           </article>
-          <article class="card" data-slot="1" data-pos="4" data-link="https://developer.apple.com/documentation/appkit/nspasteboard" data-meaning="link url docs documentation apple developer pasteboard clipboard api web reference">
-            <div class="src"><i class="safari"></i><b>Safari</b> · 12 min</div>
-            <div class="body">https://developer.apple.com/documentation/appkit/nspasteboard</div>
-            <div class="meta"><span><b>4</b> of 212</span><span>61 chars</span></div>
+          <article class="card" data-slot="1" data-pos="3" data-meaning="invoice bill money payment price euro cost client amount">
+            <div class="src"><i class="mail"></i><b>Mail</b><span class="age">09:41</span></div>
+            <div class="body">Dear Ms Alvarez, thank you for the revised invoice. INV-2026-0917 now reads €4,820 and we agree with the split you proposed.</div>
+            <div class="meta"><span><b>3</b> of 212</span><span>124 chars</span></div>
           </article>
-          <article class="card stack" data-slot="2" data-pos="5" data-layer="1" data-meaning="invoice bill money payment price euro cost client amount">
-            <div class="src"><i class="mail"></i><b>Mail</b> · 09:41<em class="layer-tag answer">Summary</em></div>
-            <div class="body">
-              <div class="layer" data-name="Original" hidden>Dear Ms Alvarez, thank you for the revised invoice. INV-2026-0917 now reads €4,820 and we agree with the split you proposed.</div>
-              <div class="layer" data-name="Summary">The client accepts invoice INV-2026-0917 at €4,820, split the way you proposed.</div>
-            </div>
-            <div class="meta"><span><b>5</b> of 212</span><span><span class="layer-count">2 / 2</span> · <span class="size">79 chars</span></span></div>
+          <article class="card stack shot-card" data-slot="2" data-pos="4" data-layer="0" data-meaning="picture image screenshot chart report dashboard numbers revenue quarter metrics">
+            <div class="src"><i style="background:var(--on-dark)"></i><b>Screenshot</b><span class="stack-position"></span><span class="age">1 min</span></div>
+            <div class="body"><div class="layer picture" data-name="Screenshot"><div class="shot" role="img" aria-label="Sample Q3 dashboard: revenue up 18%, churn 2.1%, next review Thursday at 10:00"><b>Q3 REVENUE</b><strong>+18%</strong><svg viewBox="0 0 200 48" fill="none" aria-hidden="true"><path d="M0 44H200M0 24H200" stroke="var(--layer-original)" opacity=".3"/><path d="M0 40 32 32 64 36 96 20 128 24 160 12 200 4" stroke="var(--cyan)" stroke-width="3"/></svg></div></div><div class="layer" data-name="Text" hidden>Q3 revenue up 18%. Churn down to 2.1%. Next review Thursday at 10:00.</div></div>
+            <div class="meta"><span><b>4</b> of 212</span><span class="size">screenshot</span></div>
           </article>
-          <article class="card" data-slot="3" data-pos="6" data-meaning="colour color hex purple violet design brand palette button">
+          <article class="card" data-slot="3" data-pos="5" data-link="https://developer.apple.com/documentation/appkit/nspasteboard" data-meaning="link url docs documentation apple developer pasteboard clipboard api web reference">
+            <div class="src"><i class="safari"></i><b>Safari</b><span class="age">12 min</span></div>
+            <div class="body"><b class="url-domain">developer.apple.com</b><code>/documentation/appkit/<br>nspasteboard</code></div>
+            <div class="meta"><span><b>5</b> of 212</span><span>URL · 61 chars</span></div>
+          </article>
+          <article class="card" data-slot="-3" data-pos="6" data-meaning="colour color hex purple violet design brand palette button">
             <div class="src"><i class="figma"></i><b>Figma</b> · 32 min</div>
             <div class="body"><span class="swatch" style="background:#6D4DFF"></span><code>#6D4DFF</code><br>Brand violet, primary button fill</div>
             <div class="meta"><span><b>6</b> of 212</span><span>7 chars</span></div>
@@ -1066,7 +1151,7 @@
             <div class="doc-bar" aria-hidden="true"><i></i><i></i><i></i><b>Notes</b></div>
             <div class="doc-paste"></div>
           </div>
-          <p class="paste-note">Pasted where your cursor was. The bezel got out of the way.</p>
+          <p class="paste-note">Demo paste, into this note only. Your clipboard is untouched.</p>
         </div>
         <div class="search" hidden>
           <div class="search-card">
@@ -1076,15 +1161,15 @@
             <p class="search-foot"></p>
           </div>
         </div>
-        <p class="toast" role="status"></p>
         <p class="sr-only" aria-live="polite"></p>
         <div class="card-keys">
           <span class="item" data-item="open" hidden><button class="key" type="button" data-act="open" tabindex="-1"><span class="kbd violet">b</span> <span>open<span class="more"> in browser</span></span></button></span>
           <span class="item" data-item="flip" hidden><button class="key" type="button" data-act="flip" tabindex="-1"><span class="kbd violet">t</span> <span class="flip-word">text</span></button></span>
-          <span class="item" data-item="layers" hidden><button class="key pair" type="button" data-act="up" tabindex="-1" aria-label="Previous layer"><span class="kbd sym violet">↑</span></button><button class="key" type="button" data-act="down" tabindex="-1" aria-label="Next layer"><span class="kbd sym violet">↓</span> layers</button></span>
+          <span class="item" data-item="view" hidden><button class="key" type="button" data-act="view" tabindex="-1"><span class="kbd">z</span> view</button></span>
+          <span class="item" data-item="layers" hidden><button class="key pair" type="button" data-act="up" tabindex="-1" aria-label="Next layer, wrapping"><span class="kbd sym">↑</span></button><button class="key" type="button" data-act="down" tabindex="-1" aria-label="Previous layer, wrapping"><span class="kbd sym">↓</span> layers</button></span>
         </div>
         <div class="hint">
-          <span class="item" data-item="move"><button class="key pair" type="button" data-act="prev" tabindex="-1" aria-label="Newer clipping"><span class="kbd sym">←</span></button><button class="key" type="button" data-act="next" tabindex="-1" aria-label="Older clipping"><span class="kbd sym">→</span> <span class="move-word">move</span></button></span>
+          <span class="item" data-item="move"><button class="key pair" type="button" data-act="prev" tabindex="-1" aria-label="Newer stack"><span class="kbd sym">←</span></button><button class="key" type="button" data-act="next" tabindex="-1" aria-label="Older stack"><span class="kbd sym">→</span> <span class="move-word">stacks</span></button></span>
           <span class="item" data-item="paste"><button class="key" type="button" data-act="paste" tabindex="-1"><span class="kbd sym">↩</span> paste</button></span>
           <span class="item" data-item="pin"><button class="key" type="button" data-act="pin" tabindex="-1" aria-pressed="false"><span class="kbd">space</span> pin</button></span>
           <span class="item" data-item="search"><button class="key" type="button" data-act="search" tabindex="-1" aria-label="Shift Command question mark: search"><span class="chord"><span class="kbd sym">⇧</span><span class="plus">+</span><span class="kbd sym">⌘</span><span class="plus">+</span><span class="kbd">?</span></span> search</button></span>
@@ -1094,8 +1179,19 @@
           <span class="item" data-item="close" hidden><button class="key" type="button" data-act="esc" tabindex="-1"><span class="kbd">esc</span> close</button></span>
         </div>
       </div>
+      <div class="demo-toolbar">
+        <p class="demo-caption" id="demo-caption" role="status">Sample. Clipboard untouched.</p>
+        <details class="demo-actions">
+          <summary>Try an AI action</summary>
+          <div class="action-menu" aria-label="Sample AI actions">
+            <button type="button" data-act="summarize">Summarize</button><button type="button" data-act="rewrite">Rewrite clearly</button><button type="button" data-act="fix">Fix spelling</button><button type="button" data-act="explain">Explain</button><button type="button" data-act="translate">Translate to English</button>
+          </div>
+        </details>
+      </div>
+      </div>
     </div>
   </header>
+  <dialog class="image-viewer" aria-labelledby="viewer-title"><div class="viewer-head"><h2 id="viewer-title">Screenshot preview</h2><button type="button" class="viewer-close">Close <span class="kbd">esc</span></button></div><div class="viewer-body"></div></dialog>
 
   <!-- ======================= LOGO STRIP ======================= -->
   <div class="strip">
@@ -1162,16 +1258,22 @@
           <p>Solid colour, gradient or your own image behind the bezel, on every screen. Menu bar icon, hotkeys, bezel size, how long the panel stays: <b>all yours to set</b>.</p>
         </article>
 
-        <article class="card-p soft2 wide">
+        <article class="card-p soft2">
           <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 7-5 5 5 5M16 7l5 5-5 5M13.5 4l-3 16"/></svg></div>
           <h3>Code looks like code</h3>
           <p>Copy a snippet and the bezel colours it in its own language: <b>sixteen of them</b>, from Python and TypeScript to Shell, SQL and YAML. A small model on your Mac tells code from prose, so a plain sentence stays plain.</p>
         </article>
 
-        <article class="card-p cyan wide">
+        <article class="card-p cyan">
           <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18"/></svg></div>
           <h3>Copy, press, paste</h3>
           <p>Summarize, rewrite clearly, fix spelling, explain, or translate to English: <span class="chord"><span class="kbd sym">⇧</span><span class="plus">+</span><span class="kbd sym">⌘</span></span> and the first letter works on whatever you copied, <b>without opening anything</b>. Runs on the model you already use for Ask.</p>
+        </article>
+
+        <article class="card-p dark">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2.5"/><path d="M6 7h12M8 4h8"/></svg></div>
+          <h3>Results stack on the original</h3>
+          <p>Every result goes on the clipping it came from, as a tab: the original, its summary, the rewrite, a screenshot and its text. <span class="kbd sym">↑</span> and <span class="kbd sym">↓</span> flip through them in the bezel, and <b>any layer pastes</b>.</p>
         </article>
       </div>
     </div>
@@ -1205,7 +1307,7 @@
           <div class="logo" style="background:#7C3AED"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3 25 9.5 22.5 24 16 29.5 9.5 24 7 9.5z" fill="#fff"/><path d="M16 3v26.5M7 9.5l9 5.5 9-5.5M9.5 24l6.5-9 6.5 9" stroke="#7C3AED" stroke-width="1.3" fill="none" opacity="0.8"/></svg></div>
           <div>
             <h3>Obsidian</h3>
-            <p>One key sends a clipping into today's daily note, under a heading of its own. Text and pictures. Your vault stays a folder of files.</p>
+            <p>One key sends a clipping into the daily note for the day you copied it, under a heading of its own. Text and pictures. Your vault stays a folder of files.</p>
             <span class="state">Built in</span>
           </div>
         </article>
@@ -1255,8 +1357,8 @@
           <ul class="checks">
             <li>Clipboard history, search by meaning, the carousel, hotkeys</li>
             <li>Secret detection, paste guard, 1Password hand-off</li>
-            <li>Ask your clipboard and five one-key transforms, with Ollama, LM Studio or llama.cpp</li>
-            <li>Obsidian, image capture, code colouring, backdrops</li>
+            <li>Ask with citations and five AI actions in persistent stacks</li>
+            <li>Screenshot text recognition, seven themes, code colouring and Obsidian</li>
             <li>The MCP server and one-button agent setup</li>
             <li>All 1.x updates, on up to three of your Macs</li>
             <li>14-day refund, no questions asked</li>
@@ -1281,7 +1383,7 @@
     <div class="wrap">
       <p class="kicker">Ask your clipboard</p>
       <h2>The thing you copied at 09:41 is the answer. Ask for it.</h2>
-      <p class="sub">Plain words in, the right clipping out. Stashcut picks the few clippings that are actually about your question, shows you how many it used, and never sends the rest.</p>
+      <p class="sub"><span class="chord"><span class="kbd sym">⇧</span><span class="plus">+</span><span class="kbd sym">⌘</span><span class="plus">+</span><span class="kbd">a</span></span> opens Ask Your Clipboard. Ask in plain language, get an answer with <strong>citations back to your clippings</strong>. Search by meaning finds the relevant history; your chosen model writes the answer.</p>
 
       <div class="ask-grid">
         <div class="term">
@@ -1289,15 +1391,18 @@
           <div><span class="c">›</span> <span class="b">ask</span> what did the client want changed on the proposal?<span class="cursor"></span></div>
           <div>&nbsp;</div>
           <div><span class="g">Three things, from the clipping you copied from Mail at 16:12:</span></div>
-          <div>&nbsp;&nbsp;1. move delivery to the week of the 5th</div>
-          <div>&nbsp;&nbsp;2. drop the onboarding workshop, they will do it in-house</div>
-          <div>&nbsp;&nbsp;3. invoice in two parts, 40 / 60</div>
+          <div>&nbsp;&nbsp;1. move delivery to the week of the 5th <span class="g">[1]</span></div>
+          <div>&nbsp;&nbsp;2. drop the onboarding workshop <span class="g">[1]</span></div>
+          <div>&nbsp;&nbsp;3. invoice in two parts, 40 / 60 <span class="g">[2]</span></div>
           <div>&nbsp;</div>
           <div><span class="c">used 2 of 4 related clippings · <span class="m">1 credential withheld</span> · model: local</span></div>
+          <div>&nbsp;</div>
+          <div class="c">[1] Mail · proposal changes · 16:12</div>
+          <div class="c">[2] Mail · payment terms · 09:41</div>
         </div>
         <div>
           <h3 style="margin:0 0 10px;font-size:26px;letter-spacing:-0.025em">Bring your own brain</h3>
-          <p style="margin:0;color:rgba(255,255,255,0.7)">Search by meaning runs on a model that ships inside Stashcut. Answers come from a model you already run, and Stashcut keeps no key for it. Point it at one on this Mac, or on another machine of yours. The Preferences pane says in one sentence whether your text stays on the machine.</p>
+          <p style="margin:0;color:rgba(255,255,255,0.7)">Search by meaning can run on the bundled local model. Answers and AI actions use the assistant endpoint you choose: Ollama, LM Studio or llama.cpp on your Mac, or a remote endpoint if you prefer. The settings tell you whether text stays local. Citations let you check the answer, not just trust it.</p>
           <div class="models">
             <div class="model">
               <div class="logo"><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="9.5" y="1" width="4" height="12" rx="2" fill="#14122A"/><rect x="18.5" y="1" width="4" height="12" rx="2" fill="#14122A"/><rect x="7" y="7.5" width="18" height="23" rx="8" fill="#14122A"/><circle cx="12.5" cy="15" r="2" fill="#fff"/><circle cx="19.5" cy="15" r="2" fill="#fff"/><circle cx="13" cy="15.4" r=".9" fill="#14122A"/><circle cx="20" cy="15.4" r=".9" fill="#14122A"/><rect x="12" y="21" width="8" height="5.5" rx="2.75" fill="#fff" opacity=".9"/><path d="M14.5 23.8h3" stroke="#14122A" stroke-width="1.2" stroke-linecap="round"/></svg></div>
@@ -1336,8 +1441,8 @@
         </article>
         <article class="card-p full">
           <div>
-            <h3 style="margin-top:0">Credentials stay invisible to agents, in every form</h3>
-            <p>Not the value, not the 1Password reference, not even the item's title. They are reported as a count so the agent knows something was withheld and does not reason around a gap it cannot see. Clippings that look like card numbers, bank accounts, keys or bulk email lists come back with their text replaced by a plain notice.</p>
+            <h3 style="margin-top:0">Credential values stay out of agent replies</h3>
+            <p>1Password items are reported only as a count, without their value, reference or title. Other clippings that look like card numbers, bank accounts, keys or bulk email lists keep their position and time, but their text is replaced by a notice saying what was withheld.</p>
             <div class="cta" style="margin-top:22px"><a class="btn btn-lime" href="#pricing">Give your agent a memory <small>€<span data-current-price>29</span></small></a></div>
           </div>
           <div class="term">
@@ -1384,7 +1489,7 @@
       <div class="vows">
         <article class="vow"><div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></div><h3>No account</h3><p>Buy it, download it, use it. There is nothing to sign in to and nobody to sign in as.</p></article>
         <article class="vow"><div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></div><h3>No analytics</h3><p>No telemetry, no crash reporter that phones home, no "anonymous usage data". Zero.</p></article>
-        <article class="vow"><div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></div><h3>History stays local</h3><p>History lives in your Library folder. Our service handles licences and downloads, not your clipboard. AI uses the model endpoint you choose.</p></article>
+        <article class="vow"><div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></div><h3>History stays local</h3><p>History lives on your Mac. Our services handle licences, updates and downloads, not your clipboard history. Chosen remote AI and configured integrations may send data to their services.</p></article>
       </div>
     </div>
   </section>
@@ -1395,10 +1500,10 @@
       <p class="kicker">Questions</p>
       <h2>Asked before you asked</h2>
       <div class="faq">
-        <details><summary>Does it need an internet connection?</summary><p>No. History, search by meaning, secret detection and the agent server all work offline. Larger search models are an optional download. Ask your clipboard talks to whatever model you set, which can be one on this very Mac.</p></details>
+        <details><summary>Does it need an internet connection?</summary><p>History, bundled search by meaning, local secret detection and the agent server work offline. Activation, licence renewal, updates and optional model downloads use the internet. Ask and AI actions use your chosen model endpoint, which can run on this very Mac.</p></details>
         <details><summary>Which AI does it use?</summary><p>For search, a small model that ships inside Stashcut, or e5-small, an optional download that reads many languages and code. For answers, yours: Ollama, LM Studio or llama.cpp. Stashcut keeps no key of its own and never routes your text through a server of ours.</p></details>
         <details><summary>Where is my history stored?</summary><p>In macOS preferences under <code>com.stashcut.app</code> and in <code>~/Library/Application Support/Stashcut</code> for images, backdrops and the search index. Delete the app and the folder, and it is gone.</p></details>
-        <details><summary>Is the agent server safe to turn on?</summary><p>It is off until you switch it on. It is read-only, it runs only while an agent you started is running, it never returns credentials in any form, and it withholds anything that looks like a card, an account, a key or a bulk mailing list.</p></details>
+        <details><summary>Is the agent server safe to turn on?</summary><p>It is off until you switch it on. It is read-only and runs as a child of the agent you started. 1Password items are counted, without their values, references or titles. Detected sensitive text is withheld with a notice; its position and time may still be returned. Detection is a safeguard, not a guarantee for every possible secret.</p></details>
         <details><summary>Is Stashcut open source?</summary><p>Stashcut is built on Flycut and Jumpcut, both MIT licensed, and their notices ship in the app's Credits tab. The additions that make Stashcut what it is are proprietary. You are paying for those, and for the person keeping them working.</p></details>
         <details><summary>Can I use it on more than one Mac?</summary><p>Yes. One licence covers up to three Macs you personally use. Replace one and the licence moves with you.</p></details>
         <details><summary>What about iCloud sync and an iPhone app?</summary><p>Not yet. Sync will arrive as an opt-in, off by default, once the plumbing meets the same standard as everything else here. An iOS companion is on the list after that.</p></details>
@@ -1553,7 +1658,8 @@
     var cards = Array.prototype.slice.call(track.querySelectorAll(".card"));
     var count = cards.length;
     var current = Math.max(0, cards.indexOf(track.querySelector('.card[data-slot="0"]')));
-    var toast = stage.querySelector(".toast");
+    var toast = stage.parentElement.querySelector(".demo-caption");
+    var sampleDisclosure = toast.textContent;
     var live = stage.querySelector(".sr-only");
     var pinBadge = stage.querySelector(".pin-badge");
     var pinKey = stage.querySelector('.key[data-act="pin"]');
@@ -1564,6 +1670,8 @@
     var results = search.querySelector(".results");
     var foot = search.querySelector(".search-foot");
     var flipWord = stage.querySelector(".flip-word");
+    var demoActions = document.querySelector(".demo-actions");
+    var viewer = document.querySelector(".image-viewer");
     var reduceMotion = matchMedia("(prefers-reduced-motion: reduce)");
 
     var mode = "open";        // open, closed (after a paste or esc), or search
@@ -1592,12 +1700,10 @@
     function label(card) {
       return card.querySelector(".src b").textContent + ", " + card.querySelector(".meta span").textContent;
     }
-    function say(text, tone) {
-      var base = "toast" + (tone ? " " + tone : "");
+    function say(text, hold) {
       toast.textContent = text;
-      toast.className = base + " show";
       clearTimeout(toastTimer);
-      toastTimer = setTimeout(function () { toast.className = base; }, 2400);
+      toastTimer = setTimeout(function () { toast.textContent = sampleDisclosure; }, hold || 2400);
     }
     function play(element, name) {
       if (reduceMotion.matches) return;
@@ -1619,7 +1725,14 @@
         card.setAttribute("data-slot", String(slot));
         if (slot === 0) card.removeAttribute("aria-hidden");
         else card.setAttribute("aria-hidden", "true");
+        Array.prototype.forEach.call(card.querySelectorAll(".stack-guide"), function (guide) {
+          guide.tabIndex = slot === 0 ? 0 : -1;
+        });
       });
+      var deepest = Math.max.apply(null, cards.map(function (card) { return card.querySelectorAll(".layer").length - 1; }));
+      var style = getComputedStyle(stage);
+      stage.style.setProperty("--deck-room", (deepest * parseFloat(style.getPropertyValue("--stack-step")) + parseFloat(style.getPropertyValue("--tab-height"))) + "px");
+      renderActions();
       renderRows();
     }
     function step(by) {
@@ -1671,7 +1784,10 @@
       row.key = key;
       clearTimeout(row.timer);
       function apply() {
-        Object.keys(row.items).forEach(function (name) { row.items[name].hidden = list.indexOf(name) === -1; });
+        Object.keys(row.items).forEach(function (name) {
+          row.items[name].hidden = list.indexOf(name) === -1;
+          Array.prototype.forEach.call(row.items[name].querySelectorAll("button"), function (button) { button.tabIndex = row.items[name].hidden ? -1 : 0; });
+        });
         if (after) after();
         row.element.classList.remove("swap");
       }
@@ -1695,7 +1811,7 @@
       var own = [];
       if (mode === "open") {
         if (card.hasAttribute("data-link")) own.push("open");
-        if (card.classList.contains("shot-card")) own.push("flip");
+        if (card.classList.contains("shot-card")) own.push("flip", "view");
         if (card.classList.contains("stack")) own.push("layers");
       }
       var word = card.classList.contains("flipped") ? "picture" : "text";
@@ -1706,8 +1822,10 @@
     function setMode(next) {
       mode = next;
       stage.setAttribute("data-mode", next);
+      track.inert = next !== "open";
       search.hidden = next !== "search";
       if (next !== "closed") pasteView.hidden = true;
+      renderActions();
       renderRows();
     }
     function setPinned(on, quiet) {
@@ -1715,7 +1833,7 @@
       pinned = on;
       pinBadge.hidden = !on;
       pinKey.setAttribute("aria-pressed", String(on));
-      if (!quiet) say(on ? "Pinned: it stays put until you paste or press esc" : "Unpinned", on ? "violet" : "");
+      if (!quiet) say(on ? "Pinned" : "Unpinned");
     }
     function close(withPaste) {
       setPinned(false, true);
@@ -1730,7 +1848,6 @@
     }
     function frontOf(card) {
       if (card.classList.contains("stack")) return card.querySelectorAll(".layer")[Number(card.getAttribute("data-layer"))];
-      if (card.classList.contains("shot-card")) return card.querySelector(".side:not([hidden])");
       return card.querySelector(".body");
     }
     function paste() {
@@ -1738,7 +1855,7 @@
       if (mode !== "open") return;
       var card = cards[current];
       if (card.classList.contains("secret")) {
-        say("Kept out of history: nothing to paste", "raspberry");
+        say("Hidden sample. Nothing pasted.");
         play(card, "shake");
         return;
       }
@@ -1763,32 +1880,189 @@
       var layers = card.querySelectorAll(".layer");
       var at = Number(card.getAttribute("data-layer"));
       Array.prototype.forEach.call(layers, function (layer, index) { layer.hidden = index !== at; });
-      var tag = card.querySelector(".layer-tag");
-      tag.textContent = layers[at].getAttribute("data-name");
-      tag.classList.toggle("answer", at > 0);
-      card.querySelector(".layer-count").textContent = (at + 1) + " / " + layers.length;
-      card.querySelector(".size").textContent = chars(layers[at].textContent);
+      var name = layers[at].getAttribute("data-name");
+      card.setAttribute("data-kind", name);
+      card.classList.toggle("flipped", card.classList.contains("shot-card") && at === 1);
+      card.querySelector(".stack-position").textContent = (at + 1) + " / " + layers.length;
+      // The tab already names the layer; the meta line keeps to size, as the app's does.
+      card.querySelector(".size").textContent = name === "Screenshot" ? "screenshot" : (name === "Original" && card.classList.contains("code-card") ? "Shell · " : "") + chars(layers[at].textContent);
+      var deck = card.querySelector(".stack-deck");
+      if (!deck) {
+        deck = document.createElement("div");
+        deck.className = "stack-deck";
+        card.appendChild(deck);
+      }
+      var depth = 0;
+      var width = card.offsetWidth;
+      // Measure actual labels. Horizontal positions depend on creation order,
+      // never the selected layer, so pulling a card forward does not shuffle the tabs.
+      Array.prototype.forEach.call(layers, function (entry, index) {
+        var guide = deck.children[index];
+        if (!guide) {
+          guide = document.createElement("button");
+          guide.type = "button";
+          guide.className = "stack-guide";
+          var tab = document.createElement("span");
+          tab.className = "stack-tab";
+          guide.appendChild(tab);
+          guide.addEventListener("click", function () {
+            touch();
+            if (card !== cards[current] || mode !== "open") return;
+            selectLayer(card, index);
+          });
+          deck.appendChild(guide);
+        }
+        var title = entry.getAttribute("data-name");
+        guide.firstChild.textContent = title;
+      });
+      // The tab row, as the app lays it out: side by side with 4px between, in
+      // the deck's order, starting on the straight edge of the deepest card so
+      // every tab is on its own card and none moves when another comes to the
+      // front. A row too wide for that edge is spread across it instead, first
+      // flush left and last flush right, still in order.
+      var gap = 4;
+      var widths = Array.prototype.map.call(deck.children, function (guide) { return guide.firstChild.offsetWidth; });
+      var total = widths.reduce(function (sum, value) { return sum + value; }, 0) + (layers.length - 1) * gap;
+      var inset = parseFloat(getComputedStyle(stage).getPropertyValue("--stack-inset"));
+      var radius = parseFloat(getComputedStyle(card).borderTopLeftRadius);
+      var edge = function (step) { return width - 2 * ((layers.length - 1) * step + radius); };
+      if (edge(inset) < total) inset = Math.min(inset, 10);
+      card.style.setProperty("--stack-inset", inset + "px");
+      var start = (layers.length - 1) * inset + radius;
+      var available = edge(inset);
+      var adjacent = total <= available;
+      var cursor = start;
+      Array.prototype.forEach.call(layers, function (entry, index) {
+        var guide = deck.children[index];
+        var front = index === at;
+        var position = front ? 0 : ++depth;
+        var title = entry.getAttribute("data-name");
+        guide.classList.toggle("front", front);
+        guide.setAttribute("data-kind", title);
+        guide.setAttribute("aria-label", title + (front ? ": layer in front" : ": bring this layer to the front"));
+        guide.setAttribute("aria-pressed", String(front));
+        guide.title = guide.getAttribute("aria-label");
+        guide.tabIndex = card === cards[current] ? 0 : -1;
+        guide.style.setProperty("--depth", position);
+        var tabX = adjacent || layers.length < 2 ? cursor : start + index * Math.max(0, available - widths[index]) / (layers.length - 1);
+        guide.style.setProperty("--tab-x", (Math.round(tabX) - position * inset) + "px");
+        cursor += widths[index] + gap;
+      });
+    }
+    function selectLayer(card, index) {
+      if (index === Number(card.getAttribute("data-layer"))) return;
+      card.setAttribute("data-layer", String(index));
+      showLayer(card);
+      renderRows();
+      announce(frontOf(card).getAttribute("data-name") + ", layer " + (index + 1) + " of " + card.querySelectorAll(".layer").length);
     }
     function layer(by) {
       var card = cards[current];
       if (mode !== "open" || !card.classList.contains("stack")) return;
       var layers = card.querySelectorAll(".layer");
       var next = (Number(card.getAttribute("data-layer")) + by + layers.length) % layers.length;
-      card.setAttribute("data-layer", String(next));
-      showLayer(card);
-      announce(layers[next].getAttribute("data-name"));
+      selectLayer(card, next);
     }
     function flip() {
       var card = cards[current];
       if (mode !== "open" || !card.classList.contains("shot-card")) return;
-      var flipped = card.classList.toggle("flipped");
-      var text = card.querySelector(".side.text");
-      var size = card.querySelector(".size");
-      card.querySelector(".side.picture").hidden = flipped;
-      text.hidden = !flipped;
-      size.textContent = flipped ? chars(text.textContent) : size.getAttribute("data-picture");
-      announce(flipped ? "The text read out of the screenshot" : "The screenshot");
-      renderRows();
+      selectLayer(card, Number(card.getAttribute("data-layer")) === 0 ? 1 : 0);
+    }
+    function renderViewer() {
+      var card = cards[current];
+      var body = viewer.querySelector(".viewer-body");
+      body.textContent = "";
+      body.appendChild(frontOf(card).cloneNode(true));
+      viewer.querySelector("h2").textContent = (frontOf(card).getAttribute("data-name") || card.querySelector(".src b").textContent) + " preview";
+    }
+    function viewImage() {
+      var card = cards[current];
+      if (mode !== "open" || !card.classList.contains("shot-card")) return;
+      renderViewer();
+      viewer.showModal();
+    }
+    viewer.querySelector(".viewer-close").addEventListener("click", function () { viewer.close(); });
+    viewer.addEventListener("close", function () { touch(); stage.focus({ preventScroll: true }); });
+
+    /* Hand-written fixtures only. No model requests or clipboard API in the demo. */
+    var transformNames = { summarize: "Summary", rewrite: "Rewritten", fix: "Fixed", explain: "Explanation", translate: "Translated" };
+    var fixtures = {
+      mail: {
+        summarize: "The client accepts invoice INV-2026-0917 at €4,820, split the way you proposed.",
+        rewrite: "Thank you for updating invoice INV-2026-0917 to €4,820. We agree to your proposed payment split.",
+        fix: "Dear Ms Alvarez, thank you for the revised invoice. INV-2026-0917 now reads €4,820, and we agree with the split you proposed.",
+        explain: "The client has approved the revised invoice total and the proposed payment schedule.",
+        translate: "Dear Ms Alvarez, thank you for the revised invoice. We agree to €4,820 and your proposed payment split."
+      },
+      screenshot: {
+        summarize: "Revenue is growing and churn is falling. Review the Q3 numbers on Thursday at 10:00.",
+        rewrite: "Q3 revenue increased by 18%, while churn fell to 2.1%. The next review is Thursday at 10:00.",
+        fix: "Q3 revenue is up 18%. Churn is down to 2.1%. The next review is Thursday at 10:00.",
+        explain: "Revenue measures sales; churn measures customers leaving. This quarter shows improvement in both.",
+        translate: "Q3 revenue is up 18%. Churn is down to 2.1%. The next review is Thursday at 10:00."
+      },
+      code: {
+        summarize: "Rebase the branch on main, then push with a check against remote changes.",
+        explain: "Replay your commits on main, then update the remote only if nobody else has changed it."
+      },
+      message: {
+        summarize: "Meet at 14:00 in room 4B with the signed proposal.",
+        rewrite: "The meeting is now at 14:00 in room 4B. Please bring the signed proposal.",
+        fix: "Meeting moved to 14:00, room 4B. Bring the signed proposal.",
+        explain: "The meeting time and location have changed. You need the signed proposal with you.",
+        translate: "The meeting has moved to 14:00 in room 4B. Bring the signed proposal."
+      }
+    };
+    function fixtureFor(card) {
+      if (card.classList.contains("shot-card")) return fixtures.screenshot;
+      if (card.classList.contains("code-card")) return fixtures.code;
+      return card.querySelector(".src b").textContent === "Mail" ? fixtures.mail : fixtures.message;
+    }
+    function canTransform(action) {
+      var card = cards[current];
+      return mode === "open" && !card.classList.contains("secret") && !card.hasAttribute("data-link") && card.querySelector(".src b").textContent !== "Figma" && !!fixtureFor(card)[action];
+    }
+    function renderActions() {
+      var buttons = demoActions.querySelectorAll("button");
+      Array.prototype.forEach.call(buttons, function (button) { button.disabled = !canTransform(button.getAttribute("data-act")); });
+      var idle = !Array.prototype.some.call(buttons, function (button) { return !button.disabled; });
+      demoActions.classList.toggle("idle", idle);
+      if (idle) demoActions.open = false;
+    }
+    function transform(action) {
+      if (!canTransform(action)) return;
+      var card = cards[current];
+      var body = card.querySelector(".body");
+      if (!card.classList.contains("stack")) {
+        var original = document.createElement("div");
+        original.className = "layer";
+        original.setAttribute("data-name", "Original");
+        while (body.firstChild) original.appendChild(body.firstChild);
+        body.appendChild(original);
+        var position = document.createElement("span");
+        position.className = "stack-position";
+        var source = card.querySelector(".src");
+        source.insertBefore(position, source.querySelector(".age"));
+        card.querySelector(".meta span:last-child").className = "size";
+        card.classList.add("stack");
+        card.setAttribute("data-layer", "0");
+      }
+      var name = transformNames[action];
+      var result = body.querySelector('[data-name="' + name + '"]');
+      var replacing = !!result;
+      if (!result) {
+        result = document.createElement("div");
+        result.className = "layer";
+        result.setAttribute("data-name", name);
+        body.appendChild(result);
+      }
+      result.textContent = fixtureFor(card)[action];
+      var index = Array.prototype.indexOf.call(body.querySelectorAll(".layer"), result);
+      card.setAttribute("data-layer", String(index));
+      showLayer(card);
+      layout();
+      say("Sample " + name.toLowerCase() + (replacing ? " replaced." : " added."));
+      announce(name + " selected. " + card.querySelectorAll(".layer").length + " layers.");
     }
     function openLink() {
       var url = mode === "open" && cards[current].getAttribute("data-link");
@@ -1860,6 +2134,10 @@
         results.scrollTop = chosen.offsetTop + chosen.offsetHeight - results.clientHeight;
     }
     function runSearch() {
+      entries.forEach(function (entry) {
+        entry.text = plain(entry.card.querySelector(".body"));
+        entry.folded = fold(entry.name + " " + entry.text);
+      });
       var words = fold(field.value).split(/\s+/).filter(Boolean);
       results.textContent = "";
       foot.textContent = "";
@@ -1889,7 +2167,7 @@
         related.forEach(function (entry) { addResult(entry, []); });
       }
       if (words.some(function (word) { return word.length >= 3 && secretWords.indexOf(word) !== -1; }))
-        foot.textContent = "The key you copied is not in here: secrets are never stored.";
+        foot.textContent = "The sample credential is hidden in memory only. Its value is not searched.";
       else if (!picks.length)
         foot.textContent = "Nothing with that in it. Try invoice, meeting or money.";
       showPicked();
@@ -1929,6 +2207,12 @@
       hotkey: hotkey,
       open: openLink,
       flip: flip,
+      view: viewImage,
+      summarize: function () { transform("summarize"); },
+      rewrite: function () { transform("rewrite"); },
+      fix: function () { transform("fix"); },
+      explain: function () { transform("explain"); },
+      translate: function () { transform("translate"); },
       esc: escape,
       "pick-up": function () { pick(-1); },
       "pick-down": function () { pick(1); },
@@ -1964,7 +2248,7 @@
       // reads as Shift twice. Shift turns the key into V, so fold it back.
       if ((event.metaKey || event.ctrlKey) && !glyphNames[key]) return key === "/" ? "?" : key.length === 1 ? key.toLowerCase() : null;
       if (event.target === field && key.length === 1 && key !== " ") return null; // typing a query presses nothing
-      return glyphNames[key] || (key.length === 1 ? key : null);
+      return glyphNames[key] || glyphNames[key.toLowerCase()] || (key.length === 1 ? key.toLowerCase() : null);
     }
     function hold(glyph) {
       var entry = downs[glyph];
@@ -2016,9 +2300,11 @@
     function applies(name) {
       var card = cards[current];
       if (name === "hotkey" || name === "search" || name === "esc") return true;
+      if (transformNames[name]) return canTransform(name);
       if (mode !== "open") return false;
       if (name === "up" || name === "down") return card.classList.contains("stack");
       if (name === "flip") return card.classList.contains("shot-card");
+      if (name === "view") return card.classList.contains("shot-card");
       if (name === "open") return card.hasAttribute("data-link");
       return true;
     }
@@ -2026,37 +2312,51 @@
     var stageKeys = {
       ArrowLeft: "prev", h: "prev", ArrowRight: "next", l: "next",
       ArrowUp: "up", k: "up", ArrowDown: "down", j: "down",
-      Enter: "paste", " ": "pin", Escape: "esc", t: "flip", b: "open"
+      Enter: "paste", " ": "pin", Escape: "esc", t: "flip", z: "view", b: "open"
     };
     var pageKeys = { ArrowLeft: "prev", h: "prev", ArrowRight: "next", l: "next" };
 
     document.addEventListener("keydown", function (event) {
       if (event.defaultPrevented || event.isComposing) return;
       var target = event.target;
+      if (demoActions.open && event.key === "Escape") {
+        event.preventDefault(); demoActions.open = false; demoActions.querySelector("summary").focus(); return;
+      }
+      if (viewer.open) {
+        var viewerAction = { t: "flip", ArrowLeft: "prev", h: "prev", ArrowRight: "next", l: "next", ArrowUp: "up", k: "up", ArrowDown: "down", j: "down" }[event.key];
+        if (event.key === "Enter" && !target.closest("button")) {
+          event.preventDefault(); viewer.close(); touch(); paste();
+        } else if (viewerAction && applies(viewerAction)) {
+          event.preventDefault(); touch(); actions[viewerAction](); renderViewer();
+        }
+        return;
+      }
       if (target === field || target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName)) return;
+      if (target.closest("button") && (event.key === "Enter" || event.key === " ")) return;
       var inStage = stage.contains(target);
       var onPage = target === document.body || target === document.documentElement;
       var name = null;
       if (event.metaKey && event.shiftKey && !event.ctrlKey && !event.altKey) {
         if (event.key === "v" || event.key === "V") name = "hotkey";
         else if (event.key === "?" || event.key === "/") name = "search";
+        else name = { s: "summarize", r: "rewrite", f: "fix", e: "explain", t: "translate" }[event.key.toLowerCase()] || null;
         if (!inStage && !visible) return;
       } else if (event.metaKey || event.ctrlKey || event.altKey) {
         return;
       } else if (inStage) {
-        name = stageKeys[event.key] || null;
+        name = stageKeys[event.key] || stageKeys[event.key.toLowerCase()] || null;
         if (!name && /^[1-9]$/.test(event.key) && mode === "open") {
           var numbered = track.querySelector('.card[data-pos="' + event.key + '"]');
           if (numbered) { event.preventDefault(); touch(); goTo(cards.indexOf(numbered)); }
           return;
         }
       } else if (onPage && visible) {
-        name = pageKeys[event.key] || null;
+        name = pageKeys[event.key] || pageKeys[event.key.toLowerCase()] || null;
       }
       if (!name || !applies(name)) return;
       event.preventDefault();
       if (!inStage) stage.focus({ preventScroll: true });
-      if (event.repeat && name !== "prev" && name !== "next") return;
+      if (event.repeat && ["prev", "next", "up", "down"].indexOf(name) === -1) return;
       touch();
       actions[name]();
     });
@@ -2077,16 +2377,19 @@
     /* Every cap on the page with a data-act is a button for the same thing,
        the two in the hero's fine print included. */
     document.addEventListener("click", function (event) {
+      if (demoActions.open && !demoActions.contains(event.target)) demoActions.open = false;
       var button = event.target.closest && event.target.closest("[data-act]");
       if (!button || !actions[button.getAttribute("data-act")]) return;
       var name = button.getAttribute("data-act");
       tap(name);
       touch();
       actions[name]();
+      if (demoActions.contains(button)) demoActions.open = false;
       if (!stage.contains(button)) {
         var box = stage.getBoundingClientRect();
         if (box.top < 0 || box.bottom > window.innerHeight)
           stage.scrollIntoView({ block: "center", behavior: reduceMotion.matches ? "auto" : "smooth" });
+        if (mode !== "search") stage.focus({ preventScroll: true });
       } else if (mode === "search") {
         field.focus({ preventScroll: true });
       } else {
@@ -2155,22 +2458,62 @@
       }
     }, { passive: false });
 
-    /* ---- on its own ---- */
-    if ("IntersectionObserver" in window) {
-      new IntersectionObserver(function (entries) { visible = entries[0].isIntersecting; }, { threshold: 0.35 }).observe(stage);
-    }
+    /* ---- on its own: one guided lap, then plain stepping ----
+       The tour tells the story card by card, each scene a little more than the
+       last: a snippet explained, an email summarised then rewritten so a deck
+       builds up, a screenshot's words, a link, a colour, a hidden key that will
+       not paste, and a paste. Anything a person does pauses it; eight seconds
+       of quiet and it carries on from the scene it was in, bringing that scene's
+       card back to the front first. After the lap it steps plainly, as before. */
+    var tour = [
+      { card: 2, hold: 2200, tell: "A snippet from Terminal, coloured as Shell." },
+      { card: 2, hold: 3400, act: function () { transform("explain"); }, tell: "Explain, with the model you run. The answer is a layer on the clipping." },
+      { card: 2, hold: 2200, act: function () { layer(-1); }, tell: "Down: the original is still underneath." },
+      { card: 2, hold: 1600, act: function () { layer(1); }, tell: "Up: back to the explanation." },
+      { card: 3, hold: 2000, tell: "An email, copied from Mail." },
+      { card: 3, hold: 2800, act: function () { transform("summarize"); }, tell: "Summarize." },
+      { card: 3, hold: 3200, act: function () { transform("rewrite"); }, tell: "Rewrite clearly. Every result stacks on the same clipping, as a tab." },
+      { card: 3, hold: 2400, act: function () { selectLayer(cards[3], 0); }, tell: "A tab, or Down: the original, untouched." },
+      { card: 4, hold: 2400, tell: "A screenshot keeps its picture..." },
+      { card: 4, hold: 3000, act: function () { flip(); }, tell: "...and the words inside it: searchable, and they paste as text." },
+      { card: 4, hold: 3000, act: function () { transform("summarize"); }, tell: "Those words take the AI actions too." },
+      { card: 5, hold: 2800, tell: "A link stays readable. b opens it in your browser." },
+      { card: 6, hold: 2400, tell: "A colour shows its swatch." },
+      { card: 0, hold: 2600, tell: "This looked like an API key, so it never entered the history." },
+      { card: 0, hold: 2400, act: function () { paste(); } },
+      { card: 1, hold: 2200, tell: "Plain text from Messages. Return pastes it." },
+      { card: 1, hold: 4400, act: function () { paste(); } }
+    ];
+    var scene = 0;
+    var nextAt = 0;
     var steppedOnce = false;
+    function quiet() {
+      if (document.hidden || !visible || hovering || pinned || drag || viewer.open || demoActions.open || mode !== "open") return false;
+      if (field === document.activeElement) return false;
+      return Date.now() - lastTouch >= 8000;
+    }
     setInterval(function () {
-      if (document.hidden || !visible || hovering || pinned || drag || mode !== "open") return;
-      if (Date.now() - lastTouch < 8000) return;
+      if (!quiet() || Date.now() < nextAt) return;
       // Reduced motion: one slide, so it is plain the row moves, then it holds
       // for good. Somebody who already moved it needs no showing.
       if (reduceMotion.matches) {
         if (steppedOnce || lastTouch) return;
         steppedOnce = true;
+        step(1);
+        return;
       }
-      step(1);
-    }, 2600);
+      var act = tour[scene];
+      if (!act) { step(1); nextAt = Date.now() + 2600; return; }
+      if (current !== act.card) {
+        goTo(act.card);
+        nextAt = Date.now() + 1400; // let the slide land before the scene plays
+        return;
+      }
+      if (act.act) act.act();
+      if (act.tell) say(act.tell, act.hold + 600); // outlasts the scene, so the caption never blinks between two
+      scene++;
+      nextAt = Date.now() + act.hold;
+    }, 400);
 
     cards.forEach(function (card) {
       card.addEventListener("animationend", function (event) {
@@ -2178,7 +2521,11 @@
       });
       if (card.classList.contains("stack")) showLayer(card);
     });
-    window.addEventListener("resize", function () { renderRows(true); });
+    stage.querySelector(".keycap").tabIndex = 0;
+    window.addEventListener("resize", function () {
+      cards.forEach(function (card) { if (card.classList.contains("stack")) showLayer(card); });
+      renderRows(true);
+    });
     layout();
     stage.classList.add("live");
   })();
