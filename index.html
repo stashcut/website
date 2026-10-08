@@ -210,23 +210,31 @@
   .btn-violet { background: var(--violet); color: var(--on-dark); }
   .btn-ghost { background: transparent; box-shadow: none; }
   .btn-ghost:hover { background: var(--violet-soft); transform: none; box-shadow: none; }
-  /* Apple's own badge, unaltered and at the Buy button's height. Hidden until
-     the app is live on the Mac App Store; see appStoreLive below. */
-  .mas-badge { display: inline-flex; line-height: 0; border-radius: 10px; transition: opacity 0.12s ease; }
+  /* Apple's own badge, unaltered, at the Buy button's height. Apple asks for
+     clear space of a quarter of the badge's height on every side, 14px here,
+     which is the CTA row's gap. Shown by the script at the end of the body;
+     see appStoreLive there. */
+  .mas-badge { position: relative; display: inline-flex; flex-direction: column; align-items: flex-start; gap: 16px; line-height: 0; border-radius: 10px; transition: opacity 0.12s ease; }
   .mas-badge[hidden] { display: none; }
-  /* Before Apple approves the app there is no store page to open: the badge
-     shows, says so, and is not a link yet. */
-  .mas-badge.soon { position: relative; pointer-events: none; cursor: default; }
-  .mas-badge.soon::after {
-    content: "Coming soon"; position: absolute; right: -8px; top: -10px; padding: 3px 8px; border-radius: 999px;
-    background: var(--cyan); color: var(--on-accent); border: 2px solid var(--ink);
-    font: 800 10px/1 var(--font); letter-spacing: 0.06em; text-transform: uppercase; transform: rotate(4deg);
-  }
   .mas-badge img { height: 53px; width: auto; }
-  .mas-badge:hover { opacity: 0.85; }
+  .mas-badge[href]:hover { opacity: 0.85; }
   .mas-badge:focus-visible { outline: 3px solid var(--violet); outline-offset: 3px; }
-  .mas-or { display: flex; flex-direction: column; align-items: center; gap: 10px; font-size: 14px; color: var(--muted); }
-  .mas-or[hidden] { display: none; }
+  /* Before Apple approves the app there is no store page to open: the badge is
+     not a link yet and says so with the label every not-yet thing on this page
+     wears, raspberry like the launch price and the integration still coming.
+     The label stands above the badge, never over it, so the artwork and its
+     clear space stay untouched (16px, since the tilt lowers one corner); the
+     CTA row aligns its bottoms, so the badge stays level with the buttons and
+     the label rises into the row's headroom. */
+  .mas-badge.soon { pointer-events: none; cursor: default; }
+  .soon-tag { display: inline-block; padding: 4px 9px; border: 2px solid var(--ink); border-radius: 999px; background: var(--raspberry); color: var(--on-accent); font: 800 11px/1 var(--font); letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; transform: rotate(-2deg); }
+  /* The other way to buy, under the Buy button: the badge on a violet-soft
+     plate, with Apple's clear space (a quarter of 40px) inside it. */
+  .mas-tile { position: relative; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 18px; margin-top: 4px; padding: 14px 14px 14px 18px; border: 2px solid var(--ink); border-radius: var(--r-ctl); background: var(--violet-soft); font-size: 15px; font-weight: 600; }
+  .mas-tile[hidden] { display: none; }
+  .mas-tile .mas-badge { position: static; gap: 0; }
+  .mas-tile .mas-badge img { height: 40px; }
+  .mas-tile .soon-tag { position: absolute; top: -13px; left: 16px; transform: rotate(2deg); }
   .btn small { font-weight: 600; opacity: 0.7; font-size: 14px; }
   .btn:focus-visible, .pill:focus-visible, .theme-toggle:focus-visible, summary:focus-visible, a:focus-visible { outline: 3px solid var(--violet); outline-offset: 3px; }
   .pill {
@@ -316,7 +324,7 @@
   .hl.cyan { color: var(--on-accent); background: var(--cyan); transform: rotate(1.2deg); }
   .lede { font-size: clamp(18px, 1.5vw, 21px); color: var(--muted); max-width: 36ch; margin: 0 0 28px; }
   .lede strong { color: var(--ink); font-weight: 600; }
-  .cta { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+  .cta { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-end; } /* bottoms, so a badge wearing its label stays level with the buttons */
   .fine { margin-top: 18px; font-size: 14px; color: var(--muted); }
 
   /* ---------- the carousel stage ---------- */
@@ -982,7 +990,7 @@
 
   /* final band */
   .band { background: var(--violet); color: var(--on-dark); padding: 88px 0; border-top: 2px solid var(--ink); }
-  .band .wrap { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 32px; align-items: center; }
+  .band .wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: center; } /* half each: the button and the badge share a line */
   .band h2 { color: var(--on-dark); max-width: 18ch; }
   .band p { color: var(--on-dark); font-size: 18px; max-width: 46ch; margin: 0; }
   .band .cta { justify-content: flex-end; }
@@ -1384,7 +1392,7 @@
           <!-- Stripe Checkout, through the licence server (server/). While its
                SALES_OPEN is "false", /buy sends people back to #pricing. -->
           <a id="buy" class="btn btn-lime" href="https://api.stashcut.com/buy">Buy Stashcut for €<span data-current-price>29</span></a>
-          <div class="mas-or" data-app-store hidden><span>or, soon, from the Mac App Store</span><a class="mas-badge" href="https://apps.apple.com/app/id6820403297"><img src="mac-app-store-badge.svg" alt="Download on the Mac App Store" width="207" height="53"></a></div>
+          <div class="mas-tile" data-app-store hidden><span>Or from the Mac App Store</span><a class="mas-badge" href="https://apps.apple.com/app/id6820403297"><img src="mac-app-store-badge.svg" alt="Download on the Mac App Store" width="156" height="40"></a></div>
           <p class="fine" style="margin:0;text-align:center">Requires macOS 10.13 or later. The built-in search model needs macOS 12. Bought it already? <a href="/download">Download Stashcut</a>.</p>
         </div>
 
@@ -1581,7 +1589,7 @@
 <script>
   /* The Mac App Store badges. They always show; the store page exists only
      once Apple has approved the app, so until appStoreLive is true each badge
-     says "Coming soon" and is not a link. */
+     wears a "Coming soon" label and is not a link. */
   (function () {
     var appStoreLive = false;
     document.querySelectorAll("[data-app-store]").forEach(function (element) {
@@ -1592,7 +1600,12 @@
         if (appStoreLive) return;
         badge.classList.add("soon");
         badge.removeAttribute("href");
-        badge.setAttribute("aria-label", "Coming soon to the Mac App Store");
+        badge.querySelector("img").alt = "Coming soon to the Mac App Store";
+        var tag = document.createElement("b");
+        tag.className = "soon-tag";
+        tag.setAttribute("aria-hidden", "true");
+        tag.textContent = "Coming soon";
+        badge.insertBefore(tag, badge.firstChild);
       });
     });
   })();
