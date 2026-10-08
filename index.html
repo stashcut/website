@@ -214,6 +214,14 @@
      the app is live on the Mac App Store; see appStoreLive below. */
   .mas-badge { display: inline-flex; line-height: 0; border-radius: 10px; transition: opacity 0.12s ease; }
   .mas-badge[hidden] { display: none; }
+  /* Before Apple approves the app there is no store page to open: the badge
+     shows, says so, and is not a link yet. */
+  .mas-badge.soon { position: relative; pointer-events: none; cursor: default; }
+  .mas-badge.soon::after {
+    content: "Coming soon"; position: absolute; right: -8px; top: -10px; padding: 3px 8px; border-radius: 999px;
+    background: var(--cyan); color: var(--on-accent); border: 2px solid var(--ink);
+    font: 800 10px/1 var(--font); letter-spacing: 0.06em; text-transform: uppercase; transform: rotate(4deg);
+  }
   .mas-badge img { height: 53px; width: auto; }
   .mas-badge:hover { opacity: 0.85; }
   .mas-badge:focus-visible { outline: 3px solid var(--violet); outline-offset: 3px; }
@@ -1376,7 +1384,7 @@
           <!-- Stripe Checkout, through the licence server (server/). While its
                SALES_OPEN is "false", /buy sends people back to #pricing. -->
           <a id="buy" class="btn btn-lime" href="https://api.stashcut.com/buy">Buy Stashcut for €<span data-current-price>29</span></a>
-          <div class="mas-or" data-app-store hidden><span>or get it from the Mac App Store</span><a class="mas-badge" href="https://apps.apple.com/app/id6820403297"><img src="mac-app-store-badge.svg" alt="Download on the Mac App Store" width="207" height="53"></a></div>
+          <div class="mas-or" data-app-store hidden><span>or, soon, from the Mac App Store</span><a class="mas-badge" href="https://apps.apple.com/app/id6820403297"><img src="mac-app-store-badge.svg" alt="Download on the Mac App Store" width="207" height="53"></a></div>
           <p class="fine" style="margin:0;text-align:center">Requires macOS 10.13 or later. The built-in search model needs macOS 12. Bought it already? <a href="/download">Download Stashcut</a>.</p>
         </div>
 
@@ -1571,12 +1579,22 @@
 <div class="buybar"><span>Stashcut for Mac</span><a class="pill" href="#pricing">Get it · €<span data-current-price>29</span></a></div>
 
 <script>
-  /* The Mac App Store badges. They link to a page that exists only once Apple
-     has approved the app; flip this to true then, and every badge shows. */
+  /* The Mac App Store badges. They always show; the store page exists only
+     once Apple has approved the app, so until appStoreLive is true each badge
+     says "Coming soon" and is not a link. */
   (function () {
     var appStoreLive = false;
-    if (appStoreLive)
-      document.querySelectorAll("[data-app-store]").forEach(function (badge) { badge.hidden = false; });
+    document.querySelectorAll("[data-app-store]").forEach(function (element) {
+      element.hidden = false;
+      var badges = element.matches(".mas-badge") ? [element] : element.querySelectorAll(".mas-badge");
+      badges.forEach(function (badge) {
+        badge.hidden = false;
+        if (appStoreLive) return;
+        badge.classList.add("soon");
+        badge.removeAttribute("href");
+        badge.setAttribute("aria-label", "Coming soon to the Mac App Store");
+      });
+    });
   })();
 </script>
 <script>
