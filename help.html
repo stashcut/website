@@ -185,15 +185,15 @@ you would rather not see it, run this in Terminal and restart Stashcut:</p>
 </code></pre>
 <p>By default, detected credentials are kept as hidden, memory-only clippings. Their values are masked, never written to history on disk, and never sent to AI, search by meaning, Obsidian or coding agents. You can still paste them from the app or reveal them with <span class="kbd">r</span>.</p>
 <p><strong>Settings &gt; Privacy</strong> lets you choose to keep detected credentials hidden, not keep them, or keep them as copied. Hidden clippings are forgotten after 15 minutes, 1 hour, 8 hours or when Stashcut quits. The default deadline is one hour. <strong>Not a secret</strong> restores an incorrectly detected clipping to ordinary history.</p>
-<p><strong id="app-store-1password">1Password in the Mac App Store edition</strong></p>
-<p>The App Store edition runs in Apple's sandbox, which cannot run 1Password's command line tool. It reaches 1Password through a <em>service account</em> instead, and 1Password does not let a service account into your Private vault. So this edition files credentials into a separate vault, and reads them back from there. Once, on 1Password.com:</p>
+<p><strong id="app-store-1password">1Password through a service account</strong></p>
+<p>Stashcut can reach 1Password two ways. The edition from stashcut.com uses 1Password's command line tool by default, with your whole account and 1Password's own approval prompt, as described next. Both editions can instead use a <em>service account</em>, and the Mac App Store edition can only use that: Apple's sandbox cannot run the command line tool. 1Password does not let a service account into your Private vault, so this route files credentials into a separate vault and reads them back from there. Once, on 1Password.com:</p>
 <ol>
 <li>Create a vault for Stashcut, or pick one you already set aside (any vault except Private and the default Shared one).</li>
 <li>Open <strong>Developer</strong>, then <strong>Service accounts</strong>, and create one with <em>read</em> and <em>write</em> access to that vault. Copy the token; 1Password shows it once, so save it in 1Password too.</li>
-<li>In Stashcut, open <strong>Preferences &gt; 1Password</strong>, paste the token into the Token field and press Save. The field clears itself; the token lives in your keychain.</li>
+<li>In Stashcut, open <strong>Preferences &gt; 1Password</strong>. In the stashcut.com edition, set <strong>Connect through</strong> to <em>Service account, a separate vault</em>. Paste the token into the Token field and press Save. The field clears itself; the token lives in your keychain.</li>
 <li>Choose the vault from the list. From then on a detected credential can be filed there, and pasted back from the bezel without showing on screen.</li>
 </ol>
-<p>Needs macOS 14 or later. The edition from <a href="https://stashcut.com/download">stashcut.com</a> uses the command line tool and your whole account, with 1Password's own approval prompt, as described next.</p>
+<p>Needs macOS 14 or later. You can switch back to the command line tool at any time in the stashcut.com edition; credentials already filed stay where they are.</p>
 <p><strong>Keeping credentials in 1Password instead</strong></p>
 <p>Hidden clippings last only for your session or chosen deadline. Preferences &gt; 1Password offers a longer-term home:
 the credential goes into 1Password as a proper item, and Stashcut keeps a clipping
